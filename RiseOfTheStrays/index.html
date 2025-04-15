@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Rise of the Strays</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="game-container">
+        <header>
+            <h1>Rise of the Strays</h1>
+            <div id="resources">
+                <div class="resource">
+                    <span class="resource-name">Food:</span>
+                    <span id="food-count">0</span>
+                </div>
+                <div class="resource">
+                    <span class="resource-name">Materials:</span>
+                    <span id="materials-count">0</span>
+                </div>
+                <div class="resource">
+                    <span class="resource-name">Medicine:</span>
+                    <span id="medicine-count">0</span>
+                </div>
+            </div>
+        </header>
+        
+        <main>
+            <section id="base-section">
+                <h2>Your Base</h2>
+                <div id="base-display">
+                    <div id="base-level">Level: <span id="base-level-value">1</span></div>
+                    <button id="upgrade-base">Upgrade Base (Cost: 10 Materials)</button>
+                </div>
+            </section>
+            
+            <section id="cats-section">
+                <h2>Your Cats</h2>
+                <div id="cats-count">Cats: <span id="cats-value">1</span></div>
+                <div id="cats-container"></div>
+                <button id="find-cat">Search for Cats (Cost: 5 Food)</button>
+            </section>
+            
+            <section id="actions-section">
+                <h2>Actions</h2>
+                <div id="actions-buttons">
+                    <button id="gather-food">Gather Food</button>
+                    <button id="gather-materials">Gather Materials</button>
+                    <button id="gather-medicine">Gather Medicine</button>
+                </div>
+            </section>
+        </main>
+        
+        <div id="message-log">
+            <h3>Messages</h3>
+            <div id="messages"></div>
+        </div>
+    </div>
+
+    <script src="js/resources.js"></script>
+    <script src="js/cats.js"></script>
+    <script src="js/base.js"></script>
+    <script src="js/game.js"></script>
+</body>
+</html>
