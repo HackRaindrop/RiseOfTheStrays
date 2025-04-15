@@ -25,7 +25,7 @@
                 </div>
             </div>
         </header>
-        
+
         <main>
             <section id="base-section">
                 <h2>Your Base</h2>
@@ -34,14 +34,20 @@
                     <button id="upgrade-base">Upgrade Base (Cost: 10 Materials)</button>
                 </div>
             </section>
-            
+
             <section id="cats-section">
                 <h2>Your Cats</h2>
                 <div id="cats-count">Cats: <span id="cats-value">1</span></div>
                 <div id="cats-container"></div>
                 <button id="find-cat">Search for Cats (Cost: 5 Food)</button>
             </section>
-            
+
+            <section id="buildings-section">
+                <h2>Buildings</h2>
+                <div id="buildings-container"></div>
+                <div id="building-buttons"></div>
+            </section>
+
             <section id="actions-section">
                 <h2>Actions</h2>
                 <div id="actions-buttons">
@@ -51,7 +57,7 @@
                 </div>
             </section>
         </main>
-        
+
         <div id="message-log">
             <h3>Messages</h3>
             <div id="messages"></div>
@@ -59,8 +65,10 @@
     </div>
 
     <script src="js/resources.js"></script>
+    <script src="images/cat-icons.js"></script>
     <script src="js/cats.js"></script>
     <script src="js/base.js"></script>
+    <script src="js/buildings.js"></script>
     <script src="js/game.js"></script>
 </body>
 </html>

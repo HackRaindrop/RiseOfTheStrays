@@ -7,24 +7,24 @@ class CatManager {
             'Simba', 'Cleo', 'Milo', 'Bella', 'Charlie', 'Lucy', 'Max', 'Daisy', 'Oliver',
             'Lily', 'Leo', 'Lola', 'Rocky', 'Misty', 'Oscar', 'Molly', 'Jasper', 'Nala'
         ];
-        
+
         this.catTypes = ['Scavenger', 'Hunter', 'Guardian', 'Medic'];
-        
+
         // Add starter cat
         this.addCat('Mittens', 'Scavenger', 1);
-        
+
         this.updateDisplay();
     }
-    
+
     // Generate a random cat
     generateRandomCat() {
         const randomName = this.catNames[Math.floor(Math.random() * this.catNames.length)];
         const randomType = this.catTypes[Math.floor(Math.random() * this.catTypes.length)];
         const level = 1;
-        
+
         return { name: randomName, type: randomType, level: level };
     }
-    
+
     // Add a new cat to the colony
     addCat(name, type, level) {
         const cat = {
@@ -35,12 +35,12 @@ class CatManager {
             happiness: 100,
             health: 100
         };
-        
+
         this.cats.push(cat);
         this.updateDisplay();
         return cat;
     }
-    
+
     // Find a new stray cat
     findCat() {
         // Check if we have enough food to search for cats
@@ -60,28 +60,33 @@ class CatManager {
             return null;
         }
     }
-    
+
     // Get total number of cats
     getCatCount() {
         return this.cats.length;
     }
-    
+
     // Update the UI with current cats
     updateDisplay() {
         const catsContainer = document.getElementById('cats-container');
         const catsCountElement = document.getElementById('cats-value');
-        
+
         // Update cat count
         catsCountElement.textContent = this.getCatCount();
-        
+
         // Clear current display
         catsContainer.innerHTML = '';
-        
+
         // Add each cat to the display
         this.cats.forEach(cat => {
             const catElement = document.createElement('div');
             catElement.className = 'cat-card';
+
+            // Get the SVG icon for this cat type
+            const catIcon = catIcons[cat.type] || '';
+
             catElement.innerHTML = `
+                <div class="cat-icon">${catIcon}</div>
                 <div class="cat-name">${cat.name}</div>
                 <div class="cat-type">${cat.type} (Lvl ${cat.level})</div>
                 <div class="cat-stats">
