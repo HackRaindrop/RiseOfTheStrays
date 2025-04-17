@@ -141,6 +141,37 @@ class GameManager {
 
         // Update building buttons in case resource changes affect build availability
         buildingManager.updateBuildButtonStates();
+
+        // Update bunker room selection if bunkerManager exists
+        if (typeof bunkerManager !== 'undefined') {
+            bunkerManager.updateDisplay();
+        }
+    }
+
+    // Update the power indicator in the bunker section
+    updatePowerIndicator() {
+        if (typeof bunkerManager === 'undefined') return;
+
+        const powerFill = document.getElementById('power-fill');
+        const powerText = document.getElementById('power-text');
+
+        if (!powerFill || !powerText) return;
+
+        const totalPower = bunkerManager.getTotalPower();
+        const consumption = bunkerManager.getPowerConsumption();
+        const percentage = Math.min(100, (totalPower / consumption) * 100);
+
+        powerFill.style.width = `${percentage}%`;
+        powerText.textContent = `${totalPower.toFixed(1)}/${consumption.toFixed(1)}`;
+
+        // Change color based on power status
+        if (percentage >= 100) {
+            powerFill.style.backgroundColor = '#2ecc71'; // Green
+        } else if (percentage >= 75) {
+            powerFill.style.backgroundColor = '#f1c40f'; // Yellow
+        } else {
+            powerFill.style.backgroundColor = '#e74c3c'; // Red
+        }
     }
 
     // Update the power indicator in the bunker section
