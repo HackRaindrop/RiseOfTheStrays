@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rise of the Strays</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
@@ -31,7 +31,7 @@
                 <h2>Your Base</h2>
                 <div id="base-display">
                     <div id="base-level">Level: <span id="base-level-value">1</span></div>
-                    <button id="upgrade-base">Upgrade Base (Cost: 10 Materials)</button>
+                    <button type="button" id="upgrade-base">Upgrade Base (Cost: 10 Materials)</button>
                 </div>
             </section>
 
@@ -39,21 +39,20 @@
                 <h2>Your Cats</h2>
                 <div id="cats-count">Cats: <span id="cats-value">1</span></div>
                 <div id="cats-container"></div>
-                <button id="find-cat">Search for Cats (Cost: 5 Food)</button>
-            </section>
-
-            <section id="buildings-section">
-                <h2>Buildings</h2>
-                <div id="buildings-container"></div>
-                <div id="building-buttons"></div>
+                <div id="cat-search-options">
+                    <h3>Search Options</h3>
+                    <button type="button" id="find-cat-normal">Normal Search (5 Food)</button>
+                    <button type="button" id="find-cat-thorough">Thorough Search (10 Food)</button>
+                    <button type="button" id="find-cat-premium">Premium Search (20 Food)</button>
+                </div>
             </section>
 
             <section id="actions-section">
                 <h2>Actions</h2>
                 <div id="actions-buttons">
-                    <button id="gather-food">Gather Food</button>
-                    <button id="gather-materials">Gather Materials</button>
-                    <button id="gather-medicine">Gather Medicine</button>
+                    <button type="button" id="gather-food">Gather Food</button>
+                    <button type="button" id="gather-materials">Gather Materials</button>
+                    <button type="button" id="gather-medicine">Gather Medicine</button>
                 </div>
             </section>
         </main>
@@ -65,10 +64,8 @@
     </div>
 
     <script src="js/resources.js"></script>
-    <script src="images/cat-icons.js"></script>
     <script src="js/cats.js"></script>
     <script src="js/base.js"></script>
-    <script src="js/buildings.js"></script>
     <script src="js/game.js"></script>
 </body>
 </html>

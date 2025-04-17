@@ -4,16 +4,12 @@ class GameManager {
         this.day = 1;
         this.messageLog = [];
         this.maxMessages = 10;
-        this.productionInterval = null;
 
         // Initialize event listeners
         this.initEventListeners();
 
         // Add welcome message
         this.addMessage("Welcome to Rise of the Strays! Build your cat colony and survive the apocalypse.");
-
-        // Start resource production cycle
-        this.startProductionCycle();
     }
 
     // Set up all event listeners
@@ -39,15 +35,37 @@ class GameManager {
             baseManager.upgradeBase();
         });
 
-        // Find cat button
-        document.getElementById('find-cat').addEventListener('click', () => {
+        // Find cat buttons for different search types
+        const checkCapacityAndFindCat = (searchType) => {
             // Check if we have room for more cats
             if (catManager.getCatCount() >= baseManager.getMaxCats()) {
                 this.addMessage(`Your base is at maximum capacity (${baseManager.getMaxCats()} cats). Upgrade your base to make room for more cats.`);
                 return;
             }
 
-            catManager.findCat();
+            // Start the search process
+            const result = catManager.findCat(searchType);
+
+            // If result is "searching" or "found", the cat manager is handling the process
+            if (result === "searching" || result === "found") {
+                // We don't need to do anything here as the cat manager will handle the timer
+                // and update the UI when the search is complete or when a cat is found
+            }
+        };
+
+        // Normal search
+        document.getElementById('find-cat-normal').addEventListener('click', () => {
+            checkCapacityAndFindCat('normal');
+        });
+
+        // Thorough search
+        document.getElementById('find-cat-thorough').addEventListener('click', () => {
+            checkCapacityAndFindCat('thorough');
+        });
+
+        // Premium search
+        document.getElementById('find-cat-premium').addEventListener('click', () => {
+            checkCapacityAndFindCat('premium');
         });
     }
 
@@ -84,45 +102,6 @@ class GameManager {
 
         // Daily events and resource consumption would go here
     }
-
-    // Start the resource production cycle
-    startProductionCycle() {
-        // Clear any existing interval
-        if (this.productionInterval) {
-            clearInterval(this.productionInterval);
-        }
-
-        // Set up a new interval for resource production (every 10 seconds)
-        this.productionInterval = setInterval(() => {
-            this.produceResources();
-        }, 10000);
-    }
-
-    // Produce resources from buildings
-    produceResources() {
-        const production = buildingManager.produceResources();
-
-        // Log production if any resources were produced
-        let productionMessage = '';
-        let resourcesProduced = false;
-
-        for (const resource in production) {
-            if (production[resource] > 0) {
-                const roundedAmount = Math.round(production[resource] * 10) / 10; // Round to 1 decimal place
-                productionMessage += `${roundedAmount} ${resource}, `;
-                resourcesProduced = true;
-            }
-        }
-
-        if (resourcesProduced) {
-            // Remove trailing comma and space
-            productionMessage = productionMessage.slice(0, -2);
-            this.addMessage(`Buildings produced: ${productionMessage}`);
-        }
-
-        // Update building buttons in case resource changes affect build availability
-        buildingManager.updateBuildButtonStates();
-    }
 }
 
 // Create global game manager
@@ -131,4 +110,47 @@ const gameManager = new GameManager();
 // Initialize the game when the page loads
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Game initialized!');
+
+    // Add event listener for stat buttons
+    document.addEventListener('click', (event) => {
+        if (event.target.classList.contains('add-stat-btn')) {
+            const catId = parseInt(event.target.getAttribute('data-cat-id'));
+            const statType = event.target.getAttribute('data-stat');
+            catManager.addStatPoint(catId, statType);
+            // Prevent the click from toggling the card
+            event.stopPropagation();
+        } else if (event.target.classList.contains('confirm-stat-btn')) {
+            const catId = parseInt(event.target.getAttribute('data-cat-id'));
+            catManager.applyStatChanges(catId);
+            // Prevent the click from toggling the card
+            event.stopPropagation();
+        } else if (event.target.classList.contains('cancel-stat-btn')) {
+            const catId = parseInt(event.target.getAttribute('data-cat-id'));
+            catManager.cancelStatChanges(catId);
+            // Prevent the click from toggling the card
+            event.stopPropagation();
+        } else if (event.target.closest('.expand-btn')) {
+            // Handle expand/collapse button click
+            const expandBtn = event.target.closest('.expand-btn');
+            const catId = expandBtn.getAttribute('data-cat-id');
+            const catCard = document.querySelector(`.cat-card[data-cat-id="${catId}"]`);
+
+            // Toggle the expanded class
+            catCard.classList.toggle('expanded');
+
+            // Update button text and track expanded state
+            const expandText = expandBtn.querySelector('.expand-text');
+            if (catCard.classList.contains('expanded')) {
+                expandText.textContent = 'Hide Stats';
+                catManager.expandedCatCards.add(catId);
+            } else {
+                expandText.textContent = 'Show Stats';
+                catManager.expandedCatCards.delete(catId);
+            }
+
+            // Prevent the click from bubbling
+            event.stopPropagation();
+        }
+    });
 });
+
