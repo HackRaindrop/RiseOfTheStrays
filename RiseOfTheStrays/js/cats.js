@@ -8,10 +8,81 @@ class CatManager {
             'Lily', 'Leo', 'Lola', 'Rocky', 'Misty', 'Oscar', 'Molly', 'Jasper', 'Nala'
         ];
 
-        // Cat types with their traits
-        this.catTypes = ['Scavenger', 'Hunter', 'Guardian', 'Medic'];
+        // Define cat types with their primary and secondary stats
+        this.catTypes = [
+            'Scavenger',  // PER, LCK primary; DEX, AGI secondary
+            'Hunter',     // AGI, DEX primary; STR, PER secondary
+            'Guardian',   // VIT, STR primary; WIL, CHA secondary
+            'Medic',      // INT, WIL primary; CHA, DEX secondary
+            'Mystic',     // INT, WIL primary; LCK, PER secondary
+            'Trickster',  // LCK, CHA primary; DEX, INT secondary
+            'Beast',      // STR, AGI primary; VIT, WIL secondary
+            'Diplomat',   // CHA, INT primary; WIL, PER secondary
+            'Shadowpaw',  // AGI, PER primary; DEX, LCK secondary
+            'Tinkerer',   // INT, DEX primary; PER, WIL secondary
+            'Wanderer'    // Balanced stats
+        ];
 
-        // Cat appearance options
+        // Define stat focus for each cat type
+        this.catTypeStats = {
+            'Scavenger': {
+                primary: ['PER', 'LCK'],
+                secondary: ['DEX', 'AGI'],
+                description: 'Treasure hunter, item finder, stealthy and fast.'
+            },
+            'Hunter': {
+                primary: ['AGI', 'DEX'],
+                secondary: ['STR', 'PER'],
+                description: 'Agile attacker with high crit and precision.'
+            },
+            'Guardian': {
+                primary: ['VIT', 'STR'],
+                secondary: ['WIL', 'CHA'],
+                description: 'Tanky, protects team, high HP and defense.'
+            },
+            'Medic': {
+                primary: ['INT', 'WIL'],
+                secondary: ['CHA', 'DEX'],
+                description: 'Healer/support cat, uses intellect and calm will.'
+            },
+            'Mystic': {
+                primary: ['INT', 'WIL'],
+                secondary: ['LCK', 'PER'],
+                description: 'Magical or energy-based, status effects and spells.'
+            },
+            'Trickster': {
+                primary: ['LCK', 'CHA'],
+                secondary: ['DEX', 'INT'],
+                description: 'Deceptive, charming, luck-based skillset.'
+            },
+            'Beast': {
+                primary: ['STR', 'AGI'],
+                secondary: ['VIT', 'WIL'],
+                description: 'Pure feral force, relies on speed and brute power.'
+            },
+            'Diplomat': {
+                primary: ['CHA', 'INT'],
+                secondary: ['WIL', 'PER'],
+                description: 'Negotiator or team booster, recruitment expert.'
+            },
+            'Shadowpaw': {
+                primary: ['AGI', 'PER'],
+                secondary: ['DEX', 'LCK'],
+                description: 'Assassin/stealth class, good at dodging and crits.'
+            },
+            'Tinkerer': {
+                primary: ['INT', 'DEX'],
+                secondary: ['PER', 'WIL'],
+                description: 'Inventive cat, uses tools and clever tricks.'
+            },
+            'Wanderer': {
+                primary: [],
+                secondary: [],
+                description: 'Evolves into any type later, flexible growth.'
+            }
+        };
+
+        // Cat features for appearance
         this.catFeatures = {
             bodyColors: [
                 '#F8D8B0', // Light orange/cream
@@ -146,6 +217,37 @@ class CatManager {
         return 'Common';
     }
 
+    // Apply stat bonuses based on cat type
+    applyTypeStatBonuses(cat) {
+        // Skip if type is not defined or not in our list
+        if (!cat.type || !this.catTypeStats[cat.type]) {
+            return cat;
+        }
+
+        const typeInfo = this.catTypeStats[cat.type];
+
+        // For Wanderer type (balanced), no specific bonuses
+        if (cat.type === 'Wanderer') {
+            // Add a small bonus to all stats
+            Object.keys(cat.stats).forEach(stat => {
+                cat.stats[stat] += 1;
+            });
+            return cat;
+        }
+
+        // Apply primary stat bonuses (larger bonus)
+        typeInfo.primary.forEach(stat => {
+            cat.stats[stat] += 3; // Significant bonus to primary stats
+        });
+
+        // Apply secondary stat bonuses (smaller bonus)
+        typeInfo.secondary.forEach(stat => {
+            cat.stats[stat] += 1; // Smaller bonus to secondary stats
+        });
+
+        return cat;
+    }
+
     // Add a new cat to the colony
     addCat(name, type, level, rarity = 'Common', appearance = null) {
         // If no appearance is provided, generate one
@@ -174,6 +276,9 @@ class CatManager {
             happiness: 100,
             health: 100,
             appearance: appearance,
+            // XP system
+            xp: 0,
+            xpToNext: this.getXPToLevel(level, this.getRarityXPMultiplier(rarity)),
             // Core stats
             stats: {
                 STR: Math.floor(baseStatValue * rarityMultiplier), // Paw Power
@@ -211,6 +316,9 @@ class CatManager {
             statPoints: 3, // Available points to distribute
             totalStatPoints: 3 // Total points earned (for tracking)
         };
+
+        // Apply stat bonuses based on cat type
+        this.applyTypeStatBonuses(cat);
 
         // Calculate derived attributes based on stats
         this.updateCatAttributes(cat);
@@ -436,6 +544,48 @@ class CatManager {
         this.showStatConfirmation(catId);
     }
 
+    // Remove a stat point from a cat (temporarily)
+    removeStatPoint(catId, statType) {
+        const cat = this.cats.find(c => c.id === catId);
+        if (!cat) return;
+
+        // Check if there are temp changes for this cat and stat
+        if (!this.tempStatChanges[catId] ||
+            !this.tempStatChanges[catId].stats ||
+            !this.tempStatChanges[catId].stats[statType] ||
+            this.tempStatChanges[catId].stats[statType] <= 0) {
+            return;
+        }
+
+        // Decrement the temp stat
+        this.tempStatChanges[catId].stats[statType]--;
+        this.tempStatChanges[catId].pointsUsed--;
+
+        // If the stat is now 0, remove it from the object to keep it clean
+        if (this.tempStatChanges[catId].stats[statType] === 0) {
+            delete this.tempStatChanges[catId].stats[statType];
+        }
+
+        // If no more points are used, remove the entire cat entry
+        if (this.tempStatChanges[catId].pointsUsed === 0) {
+            delete this.tempStatChanges[catId];
+            // Also hide the confirmation panel since there are no changes to apply
+            const catCard = document.querySelector(`.cat-card[data-cat-id="${catId}"]`);
+            if (catCard) {
+                const confirmPanel = catCard.querySelector('.stat-confirm-panel');
+                if (confirmPanel) {
+                    confirmPanel.remove();
+                }
+            }
+        } else {
+            // Still have changes, so keep the confirmation panel
+            this.showStatConfirmation(catId);
+        }
+
+        // Update the display with temporary changes
+        this.updateDisplay();
+    }
+
     // Get the effective stat value (base + temporary)
     getEffectiveStat(cat, statType) {
         const baseValue = cat.stats[statType] || 0;
@@ -641,11 +791,17 @@ class CatManager {
                                 <div class="cat-name">${cat.name}</div>
                                 <div class="cat-rarity" style="color: ${rarityColor}">${cat.rarity} ${rarityIcon}</div>
                             </div>
-                            <div class="cat-type-badge" data-type="${cat.type}">${cat.type}</div>
+                            <div class="cat-type-badge" data-type="${cat.type}" title="${this.getCatTypeDescription(cat.type)}">${cat.type}</div>
                         </div>
 
                         <div class="cat-details">
-                            <div class="cat-level">Level ${cat.level}</div>
+                            <div class="cat-level-container">
+                                <div class="cat-level">Level ${cat.level}</div>
+                                <div class="xp-bar-container" title="XP: ${cat.xp || 0}/${cat.xpToNext || this.getXPToLevel(cat.level, this.getRarityXPMultiplier(cat.rarity))}">
+                                    <div class="xp-bar" style="width: ${cat.xp ? (cat.xp / cat.xpToNext) * 100 : 0}%"></div>
+                                    <span class="xp-text">${cat.xp || 0}/${cat.xpToNext || this.getXPToLevel(cat.level, this.getRarityXPMultiplier(cat.rarity))} XP</span>
+                                </div>
+                            </div>
 
                             <div class="cat-appearance-details">
                                 <div class="appearance-item" title="Coat Color">
@@ -950,11 +1106,17 @@ class CatManager {
                             <div class="cat-name">${cat.name}</div>
                             <div class="cat-rarity" style="color: ${rarityColor}">${cat.rarity} ${rarityIcon}</div>
                         </div>
-                        <div class="cat-type-badge" data-type="${cat.type}">${cat.type}</div>
+                        <div class="cat-type-badge clickable" data-type="${cat.type}" data-cat-id="${cat.id}" title="${this.getCatTypeDescription(cat.type)}">${cat.type}</div>
                     </div>
 
                     <div class="cat-details">
-                        <div class="cat-level">Level ${cat.level}</div>
+                        <div class="cat-level-container">
+                            <div class="cat-level">Level ${cat.level}</div>
+                            <div class="xp-bar-container" title="XP: ${cat.xp}/${cat.xpToNext}">
+                                <div class="xp-bar" style="width: ${(cat.xp / cat.xpToNext) * 100}%"></div>
+                                <span class="xp-text">${cat.xp}/${cat.xpToNext} XP</span>
+                            </div>
+                        </div>
 
                         <div class="cat-appearance-details">
                             <div class="appearance-item" title="Coat Color">
@@ -977,6 +1139,7 @@ class CatManager {
                     <div class="cat-stats">
                         <div class="stat-header">
                             <h3>Status</h3>
+                            <button class="gain-xp-btn" data-cat-id="${cat.id}">Gain XP</button>
                         </div>
                         <div class="stat-item">
                             <span class="stat-label">Health:</span>
@@ -1001,7 +1164,7 @@ class CatManager {
                         </div>
 
                         <div class="core-stats-grid">
-                            <div class="core-stat-item" title="Paw Power - Physical strength, bite force, claw damage">
+                            <div class="core-stat-item ${this.isStatPrimary(cat.type, 'STR') ? 'primary-stat' : this.isStatSecondary(cat.type, 'STR') ? 'secondary-stat' : ''}" title="Paw Power - Physical strength, bite force, claw damage${this.getStatTypeDescription(cat.type, 'STR')}">
                                 <div class="core-stat-info">
                                     <span class="core-stat-name">STR</span>
                                     <span class="core-stat-value ${this.tempStatChanges[cat.id]?.stats?.STR ? 'stat-changed' : ''}">
@@ -1010,10 +1173,13 @@ class CatManager {
                                     </span>
                                 </div>
                                 <div class="stat-impact">+${Math.floor(10 + this.getEffectiveStat(cat, 'STR') * 1)} Attack Damage</div>
-                                ${this.getRemainingStatPoints(cat) > 0 ? `<button class="add-stat-btn" data-cat-id="${cat.id}" data-stat="STR">+</button>` : ''}
+                                <div class="stat-buttons">
+                                    ${this.tempStatChanges[cat.id]?.stats?.STR > 0 ? `<button class="remove-stat-btn" data-cat-id="${cat.id}" data-stat="STR">-</button>` : ''}
+                                    ${this.getRemainingStatPoints(cat) > 0 ? `<button class="add-stat-btn" data-cat-id="${cat.id}" data-stat="STR">+</button>` : ''}
+                                </div>
                             </div>
 
-                            <div class="core-stat-item" title="Whisker Dexterity - Hit accuracy and precision">
+                            <div class="core-stat-item ${this.isStatPrimary(cat.type, 'DEX') ? 'primary-stat' : this.isStatSecondary(cat.type, 'DEX') ? 'secondary-stat' : ''}" title="Whisker Dexterity - Hit accuracy and precision${this.getStatTypeDescription(cat.type, 'DEX')}">
                                 <div class="core-stat-info">
                                     <span class="core-stat-name">DEX</span>
                                     <span class="core-stat-value ${this.tempStatChanges[cat.id]?.stats?.DEX ? 'stat-changed' : ''}">
@@ -1022,10 +1188,13 @@ class CatManager {
                                     </span>
                                 </div>
                                 <div class="stat-impact">+${Math.floor(75 + this.getEffectiveStat(cat, 'DEX') * 1)}% Hit Accuracy</div>
-                                ${this.getRemainingStatPoints(cat) > 0 ? `<button class="add-stat-btn" data-cat-id="${cat.id}" data-stat="DEX">+</button>` : ''}
+                                <div class="stat-buttons">
+                                    ${this.tempStatChanges[cat.id]?.stats?.DEX > 0 ? `<button class="remove-stat-btn" data-cat-id="${cat.id}" data-stat="DEX">-</button>` : ''}
+                                    ${this.getRemainingStatPoints(cat) > 0 ? `<button class="add-stat-btn" data-cat-id="${cat.id}" data-stat="DEX">+</button>` : ''}
+                                </div>
                             </div>
 
-                            <div class="core-stat-item" title="Tail Balance - Dodge chance and attack speed">
+                            <div class="core-stat-item ${this.isStatPrimary(cat.type, 'AGI') ? 'primary-stat' : this.isStatSecondary(cat.type, 'AGI') ? 'secondary-stat' : ''}" title="Tail Balance - Dodge chance and attack speed${this.getStatTypeDescription(cat.type, 'AGI')}">
                                 <div class="core-stat-info">
                                     <span class="core-stat-name">AGI</span>
                                     <span class="core-stat-value ${this.tempStatChanges[cat.id]?.stats?.AGI ? 'stat-changed' : ''}">
@@ -1034,10 +1203,13 @@ class CatManager {
                                     </span>
                                 </div>
                                 <div class="stat-impact">+${(this.getEffectiveStat(cat, 'AGI') * 0.75).toFixed(1)}% Dodge Chance, ${(1.0 + this.getEffectiveStat(cat, 'AGI') * 0.025).toFixed(3)}x Attack Speed</div>
-                                ${this.getRemainingStatPoints(cat) > 0 ? `<button class="add-stat-btn" data-cat-id="${cat.id}" data-stat="AGI">+</button>` : ''}
+                                <div class="stat-buttons">
+                                    ${this.tempStatChanges[cat.id]?.stats?.AGI > 0 ? `<button class="remove-stat-btn" data-cat-id="${cat.id}" data-stat="AGI">-</button>` : ''}
+                                    ${this.getRemainingStatPoints(cat) > 0 ? `<button class="add-stat-btn" data-cat-id="${cat.id}" data-stat="AGI">+</button>` : ''}
+                                </div>
                             </div>
 
-                            <div class="core-stat-item" title="Clawstitution - Endurance, toughness, fluffiness">
+                            <div class="core-stat-item ${this.isStatPrimary(cat.type, 'VIT') ? 'primary-stat' : this.isStatSecondary(cat.type, 'VIT') ? 'secondary-stat' : ''}" title="Clawstitution - Endurance, toughness, fluffiness${this.getStatTypeDescription(cat.type, 'VIT')}">
                                 <div class="core-stat-info">
                                     <span class="core-stat-name">VIT</span>
                                     <span class="core-stat-value ${this.tempStatChanges[cat.id]?.stats?.VIT ? 'stat-changed' : ''}">
@@ -1046,10 +1218,13 @@ class CatManager {
                                     </span>
                                 </div>
                                 <div class="stat-impact">+${100 + this.getEffectiveStat(cat, 'VIT')*3} Max Health</div>
-                                ${this.getRemainingStatPoints(cat) > 0 ? `<button class="add-stat-btn" data-cat-id="${cat.id}" data-stat="VIT">+</button>` : ''}
+                                <div class="stat-buttons">
+                                    ${this.tempStatChanges[cat.id]?.stats?.VIT > 0 ? `<button class="remove-stat-btn" data-cat-id="${cat.id}" data-stat="VIT">-</button>` : ''}
+                                    ${this.getRemainingStatPoints(cat) > 0 ? `<button class="add-stat-btn" data-cat-id="${cat.id}" data-stat="VIT">+</button>` : ''}
+                                </div>
                             </div>
 
-                            <div class="core-stat-item" title="Fur-titude - Willpower, bravery, focus">
+                            <div class="core-stat-item ${this.isStatPrimary(cat.type, 'WIL') ? 'primary-stat' : this.isStatSecondary(cat.type, 'WIL') ? 'secondary-stat' : ''}" title="Fur-titude - Willpower, bravery, focus${this.getStatTypeDescription(cat.type, 'WIL')}">
                                 <div class="core-stat-info">
                                     <span class="core-stat-name">WIL</span>
                                     <span class="core-stat-value ${this.tempStatChanges[cat.id]?.stats?.WIL ? 'stat-changed' : ''}">
@@ -1058,10 +1233,13 @@ class CatManager {
                                     </span>
                                 </div>
                                 <div class="stat-impact">+${this.getEffectiveStat(cat, 'WIL')*1}% Debuff Resistance</div>
-                                ${this.getRemainingStatPoints(cat) > 0 ? `<button class="add-stat-btn" data-cat-id="${cat.id}" data-stat="WIL">+</button>` : ''}
+                                <div class="stat-buttons">
+                                    ${this.tempStatChanges[cat.id]?.stats?.WIL > 0 ? `<button class="remove-stat-btn" data-cat-id="${cat.id}" data-stat="WIL">-</button>` : ''}
+                                    ${this.getRemainingStatPoints(cat) > 0 ? `<button class="add-stat-btn" data-cat-id="${cat.id}" data-stat="WIL">+</button>` : ''}
+                                </div>
                             </div>
 
-                            <div class="core-stat-item" title="Meowmental - Magical aptitude, intuition, wisdom">
+                            <div class="core-stat-item ${this.isStatPrimary(cat.type, 'INT') ? 'primary-stat' : this.isStatSecondary(cat.type, 'INT') ? 'secondary-stat' : ''}" title="Meowmental - Magical aptitude, intuition, wisdom${this.getStatTypeDescription(cat.type, 'INT')}">
                                 <div class="core-stat-info">
                                     <span class="core-stat-name">INT</span>
                                     <span class="core-stat-value ${this.tempStatChanges[cat.id]?.stats?.INT ? 'stat-changed' : ''}">
@@ -1070,10 +1248,13 @@ class CatManager {
                                     </span>
                                 </div>
                                 <div class="stat-impact">+${(1.0 + this.getEffectiveStat(cat, 'INT')*0.025).toFixed(3)}x XP Gain</div>
-                                ${this.getRemainingStatPoints(cat) > 0 ? `<button class="add-stat-btn" data-cat-id="${cat.id}" data-stat="INT">+</button>` : ''}
+                                <div class="stat-buttons">
+                                    ${this.tempStatChanges[cat.id]?.stats?.INT > 0 ? `<button class="remove-stat-btn" data-cat-id="${cat.id}" data-stat="INT">-</button>` : ''}
+                                    ${this.getRemainingStatPoints(cat) > 0 ? `<button class="add-stat-btn" data-cat-id="${cat.id}" data-stat="INT">+</button>` : ''}
+                                </div>
                             </div>
 
-                            <div class="core-stat-item" title="Charm - Increases chance to recruit new cats when finding them, improves bonding with other cats">
+                            <div class="core-stat-item ${this.isStatPrimary(cat.type, 'CHA') ? 'primary-stat' : this.isStatSecondary(cat.type, 'CHA') ? 'secondary-stat' : ''}" title="Charm - Increases chance to recruit new cats when finding them, improves bonding with other cats${this.getStatTypeDescription(cat.type, 'CHA')}">
                                 <div class="core-stat-info">
                                     <span class="core-stat-name">CHA</span>
                                     <span class="core-stat-value ${this.tempStatChanges[cat.id]?.stats?.CHA ? 'stat-changed' : ''}">
@@ -1082,10 +1263,13 @@ class CatManager {
                                     </span>
                                 </div>
                                 <div class="stat-impact">+${this.getEffectiveStat(cat, 'CHA')*0.75}% Cat Recruitment Chance</div>
-                                ${this.getRemainingStatPoints(cat) > 0 ? `<button class="add-stat-btn" data-cat-id="${cat.id}" data-stat="CHA">+</button>` : ''}
+                                <div class="stat-buttons">
+                                    ${this.tempStatChanges[cat.id]?.stats?.CHA > 0 ? `<button class="remove-stat-btn" data-cat-id="${cat.id}" data-stat="CHA">-</button>` : ''}
+                                    ${this.getRemainingStatPoints(cat) > 0 ? `<button class="add-stat-btn" data-cat-id="${cat.id}" data-stat="CHA">+</button>` : ''}
+                                </div>
                             </div>
 
-                            <div class="core-stat-item" title="Purrception - Senses: hearing, smell, sixth sense">
+                            <div class="core-stat-item ${this.isStatPrimary(cat.type, 'PER') ? 'primary-stat' : this.isStatSecondary(cat.type, 'PER') ? 'secondary-stat' : ''}" title="Purrception - Senses: hearing, smell, sixth sense${this.getStatTypeDescription(cat.type, 'PER')}">
                                 <div class="core-stat-info">
                                     <span class="core-stat-name">PER</span>
                                     <span class="core-stat-value ${this.tempStatChanges[cat.id]?.stats?.PER ? 'stat-changed' : ''}">
@@ -1094,10 +1278,13 @@ class CatManager {
                                     </span>
                                 </div>
                                 <div class="stat-impact">+${(this.getEffectiveStat(cat, 'PER')/5).toFixed(1)}% Critical Chance</div>
-                                ${this.getRemainingStatPoints(cat) > 0 ? `<button class="add-stat-btn" data-cat-id="${cat.id}" data-stat="PER">+</button>` : ''}
+                                <div class="stat-buttons">
+                                    ${this.tempStatChanges[cat.id]?.stats?.PER > 0 ? `<button class="remove-stat-btn" data-cat-id="${cat.id}" data-stat="PER">-</button>` : ''}
+                                    ${this.getRemainingStatPoints(cat) > 0 ? `<button class="add-stat-btn" data-cat-id="${cat.id}" data-stat="PER">+</button>` : ''}
+                                </div>
                             </div>
 
-                            <div class="core-stat-item" title="Luck - Cosmic chaos, fate, mischief energy">
+                            <div class="core-stat-item ${this.isStatPrimary(cat.type, 'LCK') ? 'primary-stat' : this.isStatSecondary(cat.type, 'LCK') ? 'secondary-stat' : ''}" title="Luck - Cosmic chaos, fate, mischief energy${this.getStatTypeDescription(cat.type, 'LCK')}">
                                 <div class="core-stat-info">
                                     <span class="core-stat-name">LCK</span>
                                     <span class="core-stat-value ${this.tempStatChanges[cat.id]?.stats?.LCK ? 'stat-changed' : ''}">
@@ -1106,7 +1293,10 @@ class CatManager {
                                     </span>
                                 </div>
                                 <div class="stat-impact">+${(5 + this.getEffectiveStat(cat, 'LCK')*0.25).toFixed(1)}% Rare Drop Chance</div>
-                                ${this.getRemainingStatPoints(cat) > 0 ? `<button class="add-stat-btn" data-cat-id="${cat.id}" data-stat="LCK">+</button>` : ''}
+                                <div class="stat-buttons">
+                                    ${this.tempStatChanges[cat.id]?.stats?.LCK > 0 ? `<button class="remove-stat-btn" data-cat-id="${cat.id}" data-stat="LCK">-</button>` : ''}
+                                    ${this.getRemainingStatPoints(cat) > 0 ? `<button class="add-stat-btn" data-cat-id="${cat.id}" data-stat="LCK">+</button>` : ''}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1114,7 +1304,7 @@ class CatManager {
                 <div class="expand-toggle">
                     <button class="expand-btn" data-cat-id="${cat.id}">
                         <span class="expand-icon">▼</span>
-                        <span class="expand-text">Show Stats</span>
+                        <span class="expand-text">${this.expandedCatCards.has(cat.id.toString()) ? 'Hide Stats' : 'Show Stats'}</span>
                     </button>
                 </div>
             `;
@@ -1133,6 +1323,15 @@ class CatManager {
 
             // Start animations for this cat
             this.startCatAnimations(appearance.uniqueId);
+
+            // Add event listener for cat type badge
+            const catTypeBadge = catElement.querySelector('.cat-type-badge.clickable');
+            if (catTypeBadge) {
+                catTypeBadge.addEventListener('click', (event) => {
+                    const catId = parseInt(catTypeBadge.getAttribute('data-cat-id'));
+                    this.showCatDetailsModal(catId);
+                });
+            }
         });
     }
 
@@ -1212,6 +1411,75 @@ class CatManager {
         return rarity ? rarity.icon : '⭐'; // Default to one star if not found
     }
 
+    // Get the description for a cat type
+    getCatTypeDescription(typeName) {
+        if (!typeName || !this.catTypeStats[typeName]) {
+            return 'Unknown type';
+        }
+
+        const typeInfo = this.catTypeStats[typeName];
+        let description = typeInfo.description;
+
+        // Add stat focus information
+        if (typeName !== 'Wanderer') {
+            const primaryStats = typeInfo.primary.join(', ');
+            const secondaryStats = typeInfo.secondary.join(', ');
+            description += ` Primary stats: ${primaryStats}. Secondary stats: ${secondaryStats}.`;
+        } else {
+            description += ' All stats balanced.';
+        }
+
+        return description;
+    }
+
+    // Check if a stat is a primary stat for a cat type
+    isStatPrimary(typeName, statName) {
+        if (!typeName || !this.catTypeStats[typeName]) {
+            return false;
+        }
+
+        // Wanderer has no primary stats
+        if (typeName === 'Wanderer') {
+            return false;
+        }
+
+        return this.catTypeStats[typeName].primary.includes(statName);
+    }
+
+    // Check if a stat is a secondary stat for a cat type
+    isStatSecondary(typeName, statName) {
+        if (!typeName || !this.catTypeStats[typeName]) {
+            return false;
+        }
+
+        // Wanderer has no secondary stats
+        if (typeName === 'Wanderer') {
+            return false;
+        }
+
+        return this.catTypeStats[typeName].secondary.includes(statName);
+    }
+
+    // Get a description of a stat's importance for a cat type
+    getStatTypeDescription(typeName, statName) {
+        if (!typeName || !this.catTypeStats[typeName]) {
+            return '';
+        }
+
+        // Wanderer has balanced stats
+        if (typeName === 'Wanderer') {
+            return '';
+        }
+
+        if (this.isStatPrimary(typeName, statName)) {
+            return ' (Primary stat for this cat type)';
+        } else if (this.isStatSecondary(typeName, statName)) {
+            return ' (Secondary stat for this cat type)';
+        }
+
+        return '';
+    }
+
     // Get stat multiplier based on rarity
     getRarityStatMultiplier(rarityName) {
         switch(rarityName) {
@@ -1223,6 +1491,218 @@ class CatManager {
             case 'Mythic': return 2.0;
             default: return 1.0;
         }
+    }
+
+    // Get the XP multiplier based on rarity
+    getRarityXPMultiplier(rarityName) {
+        switch(rarityName) {
+            case 'Common': return 1.0;
+            case 'Uncommon': return 1.2;
+            case 'Rare': return 1.5;
+            case 'Epic': return 1.8;
+            case 'Legendary': return 2.2;
+            case 'Mythic': return 2.6;
+            default: return 1.0;
+        }
+    }
+
+    // Calculate XP required for a level
+    getXPToLevel(level, rarityMultiplier = 1) {
+        return Math.floor(50 * level * rarityMultiplier + Math.pow(level, 1.5) * 10);
+    }
+
+    // Add XP to a cat and handle level-ups
+    addXP(catId, amount) {
+        const cat = this.cats.find(c => c.id === catId);
+        if (!cat) return;
+
+        // Apply XP gain multiplier from cat attributes
+        const adjustedAmount = Math.floor(amount * cat.attributes.xpGainMultiplier);
+
+        // Add XP
+        cat.xp += adjustedAmount;
+
+        // Check for level up
+        let leveledUp = false;
+        let levelsGained = 0;
+
+        while (cat.xp >= cat.xpToNext) {
+            // Level up the cat
+            cat.xp -= cat.xpToNext;
+            cat.level += 1;
+            levelsGained += 1;
+
+            // Add stat points (3 per level)
+            cat.statPoints += 3;
+            cat.totalStatPoints += 3;
+
+            // Calculate XP for next level
+            cat.xpToNext = this.getXPToLevel(cat.level, this.getRarityXPMultiplier(cat.rarity));
+
+            leveledUp = true;
+        }
+
+        // Update derived attributes if leveled up
+        if (leveledUp) {
+            this.updateCatAttributes(cat);
+
+            // Show level up message
+            gameManager.addMessage(`${cat.name} leveled up to level ${cat.level}! +3 stat points awarded.`);
+
+            // Add level up visual effect
+            this.showLevelUpEffect(cat.id);
+        }
+
+        // Update the display
+        this.updateDisplay();
+
+        return {
+            leveledUp,
+            levelsGained,
+            xpGained: adjustedAmount
+        };
+    }
+
+    // Show level up visual effect
+    showLevelUpEffect(catId) {
+        const catCard = document.querySelector(`.cat-card[data-cat-id="${catId}"]`);
+        if (!catCard) return;
+
+        // Add level up animation class
+        catCard.classList.add('level-up-animation');
+
+        // Remove the animation class after it completes
+        setTimeout(() => {
+            catCard.classList.remove('level-up-animation');
+        }, 2000);
+    }
+
+    // Show cat details modal
+    showCatDetailsModal(catId) {
+        const cat = this.cats.find(c => c.id == catId);
+        if (!cat) return;
+
+        // Create modal container
+        const modalContainer = document.createElement('div');
+        modalContainer.id = 'cat-details-modal';
+        modalContainer.className = 'modal';
+
+        // Get cat type description and stats
+        const typeInfo = this.catTypeStats[cat.type] || {
+            description: 'A mysterious cat with unknown abilities.',
+            primary: [],
+            secondary: []
+        };
+
+        // Create modal content
+        modalContainer.innerHTML = `
+            <div class="modal-content cat-details-modal-content">
+                <span class="close-modal">&times;</span>
+                <div class="cat-details-header">
+                    <h3>${cat.name}</h3>
+                    <div class="cat-details-level">Level ${cat.level} ${cat.type}</div>
+                </div>
+
+                <div class="cat-details-stats">
+                    <div class="cat-details-stat">
+                        <div class="cat-details-stat-label">STR</div>
+                        <div class="cat-details-stat-value">${cat.stats.STR}</div>
+                    </div>
+                    <div class="cat-details-stat">
+                        <div class="cat-details-stat-label">DEX</div>
+                        <div class="cat-details-stat-value">${cat.stats.DEX}</div>
+                    </div>
+                    <div class="cat-details-stat">
+                        <div class="cat-details-stat-label">AGI</div>
+                        <div class="cat-details-stat-value">${cat.stats.AGI}</div>
+                    </div>
+                    <div class="cat-details-stat">
+                        <div class="cat-details-stat-label">VIT</div>
+                        <div class="cat-details-stat-value">${cat.stats.VIT}</div>
+                    </div>
+                    <div class="cat-details-stat">
+                        <div class="cat-details-stat-label">WIL</div>
+                        <div class="cat-details-stat-value">${cat.stats.WIL}</div>
+                    </div>
+                    <div class="cat-details-stat">
+                        <div class="cat-details-stat-label">INT</div>
+                        <div class="cat-details-stat-value">${cat.stats.INT}</div>
+                    </div>
+                    <div class="cat-details-stat">
+                        <div class="cat-details-stat-label">CHA</div>
+                        <div class="cat-details-stat-value">${cat.stats.CHA}</div>
+                    </div>
+                    <div class="cat-details-stat">
+                        <div class="cat-details-stat-label">PER</div>
+                        <div class="cat-details-stat-value">${cat.stats.PER}</div>
+                    </div>
+                    <div class="cat-details-stat">
+                        <div class="cat-details-stat-label">LCK</div>
+                        <div class="cat-details-stat-value">${cat.stats.LCK}</div>
+                    </div>
+                </div>
+
+                <div class="cat-details-xp">
+                    <div class="cat-details-xp-label">XP: ${cat.xp} / ${cat.xpToNext}</div>
+                    <div class="cat-details-xp-bar-container">
+                        <div class="cat-details-xp-bar" style="width: ${Math.min(100, (cat.xp / cat.xpToNext) * 100)}%"></div>
+                    </div>
+                </div>
+
+                <div class="cat-details-type-info">
+                    <h4>${cat.type} Cat</h4>
+                    <p>${typeInfo.description}</p>
+                    <div class="cat-details-type-stats">
+                        ${typeInfo.primary.length > 0 ? `
+                        <div class="cat-details-type-stat">
+                            <div class="cat-details-type-stat-label">Primary Focus:</div>
+                            <div class="cat-details-type-stat-value">${typeInfo.primary.join(', ')}</div>
+                        </div>
+                        ` : ''}
+                        ${typeInfo.secondary.length > 0 ? `
+                        <div class="cat-details-type-stat">
+                            <div class="cat-details-type-stat-label">Secondary Focus:</div>
+                            <div class="cat-details-type-stat-value">${typeInfo.secondary.join(', ')}</div>
+                        </div>
+                        ` : ''}
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button id="close-cat-details-btn">Close</button>
+                </div>
+            </div>
+        `;
+
+        // Add the modal to the page
+        document.body.appendChild(modalContainer);
+
+        // Add event listeners
+        modalContainer.querySelector('.close-modal').addEventListener('click', () => {
+            this.closeModal(modalContainer);
+        });
+
+        document.getElementById('close-cat-details-btn').addEventListener('click', () => {
+            this.closeModal(modalContainer);
+        });
+
+        // Add animation class after a small delay to trigger the animation
+        setTimeout(() => {
+            modalContainer.querySelector('.modal-content').classList.add('show');
+        }, 10);
+    }
+
+    // Close modal
+    closeModal(modalContainer) {
+        // Add the hide animation class
+        const modalContent = modalContainer.querySelector('.modal-content');
+        modalContent.classList.remove('show');
+        modalContent.classList.add('hide');
+
+        // Remove the modal after animation completes
+        setTimeout(() => {
+            modalContainer.remove();
+        }, 300); // Match this with the CSS animation duration
     }
 
     // Update a cat's derived attributes based on their stats

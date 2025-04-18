@@ -35,6 +35,8 @@ class GameManager {
             baseManager.upgradeBase();
         });
 
+        // Training arena upgrade button will be attached in DOMContentLoaded
+
         // Find cat buttons for different search types
         const checkCapacityAndFindCat = (searchType) => {
             // Check if we have room for more cats
@@ -67,6 +69,8 @@ class GameManager {
         document.getElementById('find-cat-premium').addEventListener('click', () => {
             checkCapacityAndFindCat('premium');
         });
+
+
     }
 
     // Add a message to the log
@@ -111,12 +115,86 @@ const gameManager = new GameManager();
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Game initialized!');
 
+    // Function to attach event listener to upgrade button
+    function attachUpgradeButtonListener() {
+        const upgradeArenaButton = document.getElementById('upgrade-arena');
+        if (upgradeArenaButton && !upgradeArenaButton.hasAttribute('data-listener-attached')) {
+            console.log('Found upgrade arena button, attaching event listener');
+            upgradeArenaButton.addEventListener('click', function() {
+                console.log('Upgrade arena button clicked from event listener');
+                window.upgradeTrainingArena();
+            });
+            upgradeArenaButton.setAttribute('data-listener-attached', 'true');
+        } else if (!upgradeArenaButton) {
+            console.log('Upgrade arena button not found');
+        } else {
+            console.log('Upgrade arena button already has listener attached');
+        }
+    }
+
+    // Attach listeners initially
+    attachUpgradeButtonListener();
+
+    // Set up a mutation observer to watch for changes to the DOM
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                // Check if any of the added nodes contain our button
+                for (let i = 0; i < mutation.addedNodes.length; i++) {
+                    const node = mutation.addedNodes[i];
+                    if (node.nodeType === 1) { // Element node
+                        if (node.id === 'upgrade-arena' || node.querySelector('#upgrade-arena')) {
+                            console.log('Upgrade arena button added to DOM, attaching listener');
+                            attachUpgradeButtonListener();
+                        }
+                    }
+                }
+            }
+        });
+    });
+
+    // Start observing the document with the configured parameters
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    // Attach test materials button event listener
+    const addTestMaterialsButton = document.getElementById('add-test-materials');
+    if (addTestMaterialsButton) {
+        addTestMaterialsButton.addEventListener('click', () => {
+            window.addTestMaterials();
+        });
+    }
+
+    // Attach create group button event listener
+    const createGroupBtn = document.getElementById('create-group-btn');
+    console.log('Create group button in game.js:', createGroupBtn);
+    if (createGroupBtn) {
+        createGroupBtn.addEventListener('click', () => {
+            console.log('Create group button clicked in game.js');
+            if (typeof groupManager !== 'undefined' && groupManager.showCreateGroupModal) {
+                groupManager.showCreateGroupModal();
+            } else {
+                console.error('groupManager is not defined or showCreateGroupModal method is missing');
+            }
+        });
+        console.log('Event listener attached to create group button in game.js');
+    }
+
+
+
+
+
     // Add event listener for stat buttons
     document.addEventListener('click', (event) => {
         if (event.target.classList.contains('add-stat-btn')) {
             const catId = parseInt(event.target.getAttribute('data-cat-id'));
             const statType = event.target.getAttribute('data-stat');
             catManager.addStatPoint(catId, statType);
+            // Prevent the click from toggling the card
+            event.stopPropagation();
+        } else if (event.target.classList.contains('remove-stat-btn')) {
+            const catId = parseInt(event.target.getAttribute('data-cat-id'));
+            const statType = event.target.getAttribute('data-stat');
+            catManager.removeStatPoint(catId, statType);
             // Prevent the click from toggling the card
             event.stopPropagation();
         } else if (event.target.classList.contains('confirm-stat-btn')) {
@@ -127,6 +205,16 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (event.target.classList.contains('cancel-stat-btn')) {
             const catId = parseInt(event.target.getAttribute('data-cat-id'));
             catManager.cancelStatChanges(catId);
+            // Prevent the click from toggling the card
+            event.stopPropagation();
+        } else if (event.target.classList.contains('gain-xp-btn')) {
+            const catId = parseInt(event.target.getAttribute('data-cat-id'));
+            // Add a random amount of XP between 10 and 50
+            const xpAmount = Math.floor(Math.random() * 41) + 10;
+            const result = catManager.addXP(catId, xpAmount);
+            if (result) {
+                gameManager.addMessage(`${result.xpGained} XP added to cat!`);
+            }
             // Prevent the click from toggling the card
             event.stopPropagation();
         } else if (event.target.closest('.expand-btn')) {

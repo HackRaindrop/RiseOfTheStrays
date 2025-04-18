@@ -33,6 +33,31 @@
                     <div id="base-level">Level: <span id="base-level-value">1</span></div>
                     <button type="button" id="upgrade-base">Upgrade Base (Cost: 10 Materials)</button>
                 </div>
+
+                <div id="base-facilities">
+                    <h3>Base Facilities</h3>
+                    <div id="training-section">
+                        <div class="facility-header">
+                            <h4>Training Arena</h4>
+                            <div class="facility-level">Level: <span id="arena-level-value">1</span></div>
+                            <div class="facility-bonus">XP Bonus: <span id="arena-xp-multiplier">100%</span></div>
+                            <button type="button" id="upgrade-arena">Upgrade Arena (Cost: 15 Materials)</button>
+                            <div class="facility-description">Upgrade your training arena to increase XP gain for all training stations.</div>
+                        </div>
+                        <div class="training-arena">
+                            <div class="training-bases-list">
+                                <!-- Training bases will be inserted here by JavaScript -->
+                            </div>
+                            <div class="training-base-details">
+                                <!-- Selected training base details will be shown here -->
+                                <div class="training-base-placeholder">
+                                    <p>Select a training facility to view details</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="training-container"></div>
+                    </div>
+                </div>
             </section>
 
             <section id="cats-section">
@@ -47,12 +72,18 @@
                 </div>
             </section>
 
+            <section id="groups-section">
+                <h2>Cat Groups</h2>
+                <!-- Groups content will be inserted here by JavaScript -->
+            </section>
+
             <section id="actions-section">
                 <h2>Actions</h2>
                 <div id="actions-buttons">
                     <button type="button" id="gather-food">Gather Food</button>
                     <button type="button" id="gather-materials">Gather Materials</button>
                     <button type="button" id="gather-medicine">Gather Medicine</button>
+                    <button type="button" id="add-test-materials" style="background-color: #e74c3c;">Add Test Materials</button>
                 </div>
             </section>
         </main>
@@ -66,6 +97,8 @@
     <script src="js/resources.js"></script>
     <script src="js/cats.js"></script>
     <script src="js/base.js"></script>
+    <script src="js/training.js"></script>
+    <script src="js/groups.js"></script>
     <script src="js/game.js"></script>
 </body>
 </html>
