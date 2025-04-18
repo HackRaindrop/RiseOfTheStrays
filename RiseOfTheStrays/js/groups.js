@@ -255,6 +255,9 @@ class GroupManager {
                             `<div class="group-cats-list">
                                 ${groupCats.map(cat => `
                                     <div class="group-cat-item" data-cat-id="${cat.id}">
+                                        <div class="group-cat-avatar">
+                                            ${this.renderCatAvatar(cat)}
+                                        </div>
                                         <div class="group-cat-info">
                                             <div class="group-cat-name">${cat.name}</div>
                                             <div class="group-cat-level">Level ${cat.level} ${cat.type}</div>
@@ -338,6 +341,9 @@ class GroupManager {
             <div class="available-cats-list">
                 ${availableCats.map(cat => `
                     <div class="available-cat-item">
+                        <div class="available-cat-avatar">
+                            ${this.renderCatAvatar(cat)}
+                        </div>
                         <div class="available-cat-info">
                             <div class="available-cat-name">${cat.name}</div>
                             <div class="available-cat-level">Level ${cat.level} ${cat.type}</div>
@@ -347,6 +353,108 @@ class GroupManager {
                 `).join('')}
             </div>
         `;
+    }
+
+    // Render a cat avatar
+    renderCatAvatar(cat) {
+        // Get cat appearance
+        const appearance = cat.appearance || {
+            bodyColor: '#F8D8B0',
+            patternColor: '#FFFFFF',
+            pattern: 'none',
+            eyeColor: '#FFB900',
+            accessory: 'none',
+            accessoryColor: '#FF5252',
+            uniqueId: 'cat-default-' + cat.id
+        };
+
+        return `
+            <div class="cat-mini-avatar" data-type="${cat.type}">
+                <!-- Cat body container -->
+                <div class="cat-mini-body-container">
+                    <!-- Cat body -->
+                    <div class="cat-mini-body" style="background-color: ${appearance.bodyColor}; border-radius: 50%;">
+                        <!-- Cat pattern -->
+                        ${this.getCatPatternHTML(appearance.pattern, appearance.patternColor)}
+
+                        <!-- Cat ears -->
+                        <div class="cat-mini-ear left" style="background-color: ${appearance.bodyColor}">
+                            <div class="cat-mini-inner-ear" style="background-color: #FF9999"></div>
+                        </div>
+                        <div class="cat-mini-ear right" style="background-color: ${appearance.bodyColor}">
+                            <div class="cat-mini-inner-ear" style="background-color: #FF9999"></div>
+                        </div>
+
+                        <!-- Cat face -->
+                        <div class="cat-mini-face">
+                            <!-- Eyes -->
+                            <div class="cat-mini-eyes left" style="background-color: ${appearance.eyeColor}"></div>
+                            <div class="cat-mini-eyes right" style="background-color: ${appearance.eyeColor}"></div>
+
+                            <!-- Nose -->
+                            <div class="cat-mini-nose"></div>
+                        </div>
+
+                        <!-- Cat accessory -->
+                        ${this.getCatAccessoryHTML(appearance.accessory, appearance.accessoryColor)}
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    // Generate HTML for cat pattern
+    getCatPatternHTML(pattern, color) {
+        if (pattern === 'none') return '';
+
+        let patternHTML = '';
+
+        switch(pattern) {
+            case 'spots':
+                patternHTML = `
+                    <div class="cat-mini-pattern cat-mini-spots" style="background-color: ${color}"></div>
+                `;
+                break;
+            case 'stripes':
+                patternHTML = `
+                    <div class="cat-mini-pattern cat-mini-stripes" style="background-color: ${color}"></div>
+                `;
+                break;
+            case 'patch':
+                patternHTML = `
+                    <div class="cat-mini-pattern cat-mini-patch" style="background-color: ${color}"></div>
+                `;
+                break;
+        }
+
+        return patternHTML;
+    }
+
+    // Generate HTML for cat accessory
+    getCatAccessoryHTML(accessory, color) {
+        if (accessory === 'none') return '';
+
+        let accessoryHTML = '';
+
+        switch(accessory) {
+            case 'bow':
+                accessoryHTML = `
+                    <div class="cat-mini-accessory cat-mini-bow" style="background-color: ${color}"></div>
+                `;
+                break;
+            case 'collar':
+                accessoryHTML = `
+                    <div class="cat-mini-accessory cat-mini-collar" style="background-color: ${color}"></div>
+                `;
+                break;
+            case 'hat':
+                accessoryHTML = `
+                    <div class="cat-mini-accessory cat-mini-hat" style="background-color: ${color}"></div>
+                `;
+                break;
+        }
+
+        return accessoryHTML;
     }
 
     // Add event listeners to group elements
