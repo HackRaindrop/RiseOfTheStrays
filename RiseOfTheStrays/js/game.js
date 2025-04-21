@@ -70,7 +70,10 @@ class GameManager {
             checkCapacityAndFindCat('premium');
         });
 
-
+        // Create custom cat
+        document.getElementById('create-custom-cat').addEventListener('click', () => {
+            catManager.showCustomCatModal();
+        });
     }
 
     // Add a message to the log
@@ -132,6 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+
     // Attach listeners initially
     attachUpgradeButtonListener();
 
@@ -161,6 +165,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (addTestMaterialsButton) {
         addTestMaterialsButton.addEventListener('click', () => {
             window.addTestMaterials();
+        });
+    }
+
+    // Attach test food button event listener
+    const addTestFoodButton = document.getElementById('add-test-food');
+    if (addTestFoodButton) {
+        addTestFoodButton.addEventListener('click', () => {
+            window.addTestFood();
         });
     }
 

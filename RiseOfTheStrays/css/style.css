@@ -2792,6 +2792,20 @@ button:disabled::after {
     color: #3498db;
 }
 
+.cat-details-rarity {
+    font-size: 16px;
+    margin-top: 5px;
+    font-weight: bold;
+    text-shadow: 0px 0px 3px currentColor;
+}
+
+.cat-details-rarity-bonus {
+    font-size: 14px;
+    margin-top: 5px;
+    color: #2ecc71;
+    font-weight: bold;
+}
+
 .cat-details-stats {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -3093,6 +3107,234 @@ button:disabled::after {
 
 #cancel-modal-btn:hover {
     background-color: #c0392b;
+}
+
+/* Custom Cat Creation Modal */
+.custom-cat-modal-content {
+    max-width: 600px;
+}
+
+.custom-cat-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.custom-cat-form-row {
+    display: flex;
+    gap: 15px;
+}
+
+.custom-cat-form-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.custom-cat-preview {
+    background-color: #2c3e50;
+    padding: 15px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+}
+
+.custom-cat-form-group {
+    margin-bottom: 10px;
+}
+
+.custom-cat-form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #bdc3c7;
+    font-size: 14px;
+}
+
+.custom-cat-form-group input,
+.custom-cat-form-group select {
+    width: 100%;
+    padding: 8px 12px;
+    background-color: #2c3e50;
+    border: 1px solid #34495e;
+    border-radius: 5px;
+    color: #ecf0f1;
+    font-size: 14px;
+}
+
+.custom-cat-form-group input:focus,
+.custom-cat-form-group select:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.3);
+}
+
+.color-picker-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.color-picker-preview {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid #34495e;
+}
+
+.custom-cat-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.custom-cat-actions button {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+#create-custom-cat-btn {
+    background-color: #27ae60;
+    color: white;
+}
+
+#create-custom-cat-btn:hover {
+    background-color: #2ecc71;
+}
+
+#create-custom-cat-btn:disabled {
+    background-color: #95a5a6;
+    cursor: not-allowed;
+    position: relative;
+}
+
+#create-custom-cat-btn:disabled:hover::after {
+    content: attr(title);
+    position: absolute;
+    bottom: 120%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #34495e;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 5px;
+    font-size: 12px;
+    white-space: nowrap;
+    z-index: 10;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+#cancel-custom-cat-btn {
+    background-color: #e74c3c;
+    color: white;
+}
+
+#cancel-custom-cat-btn:hover {
+    background-color: #c0392b;
+}
+
+.cost-info {
+    text-align: center;
+    margin-top: 15px;
+    padding: 10px;
+    background-color: #2c3e50;
+    border-radius: 5px;
+    font-size: 14px;
+    color: #f39c12;
+}
+
+.cost-info span {
+    font-weight: bold;
+}
+
+#create-custom-cat {
+    background-color: #9b59b6;
+}
+
+#create-custom-cat:hover {
+    background-color: #8e44ad;
+}
+
+.preview-cat-info {
+    margin-top: 15px;
+    text-align: center;
+}
+
+.preview-cat-name {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.preview-cat-type {
+    font-size: 14px;
+    color: #3498db;
+    margin-bottom: 5px;
+}
+
+.preview-cat-rarity {
+    font-size: 14px;
+    font-weight: bold;
+    text-shadow: 0px 0px 3px currentColor;
+}
+
+.randomize-container {
+    display: flex;
+    justify-content: center;
+    margin: 15px 0;
+}
+
+#randomize-appearance-btn {
+    background-color: #f39c12;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#randomize-appearance-btn:hover {
+    background-color: #e67e22;
+    transform: scale(1.05);
+}
+
+#randomize-appearance-btn:active {
+    transform: scale(0.95);
+}
+
+#randomize-appearance-btn::before {
+    content: '🎲';
+    margin-right: 8px;
+    font-size: 16px;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.05);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
 }
 
 /* Cat Groups Styles */

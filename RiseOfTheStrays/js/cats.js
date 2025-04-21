@@ -472,6 +472,460 @@ class CatManager {
         document.getElementById('find-cat-normal').disabled = !enabled;
         document.getElementById('find-cat-thorough').disabled = !enabled;
         document.getElementById('find-cat-premium').disabled = !enabled;
+        document.getElementById('create-custom-cat').disabled = !enabled;
+    }
+
+    // Calculate custom cat costs based on rarity
+    calculateCustomCatCosts(rarityName) {
+        // Get the rarity index (0 for Common, 4 for Legendary)
+        const rarityIndex = this.rarities.findIndex(r => r.name === rarityName);
+
+        // Base costs for Common rarity
+        const baseFoodCost = 25;
+        const baseMaterialCost = 10;
+
+        // Calculate exponential cost increase based on rarity
+        // Common: 1x, Uncommon: 4x, Rare: 16x, Epic: 64x, Legendary: 256x
+        const multiplier = Math.pow(4, rarityIndex);
+
+        return {
+            food: Math.round(baseFoodCost * multiplier),
+            materials: Math.round(baseMaterialCost * multiplier)
+        };
+    }
+
+    // Show custom cat creation modal
+    showCustomCatModal() {
+        // Check if we have room for more cats
+        if (this.getCatCount() >= baseManager.getMaxCats()) {
+            gameManager.addMessage(`Your base is at maximum capacity (${baseManager.getMaxCats()} cats). Upgrade your base to make room for more cats.`);
+            return;
+        }
+
+        // Initial costs for Common rarity
+        const initialCosts = this.calculateCustomCatCosts('Common');
+
+        // Check if we have enough resources for at least a Common cat
+        if (resourceManager.getResource('food') < initialCosts.food || resourceManager.getResource('materials') < initialCosts.materials) {
+            gameManager.addMessage(`Not enough resources to create a custom cat! Need at least ${initialCosts.food} food and ${initialCosts.materials} materials for a Common cat.`);
+            return;
+        }
+
+        // Create modal container
+        const modalContainer = document.createElement('div');
+        modalContainer.id = 'custom-cat-modal';
+        modalContainer.className = 'modal';
+
+        // Create the modal content
+        modalContainer.innerHTML = `
+            <div class="modal-content custom-cat-modal-content">
+                <span class="close-modal">&times;</span>
+                <h3>Create Your Custom Cat</h3>
+
+                <div class="custom-cat-form">
+                    <div class="custom-cat-form-row">
+                        <div class="custom-cat-form-column">
+                            <div class="custom-cat-form-group">
+                                <label for="custom-cat-name">Name:</label>
+                                <input type="text" id="custom-cat-name" placeholder="Enter cat name" maxlength="20">
+                            </div>
+
+                            <div class="custom-cat-form-group">
+                                <label for="custom-cat-type">Type:</label>
+                                <select id="custom-cat-type">
+                                    ${this.catTypes.map(type => `<option value="${type}">${type}</option>`).join('')}
+                                </select>
+                            </div>
+
+                            <div class="custom-cat-form-group">
+                                <label for="custom-cat-rarity">Rarity:</label>
+                                <select id="custom-cat-rarity">
+                                    ${this.rarities.map(rarity => `<option value="${rarity.name}">${rarity.name} ${rarity.icon}</option>`).join('')}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="custom-cat-form-column">
+                            <div class="custom-cat-preview" id="custom-cat-preview">
+                                <!-- Cat preview will be rendered here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="custom-cat-form-row">
+                        <div class="custom-cat-form-column">
+                            <div class="custom-cat-form-group">
+                                <label for="custom-cat-body-color">Body Color:</label>
+                                <div class="color-picker-container">
+                                    <input type="color" id="custom-cat-body-color" value="${this.catFeatures.bodyColors[0]}">
+                                    <div class="color-picker-preview" id="body-color-preview" style="background-color: ${this.catFeatures.bodyColors[0]}"></div>
+                                </div>
+                            </div>
+
+                            <div class="custom-cat-form-group">
+                                <label for="custom-cat-pattern">Pattern:</label>
+                                <select id="custom-cat-pattern">
+                                    ${this.catFeatures.patterns.map(pattern => `<option value="${pattern}">${pattern.charAt(0).toUpperCase() + pattern.slice(1)}</option>`).join('')}
+                                </select>
+                            </div>
+
+                            <div class="custom-cat-form-group">
+                                <label for="custom-cat-pattern-color">Pattern Color:</label>
+                                <div class="color-picker-container">
+                                    <input type="color" id="custom-cat-pattern-color" value="${this.catFeatures.patternColors[0]}">
+                                    <div class="color-picker-preview" id="pattern-color-preview" style="background-color: ${this.catFeatures.patternColors[0]}"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="custom-cat-form-column">
+                            <div class="custom-cat-form-group">
+                                <label for="custom-cat-eye-color">Eye Color:</label>
+                                <div class="color-picker-container">
+                                    <input type="color" id="custom-cat-eye-color" value="${this.catFeatures.eyeColors[0]}">
+                                    <div class="color-picker-preview" id="eye-color-preview" style="background-color: ${this.catFeatures.eyeColors[0]}"></div>
+                                </div>
+                            </div>
+
+                            <div class="custom-cat-form-group">
+                                <label for="custom-cat-accessory">Accessory:</label>
+                                <select id="custom-cat-accessory">
+                                    ${this.catFeatures.accessories.map(accessory => `<option value="${accessory}">${accessory.charAt(0).toUpperCase() + accessory.slice(1)}</option>`).join('')}
+                                </select>
+                            </div>
+
+                            <div class="custom-cat-form-group">
+                                <label for="custom-cat-accessory-color">Accessory Color:</label>
+                                <div class="color-picker-container">
+                                    <input type="color" id="custom-cat-accessory-color" value="${this.catFeatures.accessoryColors[0]}">
+                                    <div class="color-picker-preview" id="accessory-color-preview" style="background-color: ${this.catFeatures.accessoryColors[0]}"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="randomize-container">
+                        <button type="button" id="randomize-appearance-btn">Randomize Appearance</button>
+                    </div>
+
+                    <div class="cost-info" id="custom-cat-cost-info">
+                        Creating a Common cat costs <span>25 Food</span> and <span>10 Materials</span>
+                    </div>
+
+                    <div class="custom-cat-actions">
+                        <button type="button" id="create-custom-cat-btn">Create Cat</button>
+                        <button type="button" id="cancel-custom-cat-btn">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Add the modal to the page
+        document.body.appendChild(modalContainer);
+
+        // Render initial cat preview
+        this.renderCustomCatPreview();
+
+        // Initialize cost display
+        this.updateCustomCatCosts();
+
+        // Add event listeners
+        modalContainer.querySelector('.close-modal').addEventListener('click', () => {
+            this.closeModal(modalContainer);
+        });
+
+        document.getElementById('cancel-custom-cat-btn').addEventListener('click', () => {
+            this.closeModal(modalContainer);
+        });
+
+        document.getElementById('create-custom-cat-btn').addEventListener('click', () => {
+            this.createCustomCat();
+            this.closeModal(modalContainer);
+        });
+
+        // Add event listeners for preview updates
+        document.getElementById('custom-cat-name').addEventListener('input', () => this.renderCustomCatPreview());
+        document.getElementById('custom-cat-type').addEventListener('change', () => this.renderCustomCatPreview());
+        document.getElementById('custom-cat-rarity').addEventListener('change', () => {
+            this.renderCustomCatPreview();
+            this.updateCustomCatCosts();
+        });
+        document.getElementById('custom-cat-body-color').addEventListener('input', (e) => {
+            document.getElementById('body-color-preview').style.backgroundColor = e.target.value;
+            this.renderCustomCatPreview();
+        });
+        document.getElementById('custom-cat-pattern').addEventListener('change', () => this.renderCustomCatPreview());
+        document.getElementById('custom-cat-pattern-color').addEventListener('input', (e) => {
+            document.getElementById('pattern-color-preview').style.backgroundColor = e.target.value;
+            this.renderCustomCatPreview();
+        });
+        document.getElementById('custom-cat-eye-color').addEventListener('input', (e) => {
+            document.getElementById('eye-color-preview').style.backgroundColor = e.target.value;
+            this.renderCustomCatPreview();
+        });
+        document.getElementById('custom-cat-accessory').addEventListener('change', () => this.renderCustomCatPreview());
+        document.getElementById('custom-cat-accessory-color').addEventListener('input', (e) => {
+            document.getElementById('accessory-color-preview').style.backgroundColor = e.target.value;
+            this.renderCustomCatPreview();
+        });
+
+        // Add event listener for randomize button
+        document.getElementById('randomize-appearance-btn').addEventListener('click', () => {
+            this.randomizeCustomCatAppearance();
+        });
+
+        // Add animation class after a small delay to trigger the animation
+        setTimeout(() => {
+            modalContainer.querySelector('.modal-content').classList.add('show');
+        }, 10);
+    }
+
+    // Render custom cat preview
+    renderCustomCatPreview() {
+        const previewContainer = document.getElementById('custom-cat-preview');
+        if (!previewContainer) return;
+
+        const name = document.getElementById('custom-cat-name').value || 'Your Cat';
+        const type = document.getElementById('custom-cat-type').value;
+        const rarity = document.getElementById('custom-cat-rarity').value;
+        const bodyColor = document.getElementById('custom-cat-body-color').value;
+        const pattern = document.getElementById('custom-cat-pattern').value;
+        const patternColor = document.getElementById('custom-cat-pattern-color').value;
+        const eyeColor = document.getElementById('custom-cat-eye-color').value;
+        const accessory = document.getElementById('custom-cat-accessory').value;
+        const accessoryColor = document.getElementById('custom-cat-accessory-color').value;
+
+        const rarityInfo = this.rarities.find(r => r.name === rarity) || this.rarities[0];
+        const rarityColor = rarityInfo.color;
+        const rarityIcon = rarityInfo.icon;
+
+        const uniqueId = 'preview-cat';
+
+        previewContainer.innerHTML = `
+            <div class="cat-avatar-container">
+                <div class="cat-avatar" data-type="${type}">
+                    <!-- Cat body container -->
+                    <div class="cat-body-container">
+                        <!-- Cat body -->
+                        <div class="cat-body" style="background-color: ${bodyColor}; border-radius: 50%;">
+                            <!-- Cat pattern -->
+                            ${this.getCatPatternHTML(pattern, patternColor)}
+
+                            <!-- Cat ears -->
+                            <div class="cat-ear left" style="background-color: ${bodyColor}">
+                                <div class="cat-inner-ear" style="background-color: #FF9999"></div>
+                            </div>
+                            <div class="cat-ear right" style="background-color: ${bodyColor}">
+                                <div class="cat-inner-ear" style="background-color: #FF9999"></div>
+                            </div>
+
+                            <!-- Cat face -->
+                            <div class="cat-face">
+                                <div class="cat-eyes left" style="background-color: ${eyeColor}"></div>
+                                <div class="cat-eyes right" style="background-color: ${eyeColor}"></div>
+                                <div class="cat-nose"></div>
+                                <div class="cat-mouth"></div>
+                            </div>
+
+                            <!-- Cat whiskers -->
+                            <div class="cat-whiskers left">
+                                <div class="whisker top"></div>
+                                <div class="whisker middle"></div>
+                                <div class="whisker bottom"></div>
+                            </div>
+                            <div class="cat-whiskers right">
+                                <div class="whisker top"></div>
+                                <div class="whisker middle"></div>
+                                <div class="whisker bottom"></div>
+                            </div>
+
+                            <!-- Cat accessory -->
+                            ${this.getCatAccessoryHTML(accessory, accessoryColor)}
+                        </div>
+
+                        <!-- Cat tail -->
+                        <div class="cat-tail" data-cat-id="${uniqueId}" style="background-color: ${bodyColor}"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="preview-cat-info">
+                <div class="preview-cat-name">${name}</div>
+                <div class="preview-cat-type">${type}</div>
+                <div class="preview-cat-rarity" style="color: ${rarityColor}">${rarity} ${rarityIcon}</div>
+            </div>
+        `;
+    }
+
+    // Update the cost display based on selected rarity
+    updateCustomCatCosts() {
+        const raritySelect = document.getElementById('custom-cat-rarity');
+        const costInfoElement = document.getElementById('custom-cat-cost-info');
+
+        if (!raritySelect || !costInfoElement) return;
+
+        const selectedRarity = raritySelect.value;
+        const costs = this.calculateCustomCatCosts(selectedRarity);
+
+        costInfoElement.innerHTML = `
+            Creating a ${selectedRarity} cat costs <span>${costs.food} Food</span> and <span>${costs.materials} Materials</span>
+        `;
+
+        // Update the create button state based on whether the player has enough resources
+        const createButton = document.getElementById('create-custom-cat-btn');
+        if (createButton) {
+            const hasEnoughResources =
+                resourceManager.getResource('food') >= costs.food &&
+                resourceManager.getResource('materials') >= costs.materials;
+
+            createButton.disabled = !hasEnoughResources;
+
+            if (!hasEnoughResources) {
+                createButton.title = `Not enough resources! Need ${costs.food} Food and ${costs.materials} Materials.`;
+            } else {
+                createButton.title = '';
+            }
+        }
+    }
+
+    // Randomize custom cat appearance
+    randomizeCustomCatAppearance() {
+        // Generate random colors
+        const randomBodyColor = this.getRandomColor();
+        const randomPatternColor = this.getRandomColor();
+        const randomEyeColor = this.getRandomColor();
+        const randomAccessoryColor = this.getRandomColor();
+
+        // Get random pattern and accessory
+        const randomPattern = this.getRandomArrayElement(this.catFeatures.patterns);
+        const randomAccessory = this.getRandomArrayElement(this.catFeatures.accessories);
+
+        // Optionally randomize rarity (with weighted probability)
+        if (Math.random() < 0.3) { // 30% chance to randomize rarity
+            const rarityWeights = [0.5, 0.25, 0.15, 0.07, 0.03]; // Same as the rarity chances
+            const randomRarity = this.getWeightedRandomElement(this.rarities.map(r => r.name), rarityWeights);
+            this.setSelectOption('custom-cat-rarity', randomRarity);
+        }
+
+        // Set the values in the form
+        document.getElementById('custom-cat-body-color').value = randomBodyColor;
+        document.getElementById('body-color-preview').style.backgroundColor = randomBodyColor;
+
+        document.getElementById('custom-cat-pattern-color').value = randomPatternColor;
+        document.getElementById('pattern-color-preview').style.backgroundColor = randomPatternColor;
+
+        document.getElementById('custom-cat-eye-color').value = randomEyeColor;
+        document.getElementById('eye-color-preview').style.backgroundColor = randomEyeColor;
+
+        document.getElementById('custom-cat-accessory-color').value = randomAccessoryColor;
+        document.getElementById('accessory-color-preview').style.backgroundColor = randomAccessoryColor;
+
+        // Set the selected options in the dropdowns
+        this.setSelectOption('custom-cat-pattern', randomPattern);
+        this.setSelectOption('custom-cat-accessory', randomAccessory);
+
+        // Update the preview
+        this.renderCustomCatPreview();
+
+        // Update the costs based on the selected rarity
+        this.updateCustomCatCosts();
+
+        // Add a little animation effect to show the randomization
+        const previewContainer = document.getElementById('custom-cat-preview');
+        previewContainer.style.animation = 'none';
+        setTimeout(() => {
+            previewContainer.style.animation = 'pulse 0.5s';
+        }, 10);
+    }
+
+    // Helper method to get a random color
+    getRandomColor() {
+        const letters = '0123456789ABCDEF';
+        let color = '#';
+        for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+
+    // Helper method to get a random element from an array
+    getRandomArrayElement(array) {
+        return array[Math.floor(Math.random() * array.length)];
+    }
+
+    // Helper method to get a weighted random element from an array
+    getWeightedRandomElement(array, weights) {
+        // Make sure arrays are the same length
+        if (array.length !== weights.length) {
+            console.error('Array and weights must be the same length');
+            return array[0];
+        }
+
+        // Calculate the sum of all weights
+        const totalWeight = weights.reduce((sum, weight) => sum + weight, 0);
+
+        // Get a random value between 0 and the total weight
+        const randomValue = Math.random() * totalWeight;
+
+        // Find the item that corresponds to the random value
+        let weightSum = 0;
+        for (let i = 0; i < array.length; i++) {
+            weightSum += weights[i];
+            if (randomValue <= weightSum) {
+                return array[i];
+            }
+        }
+
+        // Fallback to the last item
+        return array[array.length - 1];
+    }
+
+    // Helper method to set a select option by value
+    setSelectOption(selectId, value) {
+        const select = document.getElementById(selectId);
+        for (let i = 0; i < select.options.length; i++) {
+            if (select.options[i].value === value) {
+                select.selectedIndex = i;
+                break;
+            }
+        }
+    }
+
+    // Create a custom cat based on form inputs
+    createCustomCat() {
+        const name = document.getElementById('custom-cat-name').value || 'Custom Cat';
+        const type = document.getElementById('custom-cat-type').value;
+        const rarity = document.getElementById('custom-cat-rarity').value;
+        const bodyColor = document.getElementById('custom-cat-body-color').value;
+        const pattern = document.getElementById('custom-cat-pattern').value;
+        const patternColor = document.getElementById('custom-cat-pattern-color').value;
+        const eyeColor = document.getElementById('custom-cat-eye-color').value;
+        const accessory = document.getElementById('custom-cat-accessory').value;
+        const accessoryColor = document.getElementById('custom-cat-accessory-color').value;
+
+        // Create appearance object
+        const appearance = {
+            bodyColor: bodyColor,
+            patternColor: patternColor,
+            pattern: pattern,
+            eyeColor: eyeColor,
+            accessory: accessory,
+            accessoryColor: accessoryColor,
+            uniqueId: 'cat-' + Date.now() + '-' + Math.floor(Math.random() * 1000)
+        };
+
+        // Calculate costs based on rarity
+        const costs = this.calculateCustomCatCosts(rarity);
+
+        // Consume resources
+        if (resourceManager.useResource('food', costs.food) && resourceManager.useResource('materials', costs.materials)) {
+            // Add the custom cat
+            const newCat = this.addCat(name, type, 1, rarity, appearance);
+            gameManager.addMessage(`You created a custom cat named ${newCat.name}!`);
+            return newCat;
+        } else {
+            gameManager.addMessage(`Not enough resources to create a ${rarity} cat! Need ${costs.food} food and ${costs.materials} materials.`);
+            return null;
+        }
     }
 
     // Show search progress indicator
@@ -1520,6 +1974,19 @@ class CatManager {
         }
     }
 
+    // Get bonus stat points based on rarity
+    getRarityStatPointBonus(rarityName) {
+        switch(rarityName) {
+            case 'Common': return 0; // No bonus
+            case 'Uncommon': return 1; // +1 bonus stat point
+            case 'Rare': return 2; // +2 bonus stat points
+            case 'Epic': return 3; // +3 bonus stat points
+            case 'Legendary': return 5; // +5 bonus stat points
+            case 'Mythic': return 7; // +7 bonus stat points
+            default: return 0;
+        }
+    }
+
     // Calculate XP required for a level
     getXPToLevel(level, rarityMultiplier = 1) {
         return Math.floor(50 * level * rarityMultiplier + Math.pow(level, 1.5) * 10);
@@ -1546,9 +2013,15 @@ class CatManager {
             cat.level += 1;
             levelsGained += 1;
 
-            // Add stat points (3 per level)
-            cat.statPoints += 3;
-            cat.totalStatPoints += 3;
+            // Base stat points (3 per level)
+            const baseStatPoints = 3;
+
+            // Get bonus stat points based on rarity
+            const bonusStatPoints = this.getRarityStatPointBonus(cat.rarity);
+
+            // Add stat points (base + bonus)
+            cat.statPoints += baseStatPoints + bonusStatPoints;
+            cat.totalStatPoints += baseStatPoints + bonusStatPoints;
 
             // Calculate XP for next level
             cat.xpToNext = this.getXPToLevel(cat.level, this.getRarityXPMultiplier(cat.rarity));
@@ -1560,8 +2033,10 @@ class CatManager {
         if (leveledUp) {
             this.updateCatAttributes(cat);
 
-            // Show level up message
-            gameManager.addMessage(`${cat.name} leveled up to level ${cat.level}! +3 stat points awarded.`);
+            // Show level up message with total stat points awarded
+            const totalStatPoints = baseStatPoints + bonusStatPoints;
+            const bonusMessage = bonusStatPoints > 0 ? ` (includes +${bonusStatPoints} ${cat.rarity} rarity bonus)` : '';
+            gameManager.addMessage(`${cat.name} leveled up to level ${cat.level}! +${totalStatPoints} stat points awarded${bonusMessage}.`);
 
             // Add level up visual effect
             this.showLevelUpEffect(cat.id);
@@ -1618,6 +2093,8 @@ class CatManager {
                 <div class="cat-details-header">
                     <h3>${cat.name}</h3>
                     <div class="cat-details-level">Level ${cat.level} ${cat.type}</div>
+                    <div class="cat-details-rarity">${cat.rarity} ${this.rarities.find(r => r.name === cat.rarity)?.icon || ''}</div>
+                    ${this.getRarityStatPointBonus(cat.rarity) > 0 ? `<div class="cat-details-rarity-bonus">+${this.getRarityStatPointBonus(cat.rarity)} stat points per level</div>` : ''}
                 </div>
 
                 <div class="cat-details-stats">
