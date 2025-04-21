@@ -13,7 +13,7 @@ class GameManager {
     }
 
     // Set up all event listeners
-    initEventListeners() {
+    initEventListeners = () => {
         // Resource gathering buttons
         document.getElementById('gather-food').addEventListener('click', () => {
             const amount = resourceManager.gatherResource('food');
@@ -39,9 +39,10 @@ class GameManager {
 
         // Find cat buttons for different search types
         const checkCapacityAndFindCat = (searchType) => {
-            // Check if we have room for more cats
-            if (catManager.getCatCount() >= baseManager.getMaxCats()) {
-                this.addMessage(`Your base is at maximum capacity (${baseManager.getMaxCats()} cats). Upgrade your base to make room for more cats.`);
+            // Check if we have room for more cats - for now, assume a fixed max of 10 cats
+            const maxCats = 10;
+            if (catManager.getCatCount() >= maxCats) {
+                this.addMessage(`Your base is at maximum capacity (${maxCats} cats). Upgrade your base to make room for more cats.`);
                 return;
             }
 
@@ -69,12 +70,10 @@ class GameManager {
         document.getElementById('find-cat-premium').addEventListener('click', () => {
             checkCapacityAndFindCat('premium');
         });
-
-
     }
 
     // Add a message to the log
-    addMessage(message) {
+    addMessage = (message) => {
         const timestamp = new Date().toLocaleTimeString();
         this.messageLog.unshift(`[${timestamp}] ${message}`);
 
@@ -87,7 +86,7 @@ class GameManager {
     }
 
     // Update the message display
-    updateMessageDisplay() {
+    updateMessageDisplay = () => {
         const messagesContainer = document.getElementById('messages');
         messagesContainer.innerHTML = '';
 
@@ -100,40 +99,15 @@ class GameManager {
     }
 
     // Advance to the next day
-    advanceDay() {
+    advanceDay = () => {
         this.day++;
         this.addMessage(`Day ${this.day} has begun.`);
 
         // Daily events and resource consumption would go here
     }
-}
-
-// Create global game manager
-const gameManager = new GameManager();
-
-// Initialize the game when the page loads
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('Game initialized!');
-
-    // Function to attach event listener to upgrade button
-    function attachUpgradeButtonListener() {
-        const upgradeArenaButton = document.getElementById('upgrade-arena');
-        if (upgradeArenaButton && !upgradeArenaButton.hasAttribute('data-listener-attached')) {
-            console.log('Found upgrade arena button, attaching event listener');
-            upgradeArenaButton.addEventListener('click', function() {
-                console.log('Upgrade arena button clicked from event listener');
-                window.upgradeTrainingArena();
-            });
-            upgradeArenaButton.setAttribute('data-listener-attached', 'true');
-        } else if (!upgradeArenaButton) {
-            console.log('Upgrade arena button not found');
-        } else {
-            console.log('Upgrade arena button already has listener attached');
-        }
-    }
 
     // Produce resources from buildings and bunker rooms
-    produceResources() {
+    produceResources = () => {
         // Get production from outpost buildings
         const buildingProduction = buildingManager.produceResources();
 
@@ -154,12 +128,102 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             combinedProduction[resource] += bunkerProduction[resource];
         }
+
+        let productionMessage = '';
+        let resourcesProduced = false;
+
+        for (const resource in combinedProduction) {
+            if (combinedProduction[resource] > 0) {
+                const roundedAmount = Math.round(combinedProduction[resource] * 10) / 10; // Round to 1 decimal place
+                productionMessage += `${roundedAmount} ${resource}, `;
+                resourcesProduced = true;
+            }
+        }
+
+        if (resourcesProduced) {
+            // Remove trailing comma and space
+            productionMessage = productionMessage.slice(0, -2);
+            this.addMessage(`Production cycle: ${productionMessage}`);
+        }
+
+        // Update building buttons in case resource changes affect build availability
+        buildingManager.updateBuildButtonStates();
+
+        // Update bunker room selection if bunkerManager exists
+        if (typeof bunkerManager !== 'undefined') {
+            bunkerManager.updateDisplay();
+        }
+    }
+
+    // Update the power indicator in the bunker section
+    updatePowerIndicator = () => {
+        if (typeof bunkerManager === 'undefined') return;
+
+        const powerFill = document.getElementById('power-fill');
+        const powerText = document.getElementById('power-text');
+
+        if (!powerFill || !powerText) return;
+
+        const totalPower = bunkerManager.getTotalPower();
+        const consumption = bunkerManager.getPowerConsumption();
+        const percentage = Math.min(100, (totalPower / consumption) * 100);
+
+        powerFill.style.width = `${percentage}%`;
+        powerText.textContent = `${totalPower.toFixed(1)}/${consumption.toFixed(1)}`;
+
+        // Change color based on power status
+        if (percentage >= 100) {
+            powerFill.style.backgroundColor = '#2ecc71'; // Green
+        } else if (percentage >= 75) {
+            powerFill.style.backgroundColor = '#f1c40f'; // Yellow
+        } else {
+            powerFill.style.backgroundColor = '#e74c3c'; // Red
+        }
+    }
+
+    // Increase the maximum number of cats the player can have
+    increaseMaxCats = (amount) => {
+        // For now, just log the increase
+        console.log(`Max cat capacity would increase by ${amount}`);
+        this.addMessage(`Max cat capacity increased by ${amount}!`);
+
+        // In the future, this would be handled by the base manager
+        // if (typeof baseManager !== 'undefined' && baseManager.increaseMaxCats) {
+        //     baseManager.increaseMaxCats(amount);
+        // }
+    }
+}
+
+// Create global game manager
+const gameManager = new GameManager();
+
+// Initialize the game when the page loads
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('Game initialized!');
+
+    // Function to attach event listener to upgrade button
+    const attachUpgradeButtonListener = () => {
+        const upgradeArenaButton = document.getElementById('upgrade-arena');
+        if (upgradeArenaButton && !upgradeArenaButton.hasAttribute('data-listener-attached')) {
+            console.log('Found upgrade arena button, attaching event listener');
+            upgradeArenaButton.addEventListener('click', () => {
+                console.log('Upgrade arena button clicked from event listener');
+                window.upgradeTrainingArena();
+            });
+            upgradeArenaButton.setAttribute('data-listener-attached', 'true');
+        } else if (!upgradeArenaButton) {
+            console.log('Upgrade arena button not found');
+        } else {
+            console.log('Upgrade arena button already has listener attached');
+        }
+    };
+
     // Attach listeners initially
     attachUpgradeButtonListener();
 
     // Set up a mutation observer to watch for changes to the DOM
-    const observer = new MutationObserver(function(mutations) {
-        mutations.forEach(function(mutation) {
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
             if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
                 // Check if any of the added nodes contain our button
                 for (let i = 0; i < mutation.addedNodes.length; i++) {
@@ -182,15 +246,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const addTestMaterialsButton = document.getElementById('add-test-materials');
     if (addTestMaterialsButton) {
         addTestMaterialsButton.addEventListener('click', () => {
-            window.addTestMaterials();
+            // Add a significant amount of resources for testing
+            resourceManager.addResource('food', 100);
+            resourceManager.addResource('materials', 100);
+            resourceManager.addResource('medicine', 100);
+            gameManager.addMessage('Added 100 of each resource for testing!');
+
+            // Update bunker display if it exists
+            if (typeof bunkerManager !== 'undefined') {
+                bunkerManager.renderRoomSelection();
+            }
         });
     }
 
-        for (const resource in combinedProduction) {
-            if (combinedProduction[resource] > 0) {
-                const roundedAmount = Math.round(combinedProduction[resource] * 10) / 10; // Round to 1 decimal place
-                productionMessage += `${roundedAmount} ${resource}, `;
-                resourcesProduced = true;
     // Attach create group button event listener
     const createGroupBtn = document.getElementById('create-group-btn');
     console.log('Create group button in game.js:', createGroupBtn);
@@ -205,74 +273,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         console.log('Event listener attached to create group button in game.js');
     }
-
-        if (resourcesProduced) {
-            // Remove trailing comma and space
-            productionMessage = productionMessage.slice(0, -2);
-            this.addMessage(`Production cycle: ${productionMessage}`);
-        }
-
-        // Update building buttons in case resource changes affect build availability
-        buildingManager.updateBuildButtonStates();
-
-        // Update bunker room selection if bunkerManager exists
-        if (typeof bunkerManager !== 'undefined') {
-            bunkerManager.updateDisplay();
-        }
-    }
-
-    // Update the power indicator in the bunker section
-    updatePowerIndicator() {
-        if (typeof bunkerManager === 'undefined') return;
-
-        const powerFill = document.getElementById('power-fill');
-        const powerText = document.getElementById('power-text');
-
-        if (!powerFill || !powerText) return;
-
-        const totalPower = bunkerManager.getTotalPower();
-        const consumption = bunkerManager.getPowerConsumption();
-        const percentage = Math.min(100, (totalPower / consumption) * 100);
-
-        powerFill.style.width = `${percentage}%`;
-        powerText.textContent = `${totalPower.toFixed(1)}/${consumption.toFixed(1)}`;
-
-        // Change color based on power status
-        if (percentage >= 100) {
-            powerFill.style.backgroundColor = '#2ecc71'; // Green
-        } else if (percentage >= 75) {
-            powerFill.style.backgroundColor = '#f1c40f'; // Yellow
-        } else {
-            powerFill.style.backgroundColor = '#e74c3c'; // Red
-        }
-    }
-
-    // Update the power indicator in the bunker section
-    updatePowerIndicator() {
-        if (typeof bunkerManager === 'undefined') return;
-
-        const powerFill = document.getElementById('power-fill');
-        const powerText = document.getElementById('power-text');
-
-        if (!powerFill || !powerText) return;
-
-        const totalPower = bunkerManager.getTotalPower();
-        const consumption = bunkerManager.getPowerConsumption();
-        const percentage = Math.min(100, (totalPower / consumption) * 100);
-
-        powerFill.style.width = `${percentage}%`;
-        powerText.textContent = `${totalPower.toFixed(1)}/${consumption.toFixed(1)}`;
-
-        // Change color based on power status
-        if (percentage >= 100) {
-            powerFill.style.backgroundColor = '#2ecc71'; // Green
-        } else if (percentage >= 75) {
-            powerFill.style.backgroundColor = '#f1c40f'; // Yellow
-        } else {
-            powerFill.style.backgroundColor = '#e74c3c'; // Red
-        }
-    }
-}
 
     // Add event listener for stat buttons
     document.addEventListener('click', (event) => {

@@ -1,0 +1,237 @@
+/* 
+ * Combined CSS for Cat Cards
+ * This file combines the cat card redesign and badge fix styles
+ */
+
+/* Main cat card container */
+.cat-card {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    padding: 15px !important;
+    background-color: rgba(30, 40, 50, 0.7) !important;
+    border-radius: 8px !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+    margin-bottom: 15px !important;
+    overflow: hidden !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    min-width: 200px !important;
+}
+
+/* Cat avatar container - centered */
+.cat-avatar-container {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100% !important;
+    margin-bottom: 15px !important;
+}
+
+/* Cat avatar styling */
+.cat-avatar {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100px !important;
+    height: 100px !important;
+    position: relative !important;
+}
+
+.cat-body-container {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100% !important;
+    height: 100% !important;
+    position: relative !important;
+}
+
+.cat-body {
+    width: 80px !important;
+    height: 80px !important;
+    position: relative !important;
+    z-index: 1 !important;
+}
+
+/* Cat name */
+.cat-name {
+    font-size: 1.2rem !important;
+    font-weight: bold !important;
+    margin-bottom: 5px !important;
+    text-align: center !important;
+    width: 100% !important;
+}
+
+/* Cat rarity */
+.cat-rarity {
+    font-size: 0.9rem !important;
+    margin-bottom: 10px !important;
+    text-align: center !important;
+    width: 100% !important;
+}
+
+/* Cat type badge container */
+.cat-type-badge-container {
+    width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
+    margin-bottom: 15px !important;
+    box-sizing: border-box !important;
+}
+
+/* Cat type badge */
+.cat-type-badge {
+    display: inline-block !important;
+    padding: 4px 10px !important;
+    border-radius: 20px !important;
+    background-color: #4CAF50 !important;
+    color: white !important;
+    font-weight: 500 !important;
+    font-size: 0.9rem !important;
+    text-align: center !important;
+    max-width: 80% !important; /* Ensure it doesn't overflow */
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    box-sizing: border-box !important;
+}
+
+/* Fix for cat header layout */
+.cat-header {
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    box-sizing: border-box !important;
+}
+
+/* Fix for cat info container */
+.cat-info {
+    width: 100% !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+}
+
+/* Fix for cat name container */
+.cat-name-container {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    margin-bottom: 5px !important;
+    text-align: center !important;
+}
+
+/* Cat details section */
+.cat-details {
+    width: 100% !important;
+    margin-top: 10px !important;
+    text-align: center !important;
+}
+
+/* Level container */
+.cat-level-container {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    margin-bottom: 10px !important;
+    width: 100% !important;
+}
+
+/* Level text */
+.cat-level {
+    font-size: 1rem !important;
+    font-weight: bold !important;
+    margin-bottom: 5px !important;
+    text-align: center !important;
+}
+
+/* XP bar container */
+.xp-bar-container {
+    width: 100% !important;
+    height: 10px !important;
+    background-color: rgba(0, 0, 0, 0.3) !important;
+    border-radius: 5px !important;
+    overflow: hidden !important;
+    margin-bottom: 5px !important;
+    position: relative !important;
+}
+
+/* XP bar */
+.xp-bar {
+    height: 100% !important;
+    background: linear-gradient(to right, #4CAF50, #8BC34A) !important;
+    border-radius: 5px !important;
+}
+
+/* XP text */
+.xp-text {
+    font-size: 0.8rem !important;
+    color: rgba(255, 255, 255, 0.8) !important;
+    text-align: center !important;
+}
+
+/* Expand toggle button */
+.expand-toggle {
+    width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
+    margin-top: 15px !important;
+}
+
+.expand-btn {
+    background-color: rgba(40, 50, 60, 0.7) !important;
+    border: none !important;
+    border-radius: 4px !important;
+    padding: 5px 10px !important;
+    color: white !important;
+    cursor: pointer !important;
+    transition: background-color 0.2s ease !important;
+}
+
+.expand-btn:hover {
+    background-color: rgba(50, 60, 70, 0.8) !important;
+}
+
+/* Tablet and desktop specific styles */
+@media (min-width: 768px) {
+    #cats-container {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        gap: 15px !important;
+        justify-content: center !important;
+    }
+    
+    .cat-card {
+        width: calc(50% - 15px) !important;
+        margin-bottom: 15px !important;
+        min-width: 200px !important;
+        max-width: 300px !important;
+    }
+    
+    .cat-type-badge {
+        font-size: 0.8rem !important;
+    }
+}
+
+@media (min-width: 1024px) {
+    #cats-container {
+        justify-content: flex-start !important;
+    }
+    
+    .cat-card {
+        width: calc(33.33% - 15px) !important;
+        margin-bottom: 15px !important;
+        min-width: 200px !important;
+        max-width: 300px !important;
+    }
+    
+    .cat-type-badge {
+        font-size: 0.8rem !important;
+        padding: 4px 8px !important;
+    }
+}

@@ -10,27 +10,28 @@ class BaseManager {
     }
 
     // Get current base level
-    getBaseLevel() {
+    getBaseLevel = () => {
         return this.baseLevel;
     }
 
     // Get max number of cats the base can support
-    getMaxCats() {
+    getMaxCats = () => {
         return this.maxCats;
     }
 
-    increaseMaxCats(amount) {
+    increaseMaxCats = (amount) => {
         this.maxCats += amount;
         this.updateDisplay();
         gameManager.addMessage(`Base capacity increased! You can now have up to ${this.maxCats} cats.`);
     }
 
     // Get cost to upgrade the base
-    getUpgradeCost() {
+    getUpgradeCost = () => {
         return this.upgradeCost;
     }
+
     // Get bunker dimensions
-    getBunkerDimensions() {
+    getBunkerDimensions = () => {
         return {
             width: this.bunkerWidth,
             height: this.bunkerHeight
@@ -38,7 +39,7 @@ class BaseManager {
     }
 
     // Upgrade the base if enough resources are available
-    upgradeBase() {
+    upgradeBase = () => {
         if (resourceManager.useResource('materials', this.upgradeCost)) {
             this.baseLevel++;
             this.maxCats += 3; // Each level adds space for 3 more cats
@@ -68,7 +69,7 @@ class BaseManager {
     }
 
     // Update the UI with current base info
-    updateDisplay() {
+    updateDisplay = () => {
         document.getElementById('base-level-value').textContent = this.baseLevel;
         document.getElementById('upgrade-base').textContent = `Upgrade Base (Cost: ${this.upgradeCost} Materials)`;
     }

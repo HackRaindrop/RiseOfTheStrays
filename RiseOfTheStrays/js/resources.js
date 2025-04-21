@@ -17,12 +17,12 @@ class ResourceManager {
     }
 
     // Get current resource amount
-    getResource(type) {
+    getResource = (type) => {
         return this.resources[type];
     }
 
     // Add resources
-    addResource(type, amount) {
+    addResource = (type, amount) => {
         this.resources[type] += amount;
         this.updateDisplay();
 
@@ -36,7 +36,7 @@ class ResourceManager {
     }
 
     // Use resources if available
-    useResource(type, amount) {
+    useResource = (type, amount) => {
         if (this.resources[type] >= amount) {
             this.resources[type] -= amount;
             this.updateDisplay();
@@ -53,7 +53,7 @@ class ResourceManager {
     }
 
     // Gather resources based on current gather rate
-    gatherResource(type) {
+    gatherResource = (type) => {
         const baseAmount = this.gatherRates[type];
         // Add some randomness to gathering
         const randomBonus = Math.random() > 0.7 ? Math.floor(Math.random() * 2) + 1 : 0;
@@ -71,12 +71,12 @@ class ResourceManager {
     }
 
     // Increase gather rate for a resource
-    upgradeGatherRate(type) {
+    upgradeGatherRate = (type) => {
         this.gatherRates[type] += 1;
     }
 
     // Update the UI with current resource values
-    updateDisplay() {
+    updateDisplay = () => {
         document.getElementById('food-count').textContent = this.resources.food;
         document.getElementById('materials-count').textContent = this.resources.materials;
         document.getElementById('medicine-count').textContent = this.resources.medicine;

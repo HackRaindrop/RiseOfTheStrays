@@ -400,6 +400,63 @@ class TrainingManager {
             trainingSection.style.display = 'block';
         }
 
+        // Adjust the layout based on screen size
+        const screenWidth = window.innerWidth;
+        const trainingArena = document.querySelector('.training-arena');
+        const basesList = document.querySelector('.training-bases-list');
+
+        if (trainingArena && basesList) {
+            if (screenWidth < 768) {
+                // Mobile layout
+                trainingArena.style.flexDirection = 'column';
+
+                // Make the training bases list scrollable horizontally on mobile
+                basesList.style.display = 'flex';
+                basesList.style.flexWrap = 'nowrap';
+                basesList.style.overflowX = 'auto';
+                basesList.style.paddingBottom = '10px';
+                basesList.style.width = '100%';
+
+                // Make each training base item a fixed width for horizontal scrolling
+                const baseItems = basesList.querySelectorAll('.training-base-item');
+                baseItems.forEach(item => {
+                    item.style.minWidth = '150px';
+                    item.style.flex = '0 0 auto';
+                    item.style.marginRight = '10px';
+                });
+            } else if (screenWidth >= 768 && screenWidth < 1024) {
+                // Tablet layout
+                trainingArena.style.flexDirection = 'row';
+                basesList.style.display = 'block';
+                basesList.style.width = '30%';
+                basesList.style.overflowX = 'visible';
+
+                // Reset training base items
+                const baseItems = basesList.querySelectorAll('.training-base-item');
+                baseItems.forEach(item => {
+                    item.style.minWidth = '';
+                    item.style.flex = '';
+                    item.style.marginRight = '';
+                    item.style.marginBottom = '10px';
+                });
+            } else {
+                // Desktop layout
+                trainingArena.style.flexDirection = 'row';
+                basesList.style.display = 'block';
+                basesList.style.width = '25%';
+                basesList.style.overflowX = 'visible';
+
+                // Reset training base items
+                const baseItems = basesList.querySelectorAll('.training-base-item');
+                baseItems.forEach(item => {
+                    item.style.minWidth = '';
+                    item.style.flex = '';
+                    item.style.marginRight = '';
+                    item.style.marginBottom = '10px';
+                });
+            }
+        }
+
         // Update the arena display
         this.updateArenaDisplay();
     }
@@ -684,9 +741,9 @@ class TrainingManager {
 
                 <div class="training-base-duration">
                     <label class="training-base-duration-label">Training Duration (minutes):</label>
-                    <input type="range" class="training-base-duration-slider" min="1" max="${station.maxDuration}" value="${Math.min(Math.floor(station.maxDuration/2), station.maxDuration)}">
-                    <span class="training-base-duration-display">${Math.min(Math.floor(station.maxDuration/2), station.maxDuration)} minutes</span>
-                    <div class="training-base-xp-estimate">Estimated XP: <span class="training-base-xp-value">${this.getEffectiveXPPerMinute(stationId) * Math.min(Math.floor(station.maxDuration/2), station.maxDuration)}</span></div>
+                    <input type="range" class="training-base-duration-slider" min="1" max="${station.maxDuration}" value="${Math.min(Math.floor(station.maxDuration / 2), station.maxDuration)}">
+                    <span class="training-base-duration-display">${Math.min(Math.floor(station.maxDuration / 2), station.maxDuration)} minutes</span>
+                    <div class="training-base-xp-estimate">Estimated XP: <span class="training-base-xp-value">${this.getEffectiveXPPerMinute(stationId) * Math.min(Math.floor(station.maxDuration / 2), station.maxDuration)}</span></div>
                 </div>
 
                 <div class="training-base-actions">
@@ -801,9 +858,9 @@ class TrainingManager {
 
                 <div class="training-duration-selector">
                     <label for="training-duration">Training Duration (minutes):</label>
-                    <input type="range" id="training-duration" min="1" max="${station.maxDuration}" value="${Math.min(Math.floor(station.maxDuration/2), station.maxDuration)}">
-                    <span id="duration-display">${Math.min(Math.floor(station.maxDuration/2), station.maxDuration)} minutes</span>
-                    <div class="xp-estimate">Estimated XP: <span id="xp-estimate">${this.getEffectiveXPPerMinute(stationId) * Math.min(Math.floor(station.maxDuration/2), station.maxDuration)}</span></div>
+                    <input type="range" id="training-duration" min="1" max="${station.maxDuration}" value="${Math.min(Math.floor(station.maxDuration / 2), station.maxDuration)}">
+                    <span id="duration-display">${Math.min(Math.floor(station.maxDuration / 2), station.maxDuration)} minutes</span>
+                    <div class="xp-estimate">Estimated XP: <span id="xp-estimate">${this.getEffectiveXPPerMinute(stationId) * Math.min(Math.floor(station.maxDuration / 2), station.maxDuration)}</span></div>
                 </div>
 
                 <div class="cat-selection">
@@ -1037,7 +1094,7 @@ class TrainingManager {
 const trainingManager = new TrainingManager();
 
 // Global function to upgrade the training arena
-window.upgradeTrainingArena = function() {
+window.upgradeTrainingArena = function () {
     console.log('Global upgradeTrainingArena function called');
     // Call the upgradeArena method on the trainingManager
     const result = trainingManager.upgradeArena();
@@ -1045,7 +1102,7 @@ window.upgradeTrainingArena = function() {
 };
 
 // Temporary function to add materials for testing
-window.addTestMaterials = function() {
+window.addTestMaterials = function () {
     resourceManager.addResource('materials', 50);
     console.log('Added 50 materials for testing');
     console.log('Current materials:', resourceManager.getResource('materials'));

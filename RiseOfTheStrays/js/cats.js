@@ -361,7 +361,7 @@ class CatManager {
         let searchTime = 0; // Search time in milliseconds
 
         // Adjust parameters based on search type
-        switch(searchType) {
+        switch (searchType) {
             case 'thorough': // More expensive but higher chance of success
                 foodCost = 10;
                 successRate = 0.85;
@@ -389,7 +389,7 @@ class CatManager {
             this.toggleSearchButtons(false);
 
             // Show searching message
-            gameManager.addMessage(`Searching for cats... (${searchTime/1000} seconds)`);
+            gameManager.addMessage(`Searching for cats... (${searchTime / 1000} seconds)`);
 
             // Create a progress indicator
             this.showSearchProgress(searchTime);
@@ -496,7 +496,7 @@ class CatManager {
         progressBar.style.width = '0%';
         progressBar.style.height = '100%';
         progressBar.style.backgroundColor = '#3498db';
-        progressBar.style.transition = `width ${duration/1000}s linear`;
+        progressBar.style.transition = `width ${duration / 1000}s linear`;
 
         // Start the animation after a small delay to ensure the transition works
         setTimeout(() => {
@@ -1049,6 +1049,7 @@ class CatManager {
 
             // Create the cat HTML
             catElement.innerHTML = `
+                <!-- Cat avatar in the center -->
                 <div class="cat-avatar-container">
                     <div class="cat-avatar" data-type="${cat.type}">
                         <!-- Cat body container -->
@@ -1100,14 +1101,17 @@ class CatManager {
                         </div>
                     </div>
                 </div>
-                <div class="cat-info">
-                    <div class="cat-header">
-                        <div class="cat-name-container">
-                            <div class="cat-name">${cat.name}</div>
-                            <div class="cat-rarity" style="color: ${rarityColor}">${cat.rarity} ${rarityIcon}</div>
-                        </div>
-                        <div class="cat-type-badge clickable" data-type="${cat.type}" data-cat-id="${cat.id}" title="${this.getCatTypeDescription(cat.type)}">${cat.type}</div>
-                    </div>
+
+                <!-- Cat name below avatar -->
+                <div class="cat-name">${cat.name}</div>
+
+                <!-- Cat rarity below name -->
+                <div class="cat-rarity" style="color: ${rarityColor}">${cat.rarity} ${rarityIcon}</div>
+
+                <!-- Cat class badge below rarity -->
+                <div class="cat-type-badge-container">
+                    <div class="cat-type-badge clickable" data-type="${cat.type}" data-cat-id="${cat.id}" title="${this.getCatTypeDescription(cat.type)}">${cat.type}</div>
+                </div>
 
                     <div class="cat-details">
                         <div class="cat-level-container">
@@ -1217,7 +1221,7 @@ class CatManager {
                                         ${this.tempStatChanges[cat.id]?.stats?.VIT ? `<span class="stat-change">(+${this.tempStatChanges[cat.id].stats.VIT})</span>` : ''}
                                     </span>
                                 </div>
-                                <div class="stat-impact">+${100 + this.getEffectiveStat(cat, 'VIT')*3} Max Health</div>
+                                <div class="stat-impact">+${100 + this.getEffectiveStat(cat, 'VIT') * 3} Max Health</div>
                                 <div class="stat-buttons">
                                     ${this.tempStatChanges[cat.id]?.stats?.VIT > 0 ? `<button class="remove-stat-btn" data-cat-id="${cat.id}" data-stat="VIT">-</button>` : ''}
                                     ${this.getRemainingStatPoints(cat) > 0 ? `<button class="add-stat-btn" data-cat-id="${cat.id}" data-stat="VIT">+</button>` : ''}
@@ -1232,7 +1236,7 @@ class CatManager {
                                         ${this.tempStatChanges[cat.id]?.stats?.WIL ? `<span class="stat-change">(+${this.tempStatChanges[cat.id].stats.WIL})</span>` : ''}
                                     </span>
                                 </div>
-                                <div class="stat-impact">+${this.getEffectiveStat(cat, 'WIL')*1}% Debuff Resistance</div>
+                                <div class="stat-impact">+${this.getEffectiveStat(cat, 'WIL') * 1}% Debuff Resistance</div>
                                 <div class="stat-buttons">
                                     ${this.tempStatChanges[cat.id]?.stats?.WIL > 0 ? `<button class="remove-stat-btn" data-cat-id="${cat.id}" data-stat="WIL">-</button>` : ''}
                                     ${this.getRemainingStatPoints(cat) > 0 ? `<button class="add-stat-btn" data-cat-id="${cat.id}" data-stat="WIL">+</button>` : ''}
@@ -1247,7 +1251,7 @@ class CatManager {
                                         ${this.tempStatChanges[cat.id]?.stats?.INT ? `<span class="stat-change">(+${this.tempStatChanges[cat.id].stats.INT})</span>` : ''}
                                     </span>
                                 </div>
-                                <div class="stat-impact">+${(1.0 + this.getEffectiveStat(cat, 'INT')*0.025).toFixed(3)}x XP Gain</div>
+                                <div class="stat-impact">+${(1.0 + this.getEffectiveStat(cat, 'INT') * 0.025).toFixed(3)}x XP Gain</div>
                                 <div class="stat-buttons">
                                     ${this.tempStatChanges[cat.id]?.stats?.INT > 0 ? `<button class="remove-stat-btn" data-cat-id="${cat.id}" data-stat="INT">-</button>` : ''}
                                     ${this.getRemainingStatPoints(cat) > 0 ? `<button class="add-stat-btn" data-cat-id="${cat.id}" data-stat="INT">+</button>` : ''}
@@ -1262,7 +1266,7 @@ class CatManager {
                                         ${this.tempStatChanges[cat.id]?.stats?.CHA ? `<span class="stat-change">(+${this.tempStatChanges[cat.id].stats.CHA})</span>` : ''}
                                     </span>
                                 </div>
-                                <div class="stat-impact">+${this.getEffectiveStat(cat, 'CHA')*0.75}% Cat Recruitment Chance</div>
+                                <div class="stat-impact">+${this.getEffectiveStat(cat, 'CHA') * 0.75}% Cat Recruitment Chance</div>
                                 <div class="stat-buttons">
                                     ${this.tempStatChanges[cat.id]?.stats?.CHA > 0 ? `<button class="remove-stat-btn" data-cat-id="${cat.id}" data-stat="CHA">-</button>` : ''}
                                     ${this.getRemainingStatPoints(cat) > 0 ? `<button class="add-stat-btn" data-cat-id="${cat.id}" data-stat="CHA">+</button>` : ''}
@@ -1277,7 +1281,7 @@ class CatManager {
                                         ${this.tempStatChanges[cat.id]?.stats?.PER ? `<span class="stat-change">(+${this.tempStatChanges[cat.id].stats.PER})</span>` : ''}
                                     </span>
                                 </div>
-                                <div class="stat-impact">+${(this.getEffectiveStat(cat, 'PER')/5).toFixed(1)}% Critical Chance</div>
+                                <div class="stat-impact">+${(this.getEffectiveStat(cat, 'PER') / 5).toFixed(1)}% Critical Chance</div>
                                 <div class="stat-buttons">
                                     ${this.tempStatChanges[cat.id]?.stats?.PER > 0 ? `<button class="remove-stat-btn" data-cat-id="${cat.id}" data-stat="PER">-</button>` : ''}
                                     ${this.getRemainingStatPoints(cat) > 0 ? `<button class="add-stat-btn" data-cat-id="${cat.id}" data-stat="PER">+</button>` : ''}
@@ -1292,7 +1296,7 @@ class CatManager {
                                         ${this.tempStatChanges[cat.id]?.stats?.LCK ? `<span class="stat-change">(+${this.tempStatChanges[cat.id].stats.LCK})</span>` : ''}
                                     </span>
                                 </div>
-                                <div class="stat-impact">+${(5 + this.getEffectiveStat(cat, 'LCK')*0.25).toFixed(1)}% Rare Drop Chance</div>
+                                <div class="stat-impact">+${(5 + this.getEffectiveStat(cat, 'LCK') * 0.25).toFixed(1)}% Rare Drop Chance</div>
                                 <div class="stat-buttons">
                                     ${this.tempStatChanges[cat.id]?.stats?.LCK > 0 ? `<button class="remove-stat-btn" data-cat-id="${cat.id}" data-stat="LCK">-</button>` : ''}
                                     ${this.getRemainingStatPoints(cat) > 0 ? `<button class="add-stat-btn" data-cat-id="${cat.id}" data-stat="LCK">+</button>` : ''}
@@ -1327,7 +1331,7 @@ class CatManager {
             // Add event listener for cat type badge
             const catTypeBadge = catElement.querySelector('.cat-type-badge.clickable');
             if (catTypeBadge) {
-                catTypeBadge.addEventListener('click', (event) => {
+                catTypeBadge.addEventListener('click', () => {
                     const catId = parseInt(catTypeBadge.getAttribute('data-cat-id'));
                     this.showCatDetailsModal(catId);
                 });
@@ -1341,7 +1345,7 @@ class CatManager {
 
         let patternHTML = '';
 
-        switch(pattern) {
+        switch (pattern) {
             case 'spots':
                 patternHTML = `
                     <div class="cat-pattern cat-spots" style="background-color: ${color}"></div>
@@ -1368,7 +1372,7 @@ class CatManager {
 
         let accessoryHTML = '';
 
-        switch(accessory) {
+        switch (accessory) {
             case 'bow':
                 accessoryHTML = `
                     <div class="cat-accessory cat-bow" style="background-color: ${color}"></div>
@@ -1482,7 +1486,7 @@ class CatManager {
 
     // Get stat multiplier based on rarity
     getRarityStatMultiplier(rarityName) {
-        switch(rarityName) {
+        switch (rarityName) {
             case 'Common': return 1.0;
             case 'Uncommon': return 1.2;
             case 'Rare': return 1.4;
@@ -1495,7 +1499,7 @@ class CatManager {
 
     // Get the XP multiplier based on rarity
     getRarityXPMultiplier(rarityName) {
-        switch(rarityName) {
+        switch (rarityName) {
             case 'Common': return 1.0;
             case 'Uncommon': return 1.2;
             case 'Rare': return 1.5;
