@@ -293,8 +293,9 @@ class CatManager {
             },
             // Derived attributes (calculated from stats)
             attributes: {
+                // Basic attributes
                 maxHealth: 100,
-                healthRegenRate: 0.1,
+                healthRegenRate: 0,
                 attackDamage: 10,
                 jumpHeight: 2,
                 accuracy: 75,
@@ -309,9 +310,19 @@ class CatManager {
                 statusAvoidChance: 0,
                 debuffResistance: 0,
                 castingTimeReduction: 0,
-                pushForce: 1.0
+                pushForce: 1.0,
 
-                // Create a synergy bonus using the cat's charima.
+                // New combat attributes
+                physicalAttack: 0,
+                physicalDefense: 0,
+                magicAttack: 0,
+                magicResistance: 0,
+                speed: 0,
+                synergyBonus: 0,
+
+                // Happiness attributes
+                happinessBonus: 0,
+                happinessLuckBonus: 0
             },
             statPoints: 3, // Available points to distribute
             totalStatPoints: 3 // Total points earned (for tracking)
@@ -1139,7 +1150,10 @@ class CatManager {
                     <div class="cat-stats">
                         <div class="stat-header">
                             <h3>Status</h3>
-                            <button class="gain-xp-btn" data-cat-id="${cat.id}">Gain XP</button>
+                            <div class="cat-action-buttons">
+                                <button class="pet-cat-btn" data-cat-id="${cat.id}" title="Pet your cat to increase happiness">Pet Cat</button>
+                                <button class="gain-xp-btn" data-cat-id="${cat.id}" title="Give your cat some XP">Gain XP</button>
+                            </div>
                         </div>
                         <div class="stat-item">
                             <span class="stat-label">Health:</span>
@@ -1153,7 +1167,7 @@ class CatManager {
                             <div class="stat-bar-container">
                                 <div class="stat-bar happiness-bar" style="width: ${cat.happiness}%"></div>
                             </div>
-                            <span class="stat-value">${cat.happiness}</span>
+                            <span class="stat-value">${cat.happiness}/100</span>
                         </div>
                     </div>
 
@@ -1172,7 +1186,7 @@ class CatManager {
                                         ${this.tempStatChanges[cat.id]?.stats?.STR ? `<span class="stat-change">(+${this.tempStatChanges[cat.id].stats.STR})</span>` : ''}
                                     </span>
                                 </div>
-                                <div class="stat-impact">+${Math.floor(10 + this.getEffectiveStat(cat, 'STR') * 1)} Attack Damage</div>
+                                <div class="stat-impact">+${Math.floor(this.getEffectiveStat(cat, 'STR') * 1.5)} Physical Attack, +${Math.floor(this.getEffectiveStat(cat, 'STR') * 0.5)}% Physical Defense</div>
                                 <div class="stat-buttons">
                                     ${this.tempStatChanges[cat.id]?.stats?.STR > 0 ? `<button class="remove-stat-btn" data-cat-id="${cat.id}" data-stat="STR">-</button>` : ''}
                                     ${this.getRemainingStatPoints(cat) > 0 ? `<button class="add-stat-btn" data-cat-id="${cat.id}" data-stat="STR">+</button>` : ''}
@@ -1217,7 +1231,7 @@ class CatManager {
                                         ${this.tempStatChanges[cat.id]?.stats?.VIT ? `<span class="stat-change">(+${this.tempStatChanges[cat.id].stats.VIT})</span>` : ''}
                                     </span>
                                 </div>
-                                <div class="stat-impact">+${100 + this.getEffectiveStat(cat, 'VIT')*3} Max Health</div>
+                                <div class="stat-impact">+${100 + this.getEffectiveStat(cat, 'VIT')*5} Max Health, +${Math.floor(this.getEffectiveStat(cat, 'VIT')*0.2)} HP Regen/min</div>
                                 <div class="stat-buttons">
                                     ${this.tempStatChanges[cat.id]?.stats?.VIT > 0 ? `<button class="remove-stat-btn" data-cat-id="${cat.id}" data-stat="VIT">-</button>` : ''}
                                     ${this.getRemainingStatPoints(cat) > 0 ? `<button class="add-stat-btn" data-cat-id="${cat.id}" data-stat="VIT">+</button>` : ''}
@@ -1232,7 +1246,7 @@ class CatManager {
                                         ${this.tempStatChanges[cat.id]?.stats?.WIL ? `<span class="stat-change">(+${this.tempStatChanges[cat.id].stats.WIL})</span>` : ''}
                                     </span>
                                 </div>
-                                <div class="stat-impact">+${this.getEffectiveStat(cat, 'WIL')*1}% Debuff Resistance</div>
+                                <div class="stat-impact">+${Math.floor(this.getEffectiveStat(cat, 'WIL')*0.75)}% Magic Resistance, +${Math.floor(this.getEffectiveStat(cat, 'WIL')*0.5)}% Debuff Resistance</div>
                                 <div class="stat-buttons">
                                     ${this.tempStatChanges[cat.id]?.stats?.WIL > 0 ? `<button class="remove-stat-btn" data-cat-id="${cat.id}" data-stat="WIL">-</button>` : ''}
                                     ${this.getRemainingStatPoints(cat) > 0 ? `<button class="add-stat-btn" data-cat-id="${cat.id}" data-stat="WIL">+</button>` : ''}
@@ -1247,7 +1261,7 @@ class CatManager {
                                         ${this.tempStatChanges[cat.id]?.stats?.INT ? `<span class="stat-change">(+${this.tempStatChanges[cat.id].stats.INT})</span>` : ''}
                                     </span>
                                 </div>
-                                <div class="stat-impact">+${(1.0 + this.getEffectiveStat(cat, 'INT')*0.025).toFixed(3)}x XP Gain</div>
+                                <div class="stat-impact">+${Math.floor(this.getEffectiveStat(cat, 'INT') * 1.5)} Magic Attack, +${(1.0 + this.getEffectiveStat(cat, 'INT')*0.025).toFixed(2)}x XP Gain</div>
                                 <div class="stat-buttons">
                                     ${this.tempStatChanges[cat.id]?.stats?.INT > 0 ? `<button class="remove-stat-btn" data-cat-id="${cat.id}" data-stat="INT">-</button>` : ''}
                                     ${this.getRemainingStatPoints(cat) > 0 ? `<button class="add-stat-btn" data-cat-id="${cat.id}" data-stat="INT">+</button>` : ''}
@@ -1262,7 +1276,7 @@ class CatManager {
                                         ${this.tempStatChanges[cat.id]?.stats?.CHA ? `<span class="stat-change">(+${this.tempStatChanges[cat.id].stats.CHA})</span>` : ''}
                                     </span>
                                 </div>
-                                <div class="stat-impact">+${this.getEffectiveStat(cat, 'CHA')*0.75}% Cat Recruitment Chance</div>
+                                <div class="stat-impact">+${Math.min(15, this.getEffectiveStat(cat, 'CHA')*0.5).toFixed(1)}% Synergy Bonus, +${(this.getEffectiveStat(cat, 'CHA')*0.75).toFixed(1)}% Recruitment</div>
                                 <div class="stat-buttons">
                                     ${this.tempStatChanges[cat.id]?.stats?.CHA > 0 ? `<button class="remove-stat-btn" data-cat-id="${cat.id}" data-stat="CHA">-</button>` : ''}
                                     ${this.getRemainingStatPoints(cat) > 0 ? `<button class="add-stat-btn" data-cat-id="${cat.id}" data-stat="CHA">+</button>` : ''}
@@ -1327,7 +1341,7 @@ class CatManager {
             // Add event listener for cat type badge
             const catTypeBadge = catElement.querySelector('.cat-type-badge.clickable');
             if (catTypeBadge) {
-                catTypeBadge.addEventListener('click', (event) => {
+                catTypeBadge.addEventListener('click', () => {
                     const catId = parseInt(catTypeBadge.getAttribute('data-cat-id'));
                     this.showCatDetailsModal(catId);
                 });
@@ -1594,6 +1608,9 @@ class CatManager {
             secondary: []
         };
 
+        // Get synergy percentage for display
+        const synergyPercentage = Math.round(cat.attributes.synergyBonus);
+
         // Create modal content
         modalContainer.innerHTML = `
             <div class="modal-content cat-details-modal-content">
@@ -1646,6 +1663,50 @@ class CatManager {
                     <div class="cat-details-xp-label">XP: ${cat.xp} / ${cat.xpToNext}</div>
                     <div class="cat-details-xp-bar-container">
                         <div class="cat-details-xp-bar" style="width: ${Math.min(100, (cat.xp / cat.xpToNext) * 100)}%"></div>
+                    </div>
+                </div>
+
+                <div class="cat-details-combat-stats">
+                    <h4>Combat Stats</h4>
+                    <div class="cat-details-combat-grid">
+                        <div class="cat-details-combat-stat">
+                            <div class="cat-details-combat-label">Physical Attack</div>
+                            <div class="cat-details-combat-value">${cat.attributes.physicalAttack}</div>
+                            <div class="cat-details-combat-desc">Based on STR</div>
+                        </div>
+                        <div class="cat-details-combat-stat">
+                            <div class="cat-details-combat-label">Physical Defense</div>
+                            <div class="cat-details-combat-value">${cat.attributes.physicalDefense}%</div>
+                            <div class="cat-details-combat-desc">Based on STR</div>
+                        </div>
+                        <div class="cat-details-combat-stat">
+                            <div class="cat-details-combat-label">Magic Attack</div>
+                            <div class="cat-details-combat-value">${cat.attributes.magicAttack}</div>
+                            <div class="cat-details-combat-desc">Based on INT</div>
+                        </div>
+                        <div class="cat-details-combat-stat">
+                            <div class="cat-details-combat-label">Magic Resist</div>
+                            <div class="cat-details-combat-value">${cat.attributes.magicResistance}%</div>
+                            <div class="cat-details-combat-desc">Based on WIS</div>
+                        </div>
+                        <div class="cat-details-combat-stat">
+                            <div class="cat-details-combat-label">HP Regen</div>
+                            <div class="cat-details-combat-value">${cat.attributes.healthRegenRate}</div>
+                            <div class="cat-details-combat-desc">Per Minute</div>
+                        </div>
+                        <div class="cat-details-combat-stat">
+                            <div class="cat-details-combat-label">Max Health</div>
+                            <div class="cat-details-combat-value">${cat.attributes.maxHealth}</div>
+                            <div class="cat-details-combat-desc">Based on VIT</div>
+                        </div>
+                        <div class="cat-details-combat-stat">
+                            <div class="cat-details-combat-label">Synergy Bonus</div>
+                            <div class="cat-details-combat-value">${synergyPercentage}%</div>
+                            <div class="cat-details-combat-desc">Based on CHA (2+ cats needed)</div>
+                        </div>
+                    </div>
+                    <div class="cat-details-combat-info">
+                        <p>In groups with 2+ cats, this cat's CHA provides a ${synergyPercentage}% bonus to all stats.</p>
                     </div>
                 </div>
 
@@ -1710,9 +1771,12 @@ class CatManager {
         // STR - Paw Power
         cat.attributes.attackDamage = 10 + cat.stats.STR * 1;        // Reduced from 2 to 1 per point
         cat.attributes.pushForce = 1.0 + cat.stats.STR * 0.05;      // Reduced from 0.1 to 0.05 per point
+        cat.attributes.physicalAttack = Math.floor(cat.stats.STR * 1.5); // Physical attack damage
+        cat.attributes.physicalDefense = Math.floor(cat.stats.STR * 0.5); // Physical defense percentage
 
         // DEX - Whisker Dexterity
         cat.attributes.accuracy = 75 + cat.stats.DEX * 1;           // Reduced from 2% to 1% per point
+        cat.attributes.speed = Math.floor(cat.stats.DEX * 0.5);     // Speed bonus
 
         // AGI - Tail Balance
         cat.attributes.dodgeChance = cat.stats.AGI * 0.75;          // Reduced from 1.5% to 0.75% per point
@@ -1720,22 +1784,26 @@ class CatManager {
         cat.attributes.jumpHeight = 2 + cat.stats.AGI * 0.05;       // Reduced from 0.1 to 0.05 per point
 
         // VIT - Clawstitution
-        cat.attributes.maxHealth = 100 + cat.stats.VIT * 3;         // Reduced from 5 to 3 per point
-        cat.attributes.healthRegenRate = 0.1 + cat.stats.VIT * 0.025; // Reduced from 0.05 to 0.025 per point
+        cat.attributes.maxHealth = 100 + cat.stats.VIT * 5;         // Increased from 3 to 5 per point for better balance
+        cat.attributes.healthRegenRate = Math.floor(cat.stats.VIT * 0.2); // HP regeneration per minute
         cat.health = Math.min(cat.health, cat.attributes.maxHealth); // Cap health at max
 
         // WIL - Fur-titude
-        cat.attributes.debuffResistance = cat.stats.WIL * 1;        // Reduced from 2% to 1% per point
+        cat.attributes.debuffResistance = Math.floor(cat.stats.WIL * 0.5); // Reduced and rebalanced
         cat.attributes.castingTimeReduction = cat.stats.WIL * 0.25; // Reduced from 0.5% to 0.25% per point
+        cat.attributes.magicResistance = Math.floor(cat.stats.WIL * 0.75); // Magic resistance percentage
 
         // INT - Meowmental
         cat.attributes.xpGainMultiplier = 1.0 + cat.stats.INT * 0.025; // Reduced from 0.05 to 0.025 per point
+        cat.attributes.magicAttack = Math.floor(cat.stats.INT * 1.5); // Magic attack damage
 
         // CHA - Charm
         // This affects the chance to successfully recruit new cats when finding them
         // Will be used when the cat finding/recruiting feature is implemented
         cat.attributes.recruitChanceBonus = cat.stats.CHA * 0.75;   // Reduced from 1.5% to 0.75% per point
         cat.attributes.bondingSpeed = 1 + cat.stats.CHA * 0.05;     // Reduced from 0.1 to 0.05 per point
+        cat.attributes.synergyBonus = Math.min(15, cat.stats.CHA * 0.5); // Synergy bonus capped at 15%
+        cat.attributes.happinessBonus = Math.floor(cat.stats.CHA * 0.3); // Happiness bonus from CHA
 
         // PER - Purrception
         cat.attributes.critChance = cat.stats.PER / 5;              // Reduced from 1% per 3 points to 1% per 5 points
@@ -1744,6 +1812,42 @@ class CatManager {
         // LCK - Luck
         cat.attributes.rareDropChance = 5 + cat.stats.LCK * 0.25;   // Reduced from 0.5% to 0.25% per point
         cat.attributes.statusAvoidChance = cat.stats.LCK * 0.15;    // Reduced from 0.25% to 0.15% per point
+        cat.attributes.happinessLuckBonus = Math.floor(cat.stats.LCK * 0.2); // Happiness bonus from LCK
+
+        return cat;
+    }
+
+    // Update a cat's health and happiness
+    updateCatStatus(catId, healthChange = 0, happinessChange = 0) {
+        const cat = this.cats.find(c => c.id === catId);
+        if (!cat) return null;
+
+        // Apply health change
+        if (healthChange !== 0) {
+            cat.health = Math.max(0, Math.min(cat.attributes.maxHealth, cat.health + healthChange));
+        }
+
+        // Apply happiness change with bonuses from CHA and LCK
+        if (happinessChange !== 0) {
+            // Apply charisma and luck bonuses to positive happiness changes
+            if (happinessChange > 0) {
+                const chaBonus = cat.attributes.happinessBonus || 0;
+                const luckBonus = cat.attributes.happinessLuckBonus || 0;
+                happinessChange = Math.floor(happinessChange * (1 + (chaBonus + luckBonus) / 100));
+            }
+
+            cat.happiness = Math.max(0, Math.min(100, cat.happiness + happinessChange));
+        }
+
+        // Apply natural regeneration based on VIT
+        if (cat.health < cat.attributes.maxHealth && cat.attributes.healthRegenRate > 0) {
+            // This would be called periodically in a real game loop
+            // For now, we'll just simulate a small amount of healing when checking status
+            cat.health = Math.min(cat.attributes.maxHealth, cat.health + 1);
+        }
+
+        // Update display
+        this.updateDisplay();
 
         return cat;
     }

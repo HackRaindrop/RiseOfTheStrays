@@ -215,6 +215,23 @@ document.addEventListener('DOMContentLoaded', () => {
             if (result) {
                 gameManager.addMessage(`${result.xpGained} XP added to cat!`);
             }
+        } else if (event.target.classList.contains('pet-cat-btn')) {
+            const catId = parseInt(event.target.getAttribute('data-cat-id'));
+            const cat = catManager.cats.find(c => c.id === catId);
+            if (cat) {
+                // Update cat happiness
+                catManager.updateCatStatus(catId, 0, 5);
+                gameManager.addMessage(`You pet ${cat.name}! Happiness increased.`);
+
+                // Add a visual effect to show the cat is happy
+                const catCard = event.target.closest('.cat-card');
+                if (catCard) {
+                    catCard.classList.add('happy-animation');
+                    setTimeout(() => {
+                        catCard.classList.remove('happy-animation');
+                    }, 1000);
+                }
+            }
             // Prevent the click from toggling the card
             event.stopPropagation();
         } else if (event.target.closest('.expand-btn')) {
