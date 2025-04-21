@@ -305,6 +305,15 @@ class GroupManager {
                                         <div class="group-cat-info">
                                             <div class="group-cat-name">${cat.name}</div>
                                             <div class="group-cat-level">Level ${cat.level} ${cat.type}</div>
+                                            <div class="group-cat-health-container">
+                                                <div class="group-cat-health-label">
+                                                    <span>HP</span>
+                                                    <span>${cat.health}/${cat.attributes.maxHealth}</span>
+                                                </div>
+                                                <div class="group-cat-health-bar-container">
+                                                    <div class="group-cat-health-bar" style="width: ${(cat.health / cat.attributes.maxHealth) * 100}%"></div>
+                                                </div>
+                                            </div>
                                         </div>
                                         <button class="remove-cat-btn" data-group-id="${group.id}" data-cat-id="${cat.id}">Remove</button>
                                     </div>
@@ -432,6 +441,15 @@ class GroupManager {
                         <div class="available-cat-info">
                             <div class="available-cat-name">${cat.name}</div>
                             <div class="available-cat-level">Level ${cat.level} ${cat.type}</div>
+                            <div class="group-cat-health-container">
+                                <div class="group-cat-health-label">
+                                    <span>HP</span>
+                                    <span>${cat.health}/${cat.attributes.maxHealth}</span>
+                                </div>
+                                <div class="group-cat-health-bar-container">
+                                    <div class="group-cat-health-bar" style="width: ${(cat.health / cat.attributes.maxHealth) * 100}%"></div>
+                                </div>
+                            </div>
                         </div>
                         <button class="add-cat-btn" data-group-id="${groupId}" data-cat-id="${cat.id}">Add</button>
                     </div>

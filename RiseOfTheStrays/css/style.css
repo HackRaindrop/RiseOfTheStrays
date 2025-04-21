@@ -625,6 +625,95 @@ button:disabled::after {
     padding: 5px;
 }
 
+/* Cat health bar styling */
+.cat-health-container {
+    margin: 8px 0;
+}
+
+.cat-health-label {
+    font-size: 14px;
+    color: #e74c3c;
+    margin-bottom: 3px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.cat-health-bar-container {
+    width: 100%;
+    height: 10px;
+    background-color: #34495e;
+    border-radius: 5px;
+    overflow: hidden;
+    border: 1px solid #2c3e50;
+    position: relative;
+}
+
+.cat-health-bar {
+    height: 100%;
+    background-color: #e74c3c;
+    background-image: linear-gradient(to right, #e74c3c, #e67e22);
+    border-radius: 5px;
+    transition: width 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.cat-health-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0.1) 100%);
+    animation: shimmer 2s infinite linear;
+    transform: translateX(-100%);
+}
+
+/* Group cat health bar styling - smaller version */
+.group-cat-health-container {
+    margin: 4px 0;
+}
+
+.group-cat-health-label {
+    font-size: 12px;
+    color: #e74c3c;
+    display: flex;
+    justify-content: space-between;
+}
+
+.group-cat-health-bar-container {
+    width: 100%;
+    height: 6px;
+    background-color: #34495e;
+    border-radius: 3px;
+    overflow: hidden;
+    border: 1px solid #2c3e50;
+    position: relative;
+}
+
+.group-cat-health-bar {
+    height: 100%;
+    background-color: #e74c3c;
+    background-image: linear-gradient(to right, #e74c3c, #e67e22);
+    border-radius: 3px;
+    transition: width 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.group-cat-health-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0.1) 100%);
+    animation: shimmer 2s infinite linear;
+    transform: translateX(-100%);
+}
+
 /* Cat header section */
 .cat-header {
     display: flex;

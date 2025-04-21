@@ -1611,17 +1611,27 @@ class CatManager {
                         </div>
                         <div class="stat-item">
                             <span class="stat-label">Health:</span>
-                            <div class="stat-bar-container">
-                                <div class="stat-bar health-bar" style="width: ${(cat.health / cat.attributes.maxHealth) * 100}%"></div>
+                            <div class="cat-health-container">
+                                <div class="cat-health-label">
+                                    <span>HP</span>
+                                    <span>${cat.health}/${cat.attributes.maxHealth}</span>
+                                </div>
+                                <div class="cat-health-bar-container">
+                                    <div class="cat-health-bar" style="width: ${(cat.health / cat.attributes.maxHealth) * 100}%"></div>
+                                </div>
                             </div>
-                            <span class="stat-value">${cat.health}/${cat.attributes.maxHealth}</span>
                         </div>
                         <div class="stat-item">
                             <span class="stat-label">Happiness:</span>
-                            <div class="stat-bar-container">
-                                <div class="stat-bar happiness-bar" style="width: ${cat.happiness}%"></div>
+                            <div class="cat-health-container">
+                                <div class="cat-health-label">
+                                    <span>Mood</span>
+                                    <span>${cat.happiness}/100</span>
+                                </div>
+                                <div class="cat-health-bar-container">
+                                    <div class="cat-health-bar happiness-bar" style="width: ${cat.happiness}%"></div>
+                                </div>
                             </div>
-                            <span class="stat-value">${cat.happiness}/100</span>
                         </div>
                     </div>
 

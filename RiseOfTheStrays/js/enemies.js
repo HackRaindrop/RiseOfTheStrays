@@ -82,42 +82,146 @@ class EnemyManager {
         // Enemy appearance features
         this.enemyFeatures = {
             bodyColors: [
+                // Browns & Tans
                 '#CD853F', // Peru (brighter brown)
                 '#D2B48C', // Tan
                 '#A0522D', // Sienna
                 '#F4A460', // Sandy Brown
+                '#8B4513', // Saddle Brown
+                '#DEB887', // Burlywood
+                '#BC8F8F', // Rosy Brown
+
+                // Reds & Oranges
                 '#B22222', // Firebrick (brighter red)
-                '#6A5ACD', // Slate Blue (brighter blue)
-                '#20B2AA', // Light Sea Green
-                '#9370DB', // Medium Purple
                 '#FF6347', // Tomato (bright orange-red)
-                '#3CB371'  // Medium Sea Green
+                '#FF4500', // Orange Red
+                '#E9967A', // Dark Salmon
+                '#FA8072', // Salmon
+                '#FF7F50', // Coral
+                '#DC143C', // Crimson
+
+                // Blues & Purples
+                '#6A5ACD', // Slate Blue (brighter blue)
+                '#9370DB', // Medium Purple
+                '#4169E1', // Royal Blue
+                '#1E90FF', // Dodger Blue
+                '#4682B4', // Steel Blue
+                '#5F9EA0', // Cadet Blue
+                '#7B68EE', // Medium Slate Blue
+                '#6495ED', // Cornflower Blue
+                '#9932CC', // Dark Orchid
+                '#8A2BE2', // Blue Violet
+                '#9400D3', // Dark Violet
+                '#BA55D3', // Medium Orchid
+
+                // Greens
+                '#20B2AA', // Light Sea Green
+                '#3CB371', // Medium Sea Green
+                '#2E8B57', // Sea Green
+                '#228B22', // Forest Green
+                '#32CD32', // Lime Green
+                '#00FA9A', // Medium Spring Green
+                '#66CDAA', // Medium Aquamarine
+                '#8FBC8F', // Dark Sea Green
+
+                // Yellows & Golds
+                '#DAA520', // Goldenrod
+                '#B8860B', // Dark Goldenrod
+                '#CD5C5C', // Indian Red
+                '#BDB76B', // Dark Khaki
+                '#F0E68C', // Khaki
+                '#EEE8AA', // Pale Goldenrod
+
+                // Grays & Silvers
+                '#708090', // Slate Gray
+                '#778899', // Light Slate Gray
+                '#A9A9A9', // Dark Gray
+                '#C0C0C0', // Silver
+                '#D3D3D3'  // Light Gray
             ],
             patternColors: [
+                // Bright Colors
                 '#FFD700', // Gold
                 '#E0FFFF', // Light Cyan
                 '#FF69B4', // Hot Pink
                 '#00BFFF', // Deep Sky Blue
                 '#7FFF00', // Chartreuse (bright green)
                 '#FF8C00', // Dark Orange
-                '#FF1493'  // Deep Pink
+                '#FF1493', // Deep Pink
+                '#00FF7F', // Spring Green
+                '#FF00FF', // Magenta
+                '#1E90FF', // Dodger Blue
+                '#00FFFF', // Cyan
+                '#7FFFD4', // Aquamarine
+                '#ADFF2F', // Green Yellow
+                '#FFA07A', // Light Salmon
+                '#87CEFA', // Light Sky Blue
+                '#98FB98', // Pale Green
+                '#DDA0DD', // Plum
+                '#FFDAB9', // Peach Puff
+                '#FFFF00', // Yellow
+                '#00FF00', // Lime
+                '#FF0000', // Red
+                '#40E0D0', // Turquoise
+                '#EE82EE', // Violet
+                '#F08080', // Light Coral
+                '#FAFAD2', // Light Goldenrod Yellow
+                '#D8BFD8', // Thistle
+                '#FFFACD', // Lemon Chiffon
+                '#F0FFF0'  // Honeydew
             ],
             patterns: [
                 'none',
                 'spots',
                 'stripes',
                 'scars',
-                'markings'
+                'markings',
+                'patches',
+                'speckles',
+                'zigzag',
+                'swirls',
+                'rings',
+                'stars',
+                'diamonds',
+                'gradient',
+                'dappled',
+                'mottled'
             ],
             eyeColors: [
+                // Basic Colors
                 '#FF0000', // Red
                 '#FFFF00', // Yellow
                 '#00FF00', // Green
-                '#9932CC', // Dark Orchid (brighter purple)
+                '#0000FF', // Blue
                 '#FFA500', // Orange
-                '#00FFFF', // Cyan
+                '#800080', // Purple
+
+                // Bright Glowing Colors
+                '#FF3300', // Bright Red
+                '#FFCC00', // Bright Yellow
+                '#33FF00', // Bright Green
+                '#00CCFF', // Bright Blue
+                '#FF9900', // Bright Orange
+                '#CC00FF', // Bright Purple
                 '#FF00FF', // Magenta
-                '#1E90FF'  // Dodger Blue
+                '#00FFFF', // Cyan
+
+                // Exotic Colors
+                '#9932CC', // Dark Orchid
+                '#1E90FF', // Dodger Blue
+                '#00FF7F', // Spring Green
+                '#FF1493', // Deep Pink
+                '#FFD700', // Gold
+                '#C0C0C0', // Silver
+                '#FFFFFF', // White
+                '#000000', // Black
+
+                // Dual-Tone (for special enemies)
+                'linear-gradient(to bottom, #FF0000, #FFFF00)', // Red-Yellow
+                'linear-gradient(to bottom, #00FF00, #0000FF)', // Green-Blue
+                'linear-gradient(to bottom, #FF00FF, #00FFFF)', // Magenta-Cyan
+                'linear-gradient(to bottom, #FFFF00, #00FFFF)', // Yellow-Cyan
+                'linear-gradient(to bottom, #FF0000, #0000FF)'  // Red-Blue
             ]
         };
 
