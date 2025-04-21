@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animated Animals Test</title>
+    <link rel="stylesheet" href="css/animated-enemies.css">
+    <style>
+        body {
+            background-color: #2c3e50;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        .test-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            max-width: 1200px;
+        }
+
+        .animation-card {
+            background-color: #34495e;
+            border-radius: 10px;
+            padding: 20px;
+            width: 200px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #ecf0f1;
+            text-align: center;
+            width: 100%;
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            color: #ecf0f1;
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>Animated Enemy Characters</h1>
+
+        <div class="animation-card">
+            <h2>Regular Fox</h2>
+            <div class="animated-enemy fox-container">
+                <div class="fox-body"></div>
+                <div class="fox-head"></div>
+                <div class="fox-ear left"></div>
+                <div class="fox-ear right"></div>
+                <div class="fox-ear-inner left"></div>
+                <div class="fox-ear-inner right"></div>
+                <div class="fox-eye left"></div>
+                <div class="fox-eye right"></div>
+                <div class="fox-nose"></div>
+                <div class="fox-tail">
+                    <div class="fox-tail-tip"></div>
+                </div>
+                <div class="fox-leg front-left"></div>
+                <div class="fox-leg front-right"></div>
+                <div class="fox-leg back-left"></div>
+                <div class="fox-leg back-right"></div>
+            </div>
+        </div>
+
+        <div class="animation-card">
+            <h2>Shadow Fox</h2>
+            <div class="animated-enemy fox-container shadow-fox">
+                <div class="fox-body"></div>
+                <div class="fox-head"></div>
+                <div class="fox-ear left"></div>
+                <div class="fox-ear right"></div>
+                <div class="fox-ear-inner left"></div>
+                <div class="fox-ear-inner right"></div>
+                <div class="fox-eye left"></div>
+                <div class="fox-eye right"></div>
+                <div class="fox-nose"></div>
+                <div class="fox-tail">
+                    <div class="fox-tail-tip"></div>
+                </div>
+                <div class="fox-leg front-left"></div>
+                <div class="fox-leg front-right"></div>
+                <div class="fox-leg back-left"></div>
+                <div class="fox-leg back-right"></div>
+            </div>
+        </div>
+
+        <div class="animation-card">
+            <h2>Feral Dog</h2>
+            <div class="animated-enemy dog-container">
+                <div class="dog-body"></div>
+                <div class="dog-head"></div>
+                <div class="dog-ear left"></div>
+                <div class="dog-ear right"></div>
+                <div class="dog-eye left"></div>
+                <div class="dog-eye right"></div>
+                <div class="dog-nose"></div>
+                <div class="dog-mouth"></div>
+                <div class="dog-tail"></div>
+                <div class="dog-leg front-left"></div>
+                <div class="dog-leg front-right"></div>
+                <div class="dog-leg back-left"></div>
+                <div class="dog-leg back-right"></div>
+            </div>
+        </div>
+
+        <div class="animation-card">
+            <h2>Rabid Wolf</h2>
+            <div class="animated-enemy dog-container rabid-wolf">
+                <div class="dog-body"></div>
+                <div class="dog-head"></div>
+                <div class="dog-ear left"></div>
+                <div class="dog-ear right"></div>
+                <div class="dog-eye left"></div>
+                <div class="dog-eye right"></div>
+                <div class="dog-nose"></div>
+                <div class="dog-mouth"></div>
+                <div class="dog-tail"></div>
+                <div class="dog-leg front-left"></div>
+                <div class="dog-leg front-right"></div>
+                <div class="dog-leg back-left"></div>
+                <div class="dog-leg back-right"></div>
+            </div>
+        </div>
+
+        <div class="animation-card">
+            <h2>Sewer Rat</h2>
+            <div class="animated-enemy rat-container">
+                <div class="rat-body"></div>
+                <div class="rat-head"></div>
+                <div class="rat-ear left"></div>
+                <div class="rat-ear right"></div>
+                <div class="rat-eye left"></div>
+                <div class="rat-eye right"></div>
+                <div class="rat-nose"></div>
+                <div class="rat-whisker top-left"></div>
+                <div class="rat-whisker bottom-left"></div>
+                <div class="rat-whisker top-right"></div>
+                <div class="rat-whisker bottom-right"></div>
+                <div class="rat-tail"></div>
+                <div class="rat-leg front-left"></div>
+                <div class="rat-leg front-right"></div>
+                <div class="rat-leg back-left"></div>
+                <div class="rat-leg back-right"></div>
+            </div>
+        </div>
+
+        <div class="animation-card">
+            <h2>Plague Rat</h2>
+            <div class="animated-enemy rat-container plague-rat">
+                <div class="rat-body"></div>
+                <div class="rat-head"></div>
+                <div class="rat-ear left"></div>
+                <div class="rat-ear right"></div>
+                <div class="rat-eye left"></div>
+                <div class="rat-eye right"></div>
+                <div class="rat-nose"></div>
+                <div class="rat-whisker top-left"></div>
+                <div class="rat-whisker bottom-left"></div>
+                <div class="rat-whisker top-right"></div>
+                <div class="rat-whisker bottom-right"></div>
+                <div class="rat-tail"></div>
+                <div class="rat-leg front-left"></div>
+                <div class="rat-leg front-right"></div>
+                <div class="rat-leg back-left"></div>
+                <div class="rat-leg back-right"></div>
+            </div>
+        </div>
+
+        <div class="animation-card">
+            <h2>Giant Spider</h2>
+            <div class="animated-enemy spider-container">
+                <div class="spider-body"></div>
+                <div class="spider-head"></div>
+                <div class="spider-eye left"></div>
+                <div class="spider-eye right"></div>
+                <div class="spider-eye left2"></div>
+                <div class="spider-eye right2"></div>
+                <div class="spider-fang left"></div>
+                <div class="spider-fang right"></div>
+                <div class="spider-leg left1"></div>
+                <div class="spider-leg left2"></div>
+                <div class="spider-leg left3"></div>
+                <div class="spider-leg left4"></div>
+                <div class="spider-leg right1"></div>
+                <div class="spider-leg right2"></div>
+                <div class="spider-leg right3"></div>
+                <div class="spider-leg right4"></div>
+            </div>
+        </div>
+
+        <div class="animation-card">
+            <h2>Venomous Spider</h2>
+            <div class="animated-enemy spider-container venomous-spider">
+                <div class="spider-body"></div>
+                <div class="spider-head"></div>
+                <div class="spider-eye left"></div>
+                <div class="spider-eye right"></div>
+                <div class="spider-eye left2"></div>
+                <div class="spider-eye right2"></div>
+                <div class="spider-fang left"></div>
+                <div class="spider-fang right"></div>
+                <div class="spider-leg left1"></div>
+                <div class="spider-leg left2"></div>
+                <div class="spider-leg left3"></div>
+                <div class="spider-leg left4"></div>
+                <div class="spider-leg right1"></div>
+                <div class="spider-leg right2"></div>
+                <div class="spider-leg right3"></div>
+                <div class="spider-leg right4"></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rise of the Strays</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/enemies.css">
+    <link rel="stylesheet" href="css/animated-enemies.css">
 </head>
 <body>
     <div id="game-container">
@@ -69,7 +71,7 @@
                     <button type="button" id="find-cat-normal">Normal Search (5 Food)</button>
                     <button type="button" id="find-cat-thorough">Thorough Search (10 Food)</button>
                     <button type="button" id="find-cat-premium">Premium Search (20 Food)</button>
-                    <button type="button" id="create-custom-cat" style="background-color: #9b59b6;">Create Custom Cat (25 Food, 10 Materials)</button>
+                    <button type="button" id="create-custom-cat">Create Custom Cat (25 Food, 10 Materials)</button>
                 </div>
             </section>
 
@@ -78,14 +80,23 @@
                 <!-- Groups content will be inserted here by JavaScript -->
             </section>
 
+            <section id="enemies-section">
+                <h2>Enemy Groups</h2>
+                <div id="enemies-container">
+                    <!-- Enemy groups will be displayed here -->
+                </div>
+            </section>
+
             <section id="actions-section">
                 <h2>Actions</h2>
                 <div id="actions-buttons">
                     <button type="button" id="gather-food">Gather Food</button>
                     <button type="button" id="gather-materials">Gather Materials</button>
                     <button type="button" id="gather-medicine">Gather Medicine</button>
-                    <button type="button" id="add-test-food" style="background-color: #e67e22;">Add Test Food</button>
-                    <button type="button" id="add-test-materials" style="background-color: #e74c3c;">Add Test Materials</button>
+                    <button type="button" id="add-test-food">Add Test Food</button>
+                    <button type="button" id="add-test-materials">Add Test Materials</button>
+                    <button type="button" id="generate-test-enemies">Generate Test Enemies</button>
+                    <button type="button" id="generate-fox-test" data-current-type="-1">Test Animal Animations</button>
                 </div>
             </section>
         </main>
@@ -101,6 +112,8 @@
     <script src="js/base.js"></script>
     <script src="js/training.js"></script>
     <script src="js/groups.js"></script>
+    <script src="js/enemies.js"></script>
+    <script src="js/battle.js"></script>
     <script src="js/game.js"></script>
 </body>
 </html>

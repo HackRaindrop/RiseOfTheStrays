@@ -443,12 +443,58 @@
     }
 }
 
+/* Enemy group styling */
+#enemies-section {
+    margin-top: 20px;
+    display: none; /* Hidden by default, will be shown when enemies are generated */
+}
+
+.enemy-group {
+    background-color: #34495e;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.enemy-group h3 {
+    color: #e74c3c;
+    margin-bottom: 15px;
+    text-align: center;
+    border-bottom: 1px solid #e74c3c;
+    padding-bottom: 5px;
+}
+
+.enemies-display {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+}
+
+/* Test buttons styling */
+#add-test-food {
+    background-color: #e67e22;
+}
+
+#add-test-materials {
+    background-color: #e74c3c;
+}
+
+#generate-test-enemies {
+    background-color: #9b59b6;
+}
+
+#generate-fox-test {
+    background-color: #ff7700;
+}
+
 /* Responsive design */
 @media (max-width: 768px) {
     .battle-field {
         flex-direction: column;
     }
-    
+
     .enemy-card {
         width: 180px;
     }

@@ -176,6 +176,32 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Attach generate test enemies button event listener
+    const generateTestEnemiesButton = document.getElementById('generate-test-enemies');
+    if (generateTestEnemiesButton) {
+        generateTestEnemiesButton.addEventListener('click', () => {
+            window.generateTestEnemyGroup(1, 'normal');
+        });
+    }
+
+    // Attach fox test button event listener
+    const generateFoxTestButton = document.getElementById('generate-fox-test');
+    if (generateFoxTestButton) {
+        generateFoxTestButton.addEventListener('click', () => {
+            // Cycle through different enemy types on each click
+            const enemyTypes = ['Shadow Fox', 'Feral Dog', 'Rabid Wolf', 'Sewer Rat', 'Plague Rat', 'Giant Spider', 'Venomous Spider'];
+            const currentType = generateFoxTestButton.getAttribute('data-current-type') || 0;
+            const nextType = (parseInt(currentType) + 1) % enemyTypes.length;
+
+            // Generate the enemy
+            window.generateEnemyTest(enemyTypes[nextType], 1);
+
+            // Update the button text and data attribute
+            generateFoxTestButton.textContent = `Test ${enemyTypes[nextType]} Animation`;
+            generateFoxTestButton.setAttribute('data-current-type', nextType);
+        });
+    }
+
     // Attach create group button event listener
     const createGroupBtn = document.getElementById('create-group-btn');
     console.log('Create group button in game.js:', createGroupBtn);

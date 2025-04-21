@@ -1,0 +1,1189 @@
+/* Animated Enemies CSS */
+
+/* Base styles for animated enemy icons */
+.animated-enemy {
+    width: 100px;
+    height: 100px;
+    position: relative;
+    margin: 0 auto;
+}
+
+/* Add outlines to animal parts for better visibility */
+.dog-body, .dog-head, .dog-ear, .dog-nose, .dog-tail, .dog-leg,
+.fox-body, .fox-head, .fox-nose, .fox-tail, .fox-leg, /* Removed fox-ear */
+.rat-body, .rat-head, .rat-ear, .rat-nose, .rat-tail, .rat-leg,
+.spider-body, .spider-head, .spider-leg {
+    outline: 1px solid rgba(0, 0, 0, 0.3);
+}
+
+/* Add special outlines to eyes for better visibility */
+.dog-eye, .fox-eye, .rat-eye, .spider-eye {
+    outline: 1px solid rgba(0, 0, 0, 0.5);
+}
+
+/* Rarity-based eye glow effects */
+.rarity-common .dog-eye,
+.rarity-common .fox-eye,
+.rarity-common .rat-eye,
+.rarity-common .spider-eye {
+    box-shadow: none;
+}
+
+.rarity-uncommon .dog-eye,
+.rarity-uncommon .fox-eye,
+.rarity-uncommon .rat-eye,
+.rarity-uncommon .spider-eye {
+    box-shadow: 0 0 3px #55AA55;
+    animation: uncommonGlow 2s infinite alternate;
+}
+
+.rarity-rare .dog-eye,
+.rarity-rare .fox-eye,
+.rarity-rare .rat-eye,
+.rarity-rare .spider-eye {
+    box-shadow: 0 0 5px #5555FF;
+    animation: rareGlow 1.5s infinite alternate;
+}
+
+.rarity-elite .dog-eye,
+.rarity-elite .fox-eye,
+.rarity-elite .rat-eye,
+.rarity-elite .spider-eye {
+    box-shadow: 0 0 8px #AA55AA;
+    animation: eliteGlow 1s infinite alternate;
+}
+
+.rarity-boss .dog-eye,
+.rarity-boss .fox-eye,
+.rarity-boss .rat-eye,
+.rarity-boss .spider-eye {
+    box-shadow: 0 0 12px #FFAA00;
+    animation: bossGlow 0.7s infinite alternate;
+}
+
+/* Rat Animation */
+.rat-container {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    overflow: visible;
+}
+
+.rat-body {
+    position: absolute;
+    width: 50px;
+    height: 25px;
+    background-color: #777777;
+    border-radius: 40% 60% 60% 40%;
+    top: 50px;
+    left: 25px;
+    z-index: 1;
+    transform-origin: center;
+    animation: ratBreathing 0.5s infinite ease-in-out;
+}
+
+.rat-head {
+    position: absolute;
+    width: 25px;
+    height: 20px;
+    background-color: #777777;
+    border-radius: 60% 40% 50% 50%;
+    top: 45px;
+    left: 15px;
+    z-index: 2;
+}
+
+.rat-ear {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: #777777;
+    border-radius: 50% 50% 0 0;
+    z-index: 1;
+}
+
+.rat-ear.left {
+    top: 38px;
+    left: 18px;
+    transform: rotate(-15deg);
+    animation: ratEarTwitch 2s infinite;
+}
+
+.rat-ear.right {
+    top: 38px;
+    left: 28px;
+    transform: rotate(15deg);
+    animation: ratEarTwitch 2s infinite 0.3s;
+}
+
+.rat-eye {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background-color: #000;
+    border-radius: 50%;
+    top: 48px;
+    z-index: 3;
+}
+
+.rat-eye.left {
+    left: 20px;
+}
+
+.rat-eye.right {
+    left: 28px;
+}
+
+.rat-nose {
+    position: absolute;
+    width: 6px;
+    height: 4px;
+    background-color: #FF9999;
+    border-radius: 50%;
+    top: 52px;
+    left: 16px;
+    z-index: 3;
+}
+
+.rat-whisker {
+    position: absolute;
+    width: 15px;
+    height: 1px;
+    background-color: #DDDDDD;
+    z-index: 3;
+}
+
+.rat-whisker.top-left {
+    top: 50px;
+    left: 5px;
+    transform: rotate(-10deg);
+}
+
+.rat-whisker.bottom-left {
+    top: 53px;
+    left: 5px;
+    transform: rotate(-20deg);
+}
+
+.rat-whisker.top-right {
+    top: 50px;
+    left: 22px;
+    transform: rotate(10deg);
+}
+
+.rat-whisker.bottom-right {
+    top: 53px;
+    left: 22px;
+    transform: rotate(20deg);
+}
+
+.rat-tail {
+    position: absolute;
+    width: 40px;
+    height: 5px;
+    background-color: #777777;
+    border-radius: 5px;
+    top: 55px;
+    left: 65px;
+    z-index: 0;
+    transform-origin: left center;
+    animation: ratTailWag 1s infinite ease-in-out;
+}
+
+.rat-leg {
+    position: absolute;
+    width: 5px;
+    height: 10px;
+    background-color: #777777;
+    border-radius: 3px;
+    z-index: 0;
+}
+
+.rat-leg.front-left {
+    top: 65px;
+    left: 30px;
+    animation: ratLegMove 0.5s infinite alternate;
+}
+
+.rat-leg.front-right {
+    top: 65px;
+    left: 40px;
+    animation: ratLegMove 0.5s infinite alternate-reverse;
+}
+
+.rat-leg.back-left {
+    top: 65px;
+    left: 50px;
+    animation: ratLegMove 0.5s infinite alternate 0.25s;
+}
+
+.rat-leg.back-right {
+    top: 65px;
+    left: 60px;
+    animation: ratLegMove 0.5s infinite alternate-reverse 0.25s;
+}
+
+/* Giant Spider Animation */
+.spider-container {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    overflow: visible;
+}
+
+.spider-body {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background-color: #222222;
+    border-radius: 50%;
+    top: 40px;
+    left: 35px;
+    z-index: 2;
+}
+
+.spider-head {
+    /* Head is now part of the body in the center */
+    position: absolute;
+    width: 0;
+    height: 0;
+    background-color: transparent;
+    border-radius: 0;
+    top: 0;
+    left: 0;
+    z-index: 0;
+}
+
+.spider-eye {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background-color: #FF0000;
+    border-radius: 50%;
+    z-index: 4;
+}
+
+.spider-eye.left {
+    top: 45px;
+    left: 40px;
+}
+
+.spider-eye.right {
+    top: 45px;
+    left: 50px;
+}
+
+.spider-eye.left2 {
+    top: 40px;
+    left: 45px;
+}
+
+.spider-eye.right2 {
+    top: 50px;
+    left: 45px;
+}
+
+.spider-leg {
+    position: absolute;
+    width: 35px;
+    height: 3px;
+    background-color: #222222;
+    border-radius: 5px;
+    z-index: 1;
+    transform-origin: center;
+}
+
+/* Left legs - positioned on the left side of the body */
+.spider-leg.left1 {
+    top: 40px;
+    left: 0;
+    width: 35px;
+    transform-origin: right center;
+    transform: rotate(0deg);
+    animation: spiderLegMoveLeft 1.5s infinite alternate;
+}
+
+.spider-leg.left2 {
+    top: 45px;
+    left: 0;
+    width: 35px;
+    transform-origin: right center;
+    transform: rotate(0deg);
+    animation: spiderLegMoveLeft 1.5s infinite alternate 0.2s;
+}
+
+.spider-leg.left3 {
+    top: 50px;
+    left: 0;
+    width: 35px;
+    transform-origin: right center;
+    transform: rotate(0deg);
+    animation: spiderLegMoveLeft 1.5s infinite alternate 0.4s;
+}
+
+.spider-leg.left4 {
+    top: 55px;
+    left: 0;
+    width: 35px;
+    transform-origin: right center;
+    transform: rotate(0deg);
+    animation: spiderLegMoveLeft 1.5s infinite alternate 0.6s;
+}
+
+/* Right legs - positioned on the right side of the body */
+.spider-leg.right1 {
+    top: 40px;
+    left: 65px;
+    width: 35px;
+    transform-origin: left center;
+    transform: rotate(0deg);
+    animation: spiderLegMoveRight 1.5s infinite alternate 0.1s;
+}
+
+.spider-leg.right2 {
+    top: 45px;
+    left: 65px;
+    width: 35px;
+    transform-origin: left center;
+    transform: rotate(0deg);
+    animation: spiderLegMoveRight 1.5s infinite alternate 0.3s;
+}
+
+.spider-leg.right3 {
+    top: 50px;
+    left: 65px;
+    width: 35px;
+    transform-origin: left center;
+    transform: rotate(0deg);
+    animation: spiderLegMoveRight 1.5s infinite alternate 0.5s;
+}
+
+.spider-leg.right4 {
+    top: 55px;
+    left: 65px;
+    width: 35px;
+    transform-origin: left center;
+    transform: rotate(0deg);
+    animation: spiderLegMoveRight 1.5s infinite alternate 0.7s;
+}
+
+.spider-fang {
+    position: absolute;
+    width: 4px;
+    height: 6px;
+    background-color: #FFFFFF;
+    border-radius: 0 0 50% 50%;
+    top: 55px;
+    z-index: 4;
+    animation: spiderFangMove 2s infinite alternate;
+}
+
+.spider-fang.left {
+    left: 42px;
+}
+
+.spider-fang.right {
+    left: 48px;
+}
+
+/* Plague Rat - diseased version */
+.plague-rat .rat-body,
+.plague-rat .rat-head,
+.plague-rat .rat-ear,
+.plague-rat .rat-leg,
+.plague-rat .rat-tail {
+    background-color: #556B2F;
+}
+
+.plague-rat .rat-eye {
+    background-color: #FFFF00;
+}
+
+.plague-rat .rat-nose {
+    background-color: #8B0000;
+}
+
+.plague-rat::before {
+    content: '';
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background-color: #8B0000;
+    border-radius: 50%;
+    top: 45px;
+    left: 45px;
+    z-index: 5;
+    box-shadow: -10px 5px 0 #8B0000, 5px 10px 0 #8B0000;
+    animation: plagueSpots 3s infinite alternate;
+}
+
+/* Venomous Spider - more dangerous version */
+.venomous-spider .spider-body {
+    background-color: #4B0082;
+}
+
+.venomous-spider .spider-leg {
+    background-color: #4B0082;
+}
+
+.venomous-spider .spider-eye {
+    background-color: #00FF00;
+    box-shadow: 0 0 5px #00FF00;
+    animation: venomousGlow 1s infinite alternate;
+}
+
+.venomous-spider .spider-fang {
+    background-color: #00FF00;
+    box-shadow: 0 0 3px #00FF00;
+    animation: venomousFang 1s infinite alternate;
+}
+
+.venomous-spider::after {
+    content: '';
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    background-color: #4B0082;
+    border-radius: 50%;
+    top: 45px;
+    left: 50px;
+    z-index: 1;
+    animation: venomousPulse 2s infinite alternate;
+}
+
+/* Dog Animation */
+.dog-container {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    overflow: visible;
+}
+
+.dog-body {
+    position: absolute;
+    width: 70px;
+    height: 35px;
+    background-color: #8B4513;
+    border-radius: 40% 40% 40% 40%;
+    top: 40px;
+    left: 15px;
+    z-index: 1;
+    transform-origin: center;
+    animation: dogBreathing 2s infinite ease-in-out;
+}
+
+.dog-head {
+    position: absolute;
+    width: 40px;
+    height: 35px;
+    background-color: #8B4513;
+    border-radius: 50% 40% 40% 40%;
+    top: 25px;
+    left: 5px;
+    z-index: 2;
+}
+
+.dog-ear {
+    position: absolute;
+    width: 15px;
+    height: 20px;
+    background-color: #8B4513;
+    border-radius: 50% 50% 0 0;
+    z-index: 1;
+}
+
+.dog-ear.left {
+    top: 15px;
+    left: 10px;
+    transform: rotate(-15deg);
+    animation: dogEarTwitch 4s infinite;
+}
+
+.dog-ear.right {
+    top: 15px;
+    left: 25px;
+    transform: rotate(15deg);
+    animation: dogEarTwitch 4s infinite 0.5s;
+}
+
+.dog-eye {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background-color: #000;
+    border-radius: 50%;
+    top: 30px;
+    z-index: 3;
+    animation: dogBlink 4s infinite;
+}
+
+.dog-eye.left {
+    left: 15px;
+}
+
+.dog-eye.right {
+    left: 30px;
+}
+
+.dog-nose {
+    position: absolute;
+    width: 10px;
+    height: 6px;
+    background-color: #000;
+    border-radius: 50%;
+    top: 38px;
+    left: 20px;
+    z-index: 3;
+}
+
+.dog-mouth {
+    position: absolute;
+    width: 15px;
+    height: 5px;
+    background-color: #A52A2A;
+    border-radius: 0 0 50% 50%;
+    top: 45px;
+    left: 18px;
+    z-index: 3;
+    animation: dogPant 0.5s infinite alternate;
+}
+
+.dog-tail {
+    position: absolute;
+    width: 25px;
+    height: 10px;
+    background-color: #8B4513;
+    border-radius: 5px;
+    top: 35px;
+    left: 75px;
+    z-index: 0;
+    transform-origin: left center;
+    animation: dogTailWag 0.5s infinite alternate;
+}
+
+.dog-leg {
+    position: absolute;
+    width: 8px;
+    height: 20px;
+    background-color: #8B4513;
+    border-radius: 5px;
+    z-index: 0;
+}
+
+.dog-leg.front-left {
+    top: 60px;
+    left: 25px;
+}
+
+.dog-leg.front-right {
+    top: 60px;
+    left: 40px;
+}
+
+.dog-leg.back-left {
+    top: 60px;
+    left: 55px;
+}
+
+.dog-leg.back-right {
+    top: 60px;
+    left: 70px;
+}
+
+/* Rabid Wolf - more aggressive animations */
+.rabid-wolf .dog-body,
+.rabid-wolf .dog-head,
+.rabid-wolf .dog-ear,
+.rabid-wolf .dog-leg,
+.rabid-wolf .dog-tail {
+    background-color: #555555;
+}
+
+.rabid-wolf .dog-mouth {
+    height: 8px;
+    background-color: #CC0000;
+    animation: wolfSnarl 0.3s infinite alternate;
+}
+
+.rabid-wolf .dog-eye {
+    background-color: #CC0000;
+    animation: wolfGlare 2s infinite;
+}
+
+.rabid-wolf .dog-body {
+    animation: wolfBreathing 1s infinite ease-in-out;
+}
+
+.rabid-wolf .dog-tail {
+    animation: wolfTailWag 0.3s infinite alternate;
+}
+
+/* Wolf teeth - downward facing triangles (V shape) */
+.rabid-wolf-teeth {
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-left: 3px solid transparent;
+    border-right: 3px solid transparent;
+    border-top: 6px solid #FFFFFF; /* Changed from border-bottom to border-top for downward triangle */
+    top: 46px; /* Positioned at the top of the mouth */
+    z-index: 5;
+}
+
+.rabid-wolf-teeth.left {
+    left: 18px;
+}
+
+.rabid-wolf-teeth.right {
+    left: 28px;
+}
+
+/* Drool/foam effect */
+.rabid-wolf::before {
+    content: '';
+    position: absolute;
+    width: 6px;
+    height: 10px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 0 0 5px 5px;
+    top: 52px;
+    left: 23px;
+    z-index: 4;
+    animation: wolfDrool 1.5s infinite;
+}
+
+/* Fox Animation */
+.fox-container {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    overflow: visible;
+}
+
+.fox-body {
+    position: absolute;
+    width: 70px;
+    height: 40px;
+    background-color: #ff7700;
+    border-radius: 50% 40% 40% 50%;
+    top: 40px;
+    left: 15px;
+    z-index: 1;
+    transform-origin: center;
+    animation: foxBreathing 3s infinite ease-in-out;
+}
+
+.fox-head {
+    position: absolute;
+    width: 40px;
+    height: 35px;
+    background-color: #ff7700;
+    border-radius: 50% 50% 50% 50%;
+    top: 25px;
+    left: 10px;
+    z-index: 2;
+}
+
+.fox-ear {
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 20px solid #ff7700;
+    z-index: 1;
+}
+
+.fox-ear.left {
+    top: 10px;
+    left: 10px;
+    transform: rotate(-30deg);
+}
+
+.fox-ear.right {
+    top: 10px;
+    left: 30px;
+    transform: rotate(30deg);
+}
+
+.fox-ear-inner {
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 10px solid #ffaa77;
+    z-index: 2;
+}
+
+.fox-ear-inner.left {
+    top: 15px;
+    left: 13px;
+    transform: rotate(-30deg);
+}
+
+.fox-ear-inner.right {
+    top: 15px;
+    left: 33px;
+    transform: rotate(30deg);
+}
+
+.fox-eye {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background-color: #000;
+    border-radius: 50%;
+    top: 35px;
+    z-index: 3;
+    animation: foxBlink 4s infinite;
+}
+
+.fox-eye.left {
+    left: 20px;
+}
+
+.fox-eye.right {
+    left: 40px;
+}
+
+.fox-nose {
+    position: absolute;
+    width: 8px;
+    height: 5px;
+    background-color: #000;
+    border-radius: 50%;
+    top: 42px;
+    left: 30px;
+    z-index: 3;
+}
+
+.fox-tail {
+    position: absolute;
+    width: 50px;
+    height: 15px;
+    background-color: #ff7700;
+    border-radius: 0 50% 50% 0;
+    top: 40px;
+    left: 75px;
+    z-index: 0;
+    transform-origin: left center;
+    animation: foxTailWag 2s infinite ease-in-out;
+}
+
+.fox-tail-tip {
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    background-color: #fff;
+    border-radius: 0 50% 50% 0;
+    top: 0;
+    right: 0;
+    z-index: 0;
+}
+
+.fox-leg {
+    position: absolute;
+    width: 10px;
+    height: 20px;
+    background-color: #ff7700;
+    border-radius: 5px;
+    z-index: 0;
+}
+
+.fox-leg.front-left {
+    top: 60px;
+    left: 25px;
+    animation: foxLegMoveFront 3s infinite ease-in-out;
+}
+
+.fox-leg.front-right {
+    top: 60px;
+    left: 45px;
+    animation: foxLegMoveFront 3s infinite ease-in-out reverse;
+}
+
+.fox-leg.back-left {
+    top: 60px;
+    left: 60px;
+    animation: foxLegMoveBack 3s infinite ease-in-out;
+}
+
+.fox-leg.back-right {
+    top: 60px;
+    left: 75px;
+    animation: foxLegMoveBack 3s infinite ease-in-out reverse;
+}
+
+/* Shadow Fox - darker with stealth animation */
+.shadow-fox .fox-body,
+.shadow-fox .fox-head,
+.shadow-fox .fox-leg {
+    background-color: #663300;
+    filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.5));
+}
+
+.shadow-fox .fox-ear {
+    border-bottom-color: #663300;
+}
+
+.shadow-fox .fox-ear-inner {
+    border-bottom-color: #995500;
+}
+
+.shadow-fox .fox-tail {
+    background-color: #663300;
+}
+
+.shadow-fox .fox-tail-tip {
+    background-color: #995500;
+}
+
+.shadow-fox {
+    animation: shadowFoxFade 5s infinite alternate;
+}
+
+/* Fox Animations */
+@keyframes foxBreathing {
+    0%, 100% {
+        transform: scaleY(1);
+    }
+    50% {
+        transform: scaleY(1.05);
+    }
+}
+
+@keyframes foxBlink {
+    0%, 48%, 52%, 100% {
+        transform: scaleY(1);
+        height: 8px;
+    }
+    50% {
+        transform: scaleY(0.1);
+        height: 1px;
+    }
+}
+
+@keyframes foxTailWag {
+    0%, 100% {
+        transform: rotate(0deg);
+    }
+    25% {
+        transform: rotate(15deg);
+    }
+    75% {
+        transform: rotate(-15deg);
+    }
+}
+
+@keyframes foxLegMoveFront {
+    0%, 100% {
+        transform: rotate(0deg);
+    }
+    25% {
+        transform: rotate(-5deg);
+    }
+    75% {
+        transform: rotate(5deg);
+    }
+}
+
+@keyframes foxLegMoveBack {
+    0%, 100% {
+        transform: rotate(0deg);
+    }
+    25% {
+        transform: rotate(5deg);
+    }
+    75% {
+        transform: rotate(-5deg);
+    }
+}
+
+@keyframes shadowFoxFade {
+    0% {
+        opacity: 0.7;
+    }
+    50% {
+        opacity: 0.9;
+    }
+    100% {
+        opacity: 0.6;
+    }
+}
+
+/* Dog Animations */
+@keyframes dogBreathing {
+    0%, 100% {
+        transform: scaleY(1);
+    }
+    50% {
+        transform: scaleY(1.03);
+    }
+}
+
+@keyframes dogBlink {
+    0%, 48%, 52%, 100% {
+        transform: scaleY(1);
+        height: 8px;
+    }
+    50% {
+        transform: scaleY(0.1);
+        height: 1px;
+    }
+}
+
+@keyframes dogEarTwitch {
+    0%, 90%, 100% {
+        transform: rotate(-15deg);
+    }
+    95% {
+        transform: rotate(-5deg);
+    }
+}
+
+@keyframes dogPant {
+    0% {
+        height: 5px;
+    }
+    100% {
+        height: 8px;
+    }
+}
+
+@keyframes dogTailWag {
+    0% {
+        transform: rotate(-10deg);
+    }
+    100% {
+        transform: rotate(10deg);
+    }
+}
+
+/* Wolf Animations */
+@keyframes wolfBreathing {
+    0%, 100% {
+        transform: scaleY(1);
+    }
+    50% {
+        transform: scaleY(1.05);
+    }
+}
+
+@keyframes wolfGlare {
+    0%, 90%, 100% {
+        transform: scaleY(1);
+    }
+    95% {
+        transform: scaleY(0.5);
+    }
+}
+
+@keyframes wolfSnarl {
+    0% {
+        height: 8px;
+        width: 15px;
+    }
+    100% {
+        height: 12px;
+        width: 18px;
+    }
+}
+
+@keyframes wolfTailWag {
+    0% {
+        transform: rotate(-5deg);
+    }
+    100% {
+        transform: rotate(5deg);
+    }
+}
+
+@keyframes wolfFoam {
+    0% {
+        opacity: 0.7;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes wolfDrool {
+    0% {
+        height: 10px;
+        opacity: 0.8;
+    }
+    50% {
+        height: 15px;
+        opacity: 0.9;
+    }
+    100% {
+        height: 10px;
+        opacity: 0.7;
+    }
+}
+
+/* Rat Animations */
+@keyframes ratBreathing {
+    0%, 100% {
+        transform: scaleY(1);
+    }
+    50% {
+        transform: scaleY(1.05);
+    }
+}
+
+@keyframes ratEarTwitch {
+    0%, 85%, 100% {
+        transform: rotate(-15deg);
+    }
+    90% {
+        transform: rotate(-5deg);
+    }
+}
+
+@keyframes ratTailWag {
+    0%, 100% {
+        transform: rotate(0deg);
+    }
+    25% {
+        transform: rotate(10deg);
+    }
+    75% {
+        transform: rotate(-10deg);
+    }
+}
+
+@keyframes ratLegMove {
+    0% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(-3px);
+    }
+}
+
+@keyframes plagueSpots {
+    0% {
+        opacity: 0.7;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.7;
+    }
+}
+
+/* Spider Animations */
+@keyframes spiderLegMoveLeft {
+    0% {
+        transform: rotate(0deg);
+    }
+    50% {
+        transform: rotate(-15deg);
+    }
+    100% {
+        transform: rotate(0deg);
+    }
+}
+
+@keyframes spiderLegMoveRight {
+    0% {
+        transform: rotate(0deg);
+    }
+    50% {
+        transform: rotate(15deg);
+    }
+    100% {
+        transform: rotate(0deg);
+    }
+}
+
+@keyframes spiderFangMove {
+    0%, 90%, 100% {
+        height: 8px;
+    }
+    95% {
+        height: 12px;
+    }
+}
+
+@keyframes venomousGlow {
+    0% {
+        box-shadow: 0 0 5px #00FF00;
+    }
+    100% {
+        box-shadow: 0 0 10px #00FF00;
+    }
+}
+
+@keyframes venomousFang {
+    0% {
+        height: 8px;
+    }
+    100% {
+        height: 15px;
+    }
+}
+
+@keyframes venomousTail {
+    0% {
+        transform: rotate(45deg);
+    }
+    100% {
+        transform: rotate(55deg);
+    }
+}
+
+@keyframes venomousPulse {
+    0% {
+        transform: scale(1);
+        opacity: 0.8;
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 0.8;
+    }
+}
+
+/* Rarity-based eye glow animations */
+@keyframes uncommonGlow {
+    0% {
+        box-shadow: 0 0 3px #55AA55;
+    }
+    100% {
+        box-shadow: 0 0 6px #55AA55;
+    }
+}
+
+@keyframes rareGlow {
+    0% {
+        box-shadow: 0 0 5px #5555FF;
+    }
+    100% {
+        box-shadow: 0 0 10px #5555FF;
+    }
+}
+
+@keyframes eliteGlow {
+    0% {
+        box-shadow: 0 0 8px #AA55AA;
+    }
+    100% {
+        box-shadow: 0 0 15px #AA55AA;
+    }
+}
+
+@keyframes bossGlow {
+    0% {
+        box-shadow: 0 0 12px #FFAA00;
+    }
+    100% {
+        box-shadow: 0 0 20px #FFAA00;
+    }
+}

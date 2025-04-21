@@ -97,6 +97,11 @@ button {
     transition: background-color 0.3s;
 }
 
+/* Special buttons */
+#create-custom-cat {
+    background-color: #9b59b6;
+}
+
 button:hover {
     background-color: #2980b9;
 }

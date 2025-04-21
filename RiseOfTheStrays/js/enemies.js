@@ -82,21 +82,25 @@ class EnemyManager {
         // Enemy appearance features
         this.enemyFeatures = {
             bodyColors: [
-                '#8B4513', // Brown
-                '#A9A9A9', // Dark Gray
-                '#708090', // Slate Gray
-                '#556B2F', // Dark Olive Green
-                '#800000', // Maroon
-                '#483D8B', // Dark Slate Blue
-                '#2F4F4F', // Dark Slate Gray
-                '#8B008B'  // Dark Magenta
+                '#CD853F', // Peru (brighter brown)
+                '#D2B48C', // Tan
+                '#A0522D', // Sienna
+                '#F4A460', // Sandy Brown
+                '#B22222', // Firebrick (brighter red)
+                '#6A5ACD', // Slate Blue (brighter blue)
+                '#20B2AA', // Light Sea Green
+                '#9370DB', // Medium Purple
+                '#FF6347', // Tomato (bright orange-red)
+                '#3CB371'  // Medium Sea Green
             ],
             patternColors: [
                 '#FFD700', // Gold
-                '#C0C0C0', // Silver
-                '#CD5C5C', // Indian Red
-                '#4682B4', // Steel Blue
-                '#32CD32'  // Lime Green
+                '#E0FFFF', // Light Cyan
+                '#FF69B4', // Hot Pink
+                '#00BFFF', // Deep Sky Blue
+                '#7FFF00', // Chartreuse (bright green)
+                '#FF8C00', // Dark Orange
+                '#FF1493'  // Deep Pink
             ],
             patterns: [
                 'none',
@@ -109,8 +113,11 @@ class EnemyManager {
                 '#FF0000', // Red
                 '#FFFF00', // Yellow
                 '#00FF00', // Green
-                '#800080', // Purple
-                '#FFA500'  // Orange
+                '#9932CC', // Dark Orchid (brighter purple)
+                '#FFA500', // Orange
+                '#00FFFF', // Cyan
+                '#FF00FF', // Magenta
+                '#1E90FF'  // Dodger Blue
             ]
         };
 
@@ -163,11 +170,45 @@ class EnemyManager {
         return array[Math.floor(Math.random() * array.length)];
     }
 
+    // Calculate color similarity (0-255, higher means more different)
+    colorSimilarity(color1, color2) {
+        // Convert hex to RGB
+        const rgb1 = this.hexToRgb(color1);
+        const rgb2 = this.hexToRgb(color2);
+
+        if (!rgb1 || !rgb2) return 255; // If conversion fails, assume they're different
+
+        // Calculate Euclidean distance between colors
+        const rDiff = Math.abs(rgb1.r - rgb2.r);
+        const gDiff = Math.abs(rgb1.g - rgb2.g);
+        const bDiff = Math.abs(rgb1.b - rgb2.b);
+
+        // Return a simple measure of difference (0-255*sqrt(3))
+        return Math.sqrt(rDiff*rDiff + gDiff*gDiff + bDiff*bDiff);
+    }
+
+    // Convert hex color to RGB
+    hexToRgb(hex) {
+        // Remove # if present
+        hex = hex.replace(/^#/, '');
+
+        // Parse hex values
+        let bigint = parseInt(hex, 16);
+        if (isNaN(bigint)) return null;
+
+        // Extract RGB components
+        const r = (bigint >> 16) & 255;
+        const g = (bigint >> 8) & 255;
+        const b = bigint & 255;
+
+        return { r, g, b };
+    }
+
     // Get a weighted random element from an array
     getWeightedRandomElement(array, weights) {
         const totalWeight = weights.reduce((sum, weight) => sum + weight, 0);
         const randomValue = Math.random() * totalWeight;
-        
+
         let weightSum = 0;
         for (let i = 0; i < array.length; i++) {
             weightSum += weights[i];
@@ -175,7 +216,7 @@ class EnemyManager {
                 return array[i];
             }
         }
-        
+
         return array[array.length - 1]; // Fallback
     }
 
@@ -233,27 +274,49 @@ class EnemyManager {
     generateRandomEnemy(playerLevel = 1, forcedType = null, forcedRarity = null) {
         // Determine enemy type
         const enemyType = forcedType || this.getRandomItem(this.enemyTypes);
-        
+
         // Get a random name based on the enemy type
         const typeNames = this.enemyNames[enemyType] || ['Unknown'];
         const randomName = this.getRandomItem(typeNames);
-        
+
         // Determine rarity - can be forced for boss encounters
         const rarity = forcedRarity || this.determineRarity();
-        
+
         // Calculate level based on player level and rarity
         let level = playerLevel;
         if (rarity === 'Uncommon') level += 1;
         if (rarity === 'Rare') level += 2;
         if (rarity === 'Elite') level += 3;
         if (rarity === 'Boss') level += 5;
-        
-        // Generate random appearance features
+
+        // Generate random appearance features with good contrast
+        const bodyColor = this.getRandomItem(this.enemyFeatures.bodyColors);
+
+        // Make sure tail color is different from body color
+        let tailColor;
+        do {
+            tailColor = this.getRandomItem(this.enemyFeatures.bodyColors);
+        } while (tailColor === bodyColor);
+
+        // Make sure nose color has good contrast with body color
+        let noseColor;
+        do {
+            noseColor = this.getRandomItem(this.enemyFeatures.bodyColors);
+        } while (noseColor === bodyColor || noseColor === tailColor);
+
+        // Make sure pattern color contrasts with body color
+        let patternColor;
+        do {
+            patternColor = this.getRandomItem(this.enemyFeatures.patternColors);
+        } while (this.colorSimilarity(patternColor, bodyColor) < 50); // Ensure minimum contrast
+
         const appearance = {
-            bodyColor: this.getRandomItem(this.enemyFeatures.bodyColors),
-            patternColor: this.getRandomItem(this.enemyFeatures.patternColors),
+            bodyColor: bodyColor,
+            patternColor: patternColor,
             pattern: this.getRandomItem(this.enemyFeatures.patterns),
             eyeColor: this.getRandomItem(this.enemyFeatures.eyeColors),
+            noseColor: noseColor,
+            tailColor: tailColor,
             uniqueId: 'enemy-' + Date.now() + '-' + Math.floor(Math.random() * 1000)
         };
 
@@ -268,7 +331,7 @@ class EnemyManager {
             level: level,
             rarity: rarity,
             appearance: appearance,
-            
+
             // Core stats
             stats: {
                 STR: Math.floor(baseStatValue * rarityMultiplier), // Strength
@@ -281,7 +344,7 @@ class EnemyManager {
                 PER: Math.floor(baseStatValue * rarityMultiplier), // Perception
                 LCK: Math.floor(baseStatValue * rarityMultiplier)  // Luck
             },
-            
+
             // Derived attributes (calculated from stats)
             attributes: {
                 // Basic attributes
@@ -293,7 +356,7 @@ class EnemyManager {
                 dodgeChance: 0,
                 attackSpeed: 1.0,
                 critChance: 0,
-                
+
                 // Combat attributes
                 physicalAttack: 0,
                 physicalDefense: 0,
@@ -301,17 +364,17 @@ class EnemyManager {
                 magicResistance: 0,
                 speed: 0
             },
-            
+
             // Get abilities based on enemy type
             abilities: this.enemyTypeStats[enemyType]?.abilities || []
         };
 
         // Apply stat bonuses based on enemy type
         this.applyTypeStatBonuses(enemy);
-        
+
         // Calculate derived attributes based on stats
         this.updateEnemyAttributes(enemy);
-        
+
         return enemy;
     }
 
@@ -353,7 +416,7 @@ class EnemyManager {
             'Elite': 2.0,
             'Boss': 3.0
         };
-        
+
         const rarityDamageBonus = {
             'Common': 1.0,
             'Uncommon': 1.1,
@@ -361,7 +424,7 @@ class EnemyManager {
             'Elite': 1.5,
             'Boss': 2.0
         };
-        
+
         // Apply the bonuses
         enemy.attributes.maxHealth = Math.floor(enemy.attributes.maxHealth * (rarityHealthBonus[enemy.rarity] || 1.0));
         enemy.attributes.currentHealth = enemy.attributes.maxHealth;
@@ -374,24 +437,24 @@ class EnemyManager {
     // Generate a group of enemies for a battle
     generateEnemyGroup(playerLevel, groupSize = 3, includeElite = false, includeBoss = false) {
         const enemies = [];
-        
+
         // If we should include a boss, add it
         if (includeBoss) {
             enemies.push(this.generateRandomEnemy(playerLevel, null, 'Boss'));
             groupSize--; // Reduce remaining group size
         }
-        
+
         // If we should include an elite enemy, add it
         if (includeElite && groupSize > 0) {
             enemies.push(this.generateRandomEnemy(playerLevel, null, 'Elite'));
             groupSize--; // Reduce remaining group size
         }
-        
+
         // Fill the rest of the group with random enemies
         for (let i = 0; i < groupSize; i++) {
             enemies.push(this.generateRandomEnemy(playerLevel));
         }
-        
+
         return enemies;
     }
 
@@ -399,7 +462,7 @@ class EnemyManager {
     calculateXPReward(enemy) {
         const baseXP = 10;
         const levelMultiplier = enemy.level * 1.5;
-        
+
         const rarityMultiplier = {
             'Common': 1.0,
             'Uncommon': 1.5,
@@ -407,7 +470,7 @@ class EnemyManager {
             'Elite': 4.0,
             'Boss': 10.0
         };
-        
+
         return Math.floor(baseXP * levelMultiplier * (rarityMultiplier[enemy.rarity] || 1.0));
     }
 
@@ -416,7 +479,7 @@ class EnemyManager {
         const baseFood = Math.floor(Math.random() * 3) + 1; // 1-3 food
         const baseMaterials = Math.floor(Math.random() * 2) + 1; // 1-2 materials
         const baseMedicine = Math.random() < 0.3 ? 1 : 0; // 30% chance for 1 medicine
-        
+
         const rarityMultiplier = {
             'Common': 1.0,
             'Uncommon': 1.5,
@@ -424,9 +487,9 @@ class EnemyManager {
             'Elite': 3.0,
             'Boss': 5.0
         };
-        
+
         const multiplier = rarityMultiplier[enemy.rarity] || 1.0;
-        
+
         return {
             food: Math.floor(baseFood * multiplier),
             materials: Math.floor(baseMaterials * multiplier),
@@ -439,21 +502,140 @@ class EnemyManager {
         const enemyElement = document.createElement('div');
         enemyElement.className = 'enemy-card';
         enemyElement.setAttribute('data-enemy-id', enemy.id);
-        
+
         // Add rarity-based styling
         enemyElement.classList.add(`rarity-${enemy.rarity.toLowerCase()}`);
-        
-        // Create the HTML content
-        enemyElement.innerHTML = `
+
+        // Create the HTML content for the header and stats
+        let enemyHTML = `
             <div class="enemy-header">
                 <div class="enemy-name">${enemy.name}</div>
                 <div class="enemy-level">Level ${enemy.level} ${enemy.rarity}</div>
             </div>
+        `;
+
+        // Add the appropriate appearance based on enemy type
+        if (enemy.type === 'Shadow Fox') {
+            // Use the animated shadow fox with random colors
+            enemyHTML += `
+            <div class="animated-enemy fox-container shadow-fox">
+                <div class="fox-body" style="background-color: ${enemy.appearance.bodyColor};"></div>
+                <div class="fox-head" style="background-color: ${enemy.appearance.bodyColor};"></div>
+                <div class="fox-ear left" style="border-bottom-color: ${enemy.appearance.bodyColor};"></div>
+                <div class="fox-ear right" style="border-bottom-color: ${enemy.appearance.bodyColor};"></div>
+                <div class="fox-ear-inner left" style="border-bottom-color: ${enemy.appearance.patternColor};"></div>
+                <div class="fox-ear-inner right" style="border-bottom-color: ${enemy.appearance.patternColor};"></div>
+                <div class="fox-eye left" style="background-color: ${enemy.appearance.eyeColor};"></div>
+                <div class="fox-eye right" style="background-color: ${enemy.appearance.eyeColor};"></div>
+                <div class="fox-nose" style="background-color: ${enemy.appearance.noseColor};"></div>
+                <div class="fox-tail" style="background-color: ${enemy.appearance.tailColor};">
+                    <div class="fox-tail-tip" style="background-color: ${enemy.appearance.patternColor};"></div>
+                </div>
+                <div class="fox-leg front-left" style="background-color: ${enemy.appearance.bodyColor};"></div>
+                <div class="fox-leg front-right" style="background-color: ${enemy.appearance.bodyColor};"></div>
+                <div class="fox-leg back-left" style="background-color: ${enemy.appearance.bodyColor};"></div>
+                <div class="fox-leg back-right" style="background-color: ${enemy.appearance.bodyColor};"></div>
+            </div>
+            `;
+        } else if (enemy.type === 'Feral Dog') {
+            // Use the animated dog with random colors
+            enemyHTML += `
+            <div class="animated-enemy dog-container">
+                <div class="dog-body" style="background-color: ${enemy.appearance.bodyColor};"></div>
+                <div class="dog-head" style="background-color: ${enemy.appearance.bodyColor};"></div>
+                <div class="dog-ear left" style="background-color: ${enemy.appearance.bodyColor};"></div>
+                <div class="dog-ear right" style="background-color: ${enemy.appearance.bodyColor};"></div>
+                <div class="dog-eye left" style="background-color: ${enemy.appearance.eyeColor};"></div>
+                <div class="dog-eye right" style="background-color: ${enemy.appearance.eyeColor};"></div>
+                <div class="dog-nose" style="background-color: ${enemy.appearance.noseColor};"></div>
+                <div class="dog-mouth" style="background-color: #FF6666;"></div>
+                <div class="dog-tail" style="background-color: ${enemy.appearance.tailColor};"></div>
+                <div class="dog-leg front-left" style="background-color: ${enemy.appearance.bodyColor};"></div>
+                <div class="dog-leg front-right" style="background-color: ${enemy.appearance.bodyColor};"></div>
+                <div class="dog-leg back-left" style="background-color: ${enemy.appearance.bodyColor};"></div>
+                <div class="dog-leg back-right" style="background-color: ${enemy.appearance.bodyColor};"></div>
+            </div>
+            `;
+        } else if (enemy.type === 'Rabid Wolf') {
+            // Use the animated rabid wolf with random colors
+            enemyHTML += `
+            <div class="animated-enemy dog-container rabid-wolf">
+                <div class="dog-body" style="background-color: ${enemy.appearance.bodyColor};"></div>
+                <div class="dog-head" style="background-color: ${enemy.appearance.bodyColor};"></div>
+                <div class="dog-ear left" style="background-color: ${enemy.appearance.bodyColor};"></div>
+                <div class="dog-ear right" style="background-color: ${enemy.appearance.bodyColor};"></div>
+                <div class="dog-eye left" style="background-color: ${enemy.appearance.eyeColor};"></div>
+                <div class="dog-eye right" style="background-color: ${enemy.appearance.eyeColor};"></div>
+                <div class="dog-nose" style="background-color: ${enemy.appearance.noseColor};"></div>
+                <div class="dog-mouth" style="background-color: #FF3333;"></div>
+                <div class="rabid-wolf-teeth left"></div>
+                <div class="rabid-wolf-teeth right"></div>
+                <div class="dog-tail" style="background-color: ${enemy.appearance.tailColor};"></div>
+                <div class="dog-leg front-left" style="background-color: ${enemy.appearance.bodyColor};"></div>
+                <div class="dog-leg front-right" style="background-color: ${enemy.appearance.bodyColor};"></div>
+                <div class="dog-leg back-left" style="background-color: ${enemy.appearance.bodyColor};"></div>
+                <div class="dog-leg back-right" style="background-color: ${enemy.appearance.bodyColor};"></div>
+            </div>
+            `;
+        } else if (enemy.type === 'Sewer Rat' || enemy.type === 'Plague Rat') {
+            // Use the animated rat with random colors
+            const ratClass = enemy.type === 'Plague Rat' ? 'plague-rat' : '';
+            enemyHTML += `
+            <div class="animated-enemy rat-container ${ratClass}">
+                <div class="rat-body" style="background-color: ${enemy.appearance.bodyColor};"></div>
+                <div class="rat-head" style="background-color: ${enemy.appearance.bodyColor};"></div>
+                <div class="rat-ear left" style="background-color: ${enemy.appearance.bodyColor};"></div>
+                <div class="rat-ear right" style="background-color: ${enemy.appearance.bodyColor};"></div>
+                <div class="rat-eye left" style="background-color: ${enemy.appearance.eyeColor};"></div>
+                <div class="rat-eye right" style="background-color: ${enemy.appearance.eyeColor};"></div>
+                <div class="rat-nose" style="background-color: ${enemy.appearance.noseColor};"></div>
+                <div class="rat-whisker top-left" style="background-color: #DDDDDD;"></div>
+                <div class="rat-whisker bottom-left" style="background-color: #DDDDDD;"></div>
+                <div class="rat-whisker top-right" style="background-color: #DDDDDD;"></div>
+                <div class="rat-whisker bottom-right" style="background-color: #DDDDDD;"></div>
+                <div class="rat-tail" style="background-color: ${enemy.appearance.tailColor};"></div>
+                <div class="rat-leg front-left" style="background-color: ${enemy.appearance.bodyColor};"></div>
+                <div class="rat-leg front-right" style="background-color: ${enemy.appearance.bodyColor};"></div>
+                <div class="rat-leg back-left" style="background-color: ${enemy.appearance.bodyColor};"></div>
+                <div class="rat-leg back-right" style="background-color: ${enemy.appearance.bodyColor};"></div>
+            </div>
+            `;
+        } else if (enemy.type === 'Giant Spider' || enemy.type === 'Venomous Spider') {
+            // Use the animated spider with random colors
+            const spiderClass = enemy.type === 'Venomous Spider' ? 'venomous-spider' : '';
+            enemyHTML += `
+            <div class="animated-enemy spider-container ${spiderClass}">
+                <div class="spider-body" style="background-color: ${enemy.appearance.bodyColor};"></div>
+                <div class="spider-head" style="background-color: ${enemy.appearance.bodyColor};"></div>
+                <div class="spider-eye left" style="background-color: ${enemy.appearance.eyeColor};"></div>
+                <div class="spider-eye right" style="background-color: ${enemy.appearance.eyeColor};"></div>
+                <div class="spider-eye left2" style="background-color: ${enemy.appearance.eyeColor};"></div>
+                <div class="spider-eye right2" style="background-color: ${enemy.appearance.eyeColor};"></div>
+                <div class="spider-fang left" style="background-color: #FFFFFF;"></div>
+                <div class="spider-fang right" style="background-color: #FFFFFF;"></div>
+                <div class="spider-leg left1" style="background-color: ${enemy.appearance.bodyColor};"></div>
+                <div class="spider-leg left2" style="background-color: ${enemy.appearance.bodyColor};"></div>
+                <div class="spider-leg left3" style="background-color: ${enemy.appearance.bodyColor};"></div>
+                <div class="spider-leg left4" style="background-color: ${enemy.appearance.bodyColor};"></div>
+                <div class="spider-leg right1" style="background-color: ${enemy.appearance.bodyColor};"></div>
+                <div class="spider-leg right2" style="background-color: ${enemy.appearance.bodyColor};"></div>
+                <div class="spider-leg right3" style="background-color: ${enemy.appearance.bodyColor};"></div>
+                <div class="spider-leg right4" style="background-color: ${enemy.appearance.bodyColor};"></div>
+            </div>
+            `;
+        } else {
+            // Use the default appearance for other enemy types
+            enemyHTML += `
             <div class="enemy-appearance" style="background-color: ${enemy.appearance.bodyColor};">
                 <div class="enemy-eyes" style="background-color: ${enemy.appearance.eyeColor};"></div>
-                ${enemy.appearance.pattern !== 'none' ? 
+                ${enemy.appearance.pattern !== 'none' ?
                     `<div class="enemy-pattern ${enemy.appearance.pattern}" style="background-color: ${enemy.appearance.patternColor};"></div>` : ''}
             </div>
+            `;
+        }
+
+        // Add stats and abilities
+        enemyHTML += `
             <div class="enemy-stats">
                 <div class="enemy-health-bar">
                     <div class="health-label">HP: ${enemy.attributes.currentHealth}/${enemy.attributes.maxHealth}</div>
@@ -470,10 +652,13 @@ class EnemyManager {
                 ${enemy.abilities.map(ability => `<div class="enemy-ability">${ability}</div>`).join('')}
             </div>
         `;
-        
+
+        // Set the HTML content
+        enemyElement.innerHTML = enemyHTML;
+
         // Add the enemy to the container
         container.appendChild(enemyElement);
-        
+
         return enemyElement;
     }
 }
