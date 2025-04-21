@@ -4,16 +4,12 @@ class GameManager {
         this.day = 1;
         this.messageLog = [];
         this.maxMessages = 10;
-        this.productionInterval = null;
 
         // Initialize event listeners
         this.initEventListeners();
 
         // Add welcome message
         this.addMessage("Welcome to Rise of the Strays! Build your cat colony and survive the apocalypse.");
-
-        // Start resource production cycle
-        this.startProductionCycle();
     }
 
     // Set up all event listeners
@@ -39,16 +35,42 @@ class GameManager {
             baseManager.upgradeBase();
         });
 
-        // Find cat button
-        document.getElementById('find-cat').addEventListener('click', () => {
+        // Training arena upgrade button will be attached in DOMContentLoaded
+
+        // Find cat buttons for different search types
+        const checkCapacityAndFindCat = (searchType) => {
             // Check if we have room for more cats
             if (catManager.getCatCount() >= baseManager.getMaxCats()) {
                 this.addMessage(`Your base is at maximum capacity (${baseManager.getMaxCats()} cats). Upgrade your base to make room for more cats.`);
                 return;
             }
 
-            catManager.findCat();
+            // Start the search process
+            const result = catManager.findCat(searchType);
+
+            // If result is "searching" or "found", the cat manager is handling the process
+            if (result === "searching" || result === "found") {
+                // We don't need to do anything here as the cat manager will handle the timer
+                // and update the UI when the search is complete or when a cat is found
+            }
+        };
+
+        // Normal search
+        document.getElementById('find-cat-normal').addEventListener('click', () => {
+            checkCapacityAndFindCat('normal');
         });
+
+        // Thorough search
+        document.getElementById('find-cat-thorough').addEventListener('click', () => {
+            checkCapacityAndFindCat('thorough');
+        });
+
+        // Premium search
+        document.getElementById('find-cat-premium').addEventListener('click', () => {
+            checkCapacityAndFindCat('premium');
+        });
+
+
     }
 
     // Add a message to the log
@@ -84,18 +106,30 @@ class GameManager {
 
         // Daily events and resource consumption would go here
     }
+}
 
-    // Start the resource production cycle
-    startProductionCycle() {
-        // Clear any existing interval
-        if (this.productionInterval) {
-            clearInterval(this.productionInterval);
+// Create global game manager
+const gameManager = new GameManager();
+
+// Initialize the game when the page loads
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('Game initialized!');
+
+    // Function to attach event listener to upgrade button
+    function attachUpgradeButtonListener() {
+        const upgradeArenaButton = document.getElementById('upgrade-arena');
+        if (upgradeArenaButton && !upgradeArenaButton.hasAttribute('data-listener-attached')) {
+            console.log('Found upgrade arena button, attaching event listener');
+            upgradeArenaButton.addEventListener('click', function() {
+                console.log('Upgrade arena button clicked from event listener');
+                window.upgradeTrainingArena();
+            });
+            upgradeArenaButton.setAttribute('data-listener-attached', 'true');
+        } else if (!upgradeArenaButton) {
+            console.log('Upgrade arena button not found');
+        } else {
+            console.log('Upgrade arena button already has listener attached');
         }
-
-        // Set up a new interval for resource production (every 10 seconds)
-        this.productionInterval = setInterval(() => {
-            this.produceResources();
-        }, 10000);
     }
 
     // Produce resources from buildings and bunker rooms
@@ -120,18 +154,57 @@ class GameManager {
             }
             combinedProduction[resource] += bunkerProduction[resource];
         }
+    // Attach listeners initially
+    attachUpgradeButtonListener();
 
-        // Log production if any resources were produced
-        let productionMessage = '';
-        let resourcesProduced = false;
+    // Set up a mutation observer to watch for changes to the DOM
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                // Check if any of the added nodes contain our button
+                for (let i = 0; i < mutation.addedNodes.length; i++) {
+                    const node = mutation.addedNodes[i];
+                    if (node.nodeType === 1) { // Element node
+                        if (node.id === 'upgrade-arena' || node.querySelector('#upgrade-arena')) {
+                            console.log('Upgrade arena button added to DOM, attaching listener');
+                            attachUpgradeButtonListener();
+                        }
+                    }
+                }
+            }
+        });
+    });
+
+    // Start observing the document with the configured parameters
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    // Attach test materials button event listener
+    const addTestMaterialsButton = document.getElementById('add-test-materials');
+    if (addTestMaterialsButton) {
+        addTestMaterialsButton.addEventListener('click', () => {
+            window.addTestMaterials();
+        });
+    }
 
         for (const resource in combinedProduction) {
             if (combinedProduction[resource] > 0) {
                 const roundedAmount = Math.round(combinedProduction[resource] * 10) / 10; // Round to 1 decimal place
                 productionMessage += `${roundedAmount} ${resource}, `;
                 resourcesProduced = true;
+    // Attach create group button event listener
+    const createGroupBtn = document.getElementById('create-group-btn');
+    console.log('Create group button in game.js:', createGroupBtn);
+    if (createGroupBtn) {
+        createGroupBtn.addEventListener('click', () => {
+            console.log('Create group button clicked in game.js');
+            if (typeof groupManager !== 'undefined' && groupManager.showCreateGroupModal) {
+                groupManager.showCreateGroupModal();
+            } else {
+                console.error('groupManager is not defined or showCreateGroupModal method is missing');
             }
-        }
+        });
+        console.log('Event listener attached to create group button in game.js');
+    }
 
         if (resourcesProduced) {
             // Remove trailing comma and space
@@ -201,10 +274,62 @@ class GameManager {
     }
 }
 
-// Create global game manager
-const gameManager = new GameManager();
+    // Add event listener for stat buttons
+    document.addEventListener('click', (event) => {
+        if (event.target.classList.contains('add-stat-btn')) {
+            const catId = parseInt(event.target.getAttribute('data-cat-id'));
+            const statType = event.target.getAttribute('data-stat');
+            catManager.addStatPoint(catId, statType);
+            // Prevent the click from toggling the card
+            event.stopPropagation();
+        } else if (event.target.classList.contains('remove-stat-btn')) {
+            const catId = parseInt(event.target.getAttribute('data-cat-id'));
+            const statType = event.target.getAttribute('data-stat');
+            catManager.removeStatPoint(catId, statType);
+            // Prevent the click from toggling the card
+            event.stopPropagation();
+        } else if (event.target.classList.contains('confirm-stat-btn')) {
+            const catId = parseInt(event.target.getAttribute('data-cat-id'));
+            catManager.applyStatChanges(catId);
+            // Prevent the click from toggling the card
+            event.stopPropagation();
+        } else if (event.target.classList.contains('cancel-stat-btn')) {
+            const catId = parseInt(event.target.getAttribute('data-cat-id'));
+            catManager.cancelStatChanges(catId);
+            // Prevent the click from toggling the card
+            event.stopPropagation();
+        } else if (event.target.classList.contains('gain-xp-btn')) {
+            const catId = parseInt(event.target.getAttribute('data-cat-id'));
+            // Add a random amount of XP between 10 and 50
+            const xpAmount = Math.floor(Math.random() * 41) + 10;
+            const result = catManager.addXP(catId, xpAmount);
+            if (result) {
+                gameManager.addMessage(`${result.xpGained} XP added to cat!`);
+            }
+            // Prevent the click from toggling the card
+            event.stopPropagation();
+        } else if (event.target.closest('.expand-btn')) {
+            // Handle expand/collapse button click
+            const expandBtn = event.target.closest('.expand-btn');
+            const catId = expandBtn.getAttribute('data-cat-id');
+            const catCard = document.querySelector(`.cat-card[data-cat-id="${catId}"]`);
 
-// Initialize the game when the page loads
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('Game initialized!');
+            // Toggle the expanded class
+            catCard.classList.toggle('expanded');
+
+            // Update button text and track expanded state
+            const expandText = expandBtn.querySelector('.expand-text');
+            if (catCard.classList.contains('expanded')) {
+                expandText.textContent = 'Hide Stats';
+                catManager.expandedCatCards.add(catId);
+            } else {
+                expandText.textContent = 'Show Stats';
+                catManager.expandedCatCards.delete(catId);
+            }
+
+            // Prevent the click from bubbling
+            event.stopPropagation();
+        }
+    });
 });
+

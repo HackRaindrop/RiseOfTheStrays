@@ -6,7 +6,6 @@ class BaseManager {
         this.upgradeCost = 10; // Starting upgrade cost (materials)
         this.bunkerWidth = 5; // Starting bunker width
         this.bunkerHeight = 5; // Starting bunker height
-
         this.updateDisplay();
     }
 
@@ -20,7 +19,6 @@ class BaseManager {
         return this.maxCats;
     }
 
-    // Increase max cats (used by bunker rooms)
     increaseMaxCats(amount) {
         this.maxCats += amount;
         this.updateDisplay();
@@ -31,7 +29,6 @@ class BaseManager {
     getUpgradeCost() {
         return this.upgradeCost;
     }
-
     // Get bunker dimensions
     getBunkerDimensions() {
         return {
@@ -46,7 +43,6 @@ class BaseManager {
             this.baseLevel++;
             this.maxCats += 3; // Each level adds space for 3 more cats
             this.upgradeCost = Math.floor(this.upgradeCost * 1.5); // Increase cost for next upgrade
-
             // Expand bunker size every other level
             if (this.baseLevel % 2 === 0) {
                 this.bunkerWidth += 1;
