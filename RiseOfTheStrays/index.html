@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rise of the Strays</title>
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/bunker.css">
 </head>
 <body>
     <div id="game-container">
@@ -72,26 +71,10 @@
                     <button type="button" id="find-cat-premium">Premium Search (20 Food)</button>
                 </div>
             </section>
-            <section id="bunker-section">
-                <h2>Bunker</h2>
-                <div class="power-indicator">
-                    <div class="power-icon">⚡</div>
-                    <div class="power-bar">
-                        <div class="power-fill" id="power-fill"></div>
-                    </div>
-                    <div class="power-text" id="power-text">0/0</div>
-                </div>
-                <div id="bunker-container"></div>
-                <h3>Available Rooms</h3>
-                <div id="room-selection"></div>
-            </section>
 
-            <section id="buildings-section">
-                <h2>Outpost Buildings</h2>
-                <div id="buildings-container"></div>
-                <div id="building-buttons"></div>
             <section id="groups-section">
                 <h2>Cat Groups</h2>
+                <!-- Groups content will be inserted here by JavaScript -->
             </section>
 
             <section id="actions-section">
@@ -111,12 +94,9 @@
         </div>
     </div>
 
-    <script src="node_modules/interactjs/dist/interact.min.js"></script>
     <script src="js/resources.js"></script>
     <script src="js/cats.js"></script>
     <script src="js/base.js"></script>
-    <script src="js/bunker.js"></script>
-    <script src="js/buildings.js"></script>
     <script src="js/training.js"></script>
     <script src="js/groups.js"></script>
     <script src="js/game.js"></script>

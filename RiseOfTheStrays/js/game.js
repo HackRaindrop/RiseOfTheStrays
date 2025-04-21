@@ -132,28 +132,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Produce resources from buildings and bunker rooms
-    produceResources() {
-        // Get production from outpost buildings
-        const buildingProduction = buildingManager.produceResources();
-
-        // Get production from bunker rooms if bunkerManager exists
-        let bunkerProduction = {};
-        if (typeof bunkerManager !== 'undefined') {
-            bunkerProduction = bunkerManager.produceResources();
-
-            // Update power indicator
-            this.updatePowerIndicator();
-        }
-
-        // Combine production from both sources
-        const combinedProduction = { ...buildingProduction };
-        for (const resource in bunkerProduction) {
-            if (!combinedProduction[resource]) {
-                combinedProduction[resource] = 0;
-            }
-            combinedProduction[resource] += bunkerProduction[resource];
-        }
     // Attach listeners initially
     attachUpgradeButtonListener();
 
@@ -186,11 +164,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-        for (const resource in combinedProduction) {
-            if (combinedProduction[resource] > 0) {
-                const roundedAmount = Math.round(combinedProduction[resource] * 10) / 10; // Round to 1 decimal place
-                productionMessage += `${roundedAmount} ${resource}, `;
-                resourcesProduced = true;
     // Attach create group button event listener
     const createGroupBtn = document.getElementById('create-group-btn');
     console.log('Create group button in game.js:', createGroupBtn);
@@ -206,73 +179,9 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('Event listener attached to create group button in game.js');
     }
 
-        if (resourcesProduced) {
-            // Remove trailing comma and space
-            productionMessage = productionMessage.slice(0, -2);
-            this.addMessage(`Production cycle: ${productionMessage}`);
-        }
 
-        // Update building buttons in case resource changes affect build availability
-        buildingManager.updateBuildButtonStates();
 
-        // Update bunker room selection if bunkerManager exists
-        if (typeof bunkerManager !== 'undefined') {
-            bunkerManager.updateDisplay();
-        }
-    }
 
-    // Update the power indicator in the bunker section
-    updatePowerIndicator() {
-        if (typeof bunkerManager === 'undefined') return;
-
-        const powerFill = document.getElementById('power-fill');
-        const powerText = document.getElementById('power-text');
-
-        if (!powerFill || !powerText) return;
-
-        const totalPower = bunkerManager.getTotalPower();
-        const consumption = bunkerManager.getPowerConsumption();
-        const percentage = Math.min(100, (totalPower / consumption) * 100);
-
-        powerFill.style.width = `${percentage}%`;
-        powerText.textContent = `${totalPower.toFixed(1)}/${consumption.toFixed(1)}`;
-
-        // Change color based on power status
-        if (percentage >= 100) {
-            powerFill.style.backgroundColor = '#2ecc71'; // Green
-        } else if (percentage >= 75) {
-            powerFill.style.backgroundColor = '#f1c40f'; // Yellow
-        } else {
-            powerFill.style.backgroundColor = '#e74c3c'; // Red
-        }
-    }
-
-    // Update the power indicator in the bunker section
-    updatePowerIndicator() {
-        if (typeof bunkerManager === 'undefined') return;
-
-        const powerFill = document.getElementById('power-fill');
-        const powerText = document.getElementById('power-text');
-
-        if (!powerFill || !powerText) return;
-
-        const totalPower = bunkerManager.getTotalPower();
-        const consumption = bunkerManager.getPowerConsumption();
-        const percentage = Math.min(100, (totalPower / consumption) * 100);
-
-        powerFill.style.width = `${percentage}%`;
-        powerText.textContent = `${totalPower.toFixed(1)}/${consumption.toFixed(1)}`;
-
-        // Change color based on power status
-        if (percentage >= 100) {
-            powerFill.style.backgroundColor = '#2ecc71'; // Green
-        } else if (percentage >= 75) {
-            powerFill.style.backgroundColor = '#f1c40f'; // Yellow
-        } else {
-            powerFill.style.backgroundColor = '#e74c3c'; // Red
-        }
-    }
-}
 
     // Add event listener for stat buttons
     document.addEventListener('click', (event) => {
