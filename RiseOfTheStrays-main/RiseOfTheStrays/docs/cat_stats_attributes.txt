@@ -1,0 +1,115 @@
+# Cat Stats and Their Effects on Attributes
+
+This document outlines how each stat affects a cat's attributes in Rise of the Strays.
+
+## STR - Paw Power
+- **Physical Attack**: +1.5 per point
+- **Physical Defense**: +0.5 per point
+- **Attack Damage**: +1 per point
+- **Push Force**: +0.05 per point
+
+## DEX - Whisker Dexterity
+- **Accuracy**: +1% per point
+- **Speed**: +0.5 per point
+
+## AGI - Tail Balance
+- **Dodge Chance**: +0.75% per point
+- **Attack Speed**: +0.025 per point
+- **Jump Height**: +0.05 per point
+
+## VIT - Clawstitution
+- **Max Health**: +5 per point
+- **Health Regeneration**: +0.2 per point
+
+## WIL - Fur-titude
+- **Magic Resistance**: +0.75% per point
+- **Debuff Resistance**: +0.5% per point
+- **Casting Time Reduction**: +0.25% per point
+
+## INT - Meowmental
+- **Magic Attack**: +1.5 per point
+- **XP Gain Multiplier**: +0.025 (2.5%) per point
+
+## CHA - Charm
+- **Synergy Bonus**: +0.5% per point (capped at 15%)
+- **Recruit Chance Bonus**: +0.75% per point
+- **Bonding Speed**: +0.05 per point
+- **Happiness Bonus**: +0.3% per point
+
+## PER - Purrception
+- **Critical Hit Chance**: +0.2% per point (1% per 5 points)
+- **Stealth Detection Range**: +0.1 per point
+
+## LCK - Luck
+- **Rare Drop Chance**: +0.25% per point
+- **Status Effect Avoidance**: +0.15% per point
+- **Happiness Luck Bonus**: +0.2% per point
+
+## Cat Types and Stat Bonuses
+
+Each cat type receives bonuses to specific stats:
+
+### Scavenger
+- **Primary Stats**: PER, LCK (+3 each)
+- **Secondary Stats**: DEX, AGI (+1 each)
+- **Description**: Treasure hunter, item finder, stealthy and fast.
+
+### Hunter
+- **Primary Stats**: AGI, DEX (+3 each)
+- **Secondary Stats**: STR, PER (+1 each)
+- **Description**: Agile attacker with high crit and precision.
+
+### Guardian
+- **Primary Stats**: VIT, STR (+3 each)
+- **Secondary Stats**: WIL, CHA (+1 each)
+- **Description**: Tanky, protects team, high HP and defense.
+
+### Medic
+- **Primary Stats**: INT, WIL (+3 each)
+- **Secondary Stats**: CHA, DEX (+1 each)
+- **Description**: Healer/support cat, uses intellect and calm will.
+
+### Mystic
+- **Primary Stats**: INT, WIL (+3 each)
+- **Secondary Stats**: LCK, PER (+1 each)
+- **Description**: Magical or energy-based, status effects and spells.
+
+### Trickster
+- **Primary Stats**: LCK, CHA (+3 each)
+- **Secondary Stats**: DEX, INT (+1 each)
+- **Description**: Tricky and charming, good with luck-based abilities.
+
+### Beast
+- **Primary Stats**: STR, AGI (+3 each)
+- **Secondary Stats**: VIT, WIL (+1 each)
+- **Description**: Strong physical attacker with good mobility.
+
+### Diplomat
+- **Primary Stats**: CHA, INT (+3 each)
+- **Secondary Stats**: WIL, PER (+1 each)
+- **Description**: Social and intelligent, good at recruiting and bonding.
+
+### Shadowpaw
+- **Primary Stats**: AGI, PER (+3 each)
+- **Secondary Stats**: DEX, LCK (+1 each)
+- **Description**: Stealthy and perceptive, good at critical hits.
+
+### Tinkerer
+- **Primary Stats**: INT, DEX (+3 each)
+- **Secondary Stats**: PER, WIL (+1 each)
+- **Description**: Crafty and precise, good with technical tasks.
+
+### Wanderer
+- **All Stats**: +1 to all stats
+- **Description**: Balanced stats, no specific focus.
+
+## Synergy Bonus
+
+When cats are grouped together, they receive a synergy bonus based on the average Charisma (CHA) of all cats in the group. This bonus applies to:
+- Physical Attack
+- Physical Defense
+- Magic Attack
+- Magic Resistance
+- Health Regeneration
+
+The synergy bonus is calculated as: 1 + (average CHA * 0.5%) with a cap of 15%.
