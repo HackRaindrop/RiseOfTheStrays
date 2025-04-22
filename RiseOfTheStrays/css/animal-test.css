@@ -1,0 +1,42 @@
+/* Animal Test CSS */
+
+/* Toxic Toad Test Styles */
+.animation-card .toad-container .toad-body,
+.animation-card .toad-container .toad-head,
+.animation-card .toad-container .toad-leg {
+    background-color: #4CAF50;
+}
+
+.animation-card .toad-container .toad-eye {
+    background-color: #FFFF00;
+}
+
+/* Wild Boar Test Styles */
+.animation-card .boar-container .boar-body,
+.animation-card .boar-container .boar-head,
+.animation-card .boar-container .boar-ear,
+.animation-card .boar-container .boar-leg,
+.animation-card .boar-container .boar-tail {
+    background-color: #795548;
+}
+
+/* Rogue Cat Test Styles */
+.animation-card .rogue-cat-container .rogue-cat-body,
+.animation-card .rogue-cat-container .rogue-cat-head,
+.animation-card .rogue-cat-container .rogue-cat-leg,
+.animation-card .rogue-cat-container .rogue-cat-tail,
+.animation-card .rogue-cat-container .rogue-cat-ear {
+    background-color: #616161;
+}
+
+.animation-card .rogue-cat-container .rogue-cat-eye {
+    background-color: #FFEB3B;
+}
+
+/* Scavenger Bird Test Styles */
+.animation-card .bird-container .bird-body,
+.animation-card .bird-container .bird-head,
+.animation-card .bird-container .bird-wing,
+.animation-card .bird-container .bird-tail {
+    background-color: #607D8B;
+}

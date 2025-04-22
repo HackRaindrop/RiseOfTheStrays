@@ -170,6 +170,7 @@ class CatManager {
             patternColor: this.getRandomItem(this.catFeatures.patternColors),
             pattern: this.getRandomItem(this.catFeatures.patterns),
             eyeColor: this.getRandomItem(this.catFeatures.eyeColors),
+            irisColor: this.getRandomColor(), // Random iris color
             accessory: this.getRandomItem(this.catFeatures.accessories),
             accessoryColor: this.getRandomItem(this.catFeatures.accessoryColors),
             // Add unique ID for animation tracking
@@ -257,10 +258,14 @@ class CatManager {
                 patternColor: this.getRandomItem(this.catFeatures.patternColors),
                 pattern: this.getRandomItem(this.catFeatures.patterns),
                 eyeColor: this.getRandomItem(this.catFeatures.eyeColors),
+                irisColor: this.getRandomColor(), // Random iris color
                 accessory: this.getRandomItem(this.catFeatures.accessories),
                 accessoryColor: this.getRandomItem(this.catFeatures.accessoryColors),
                 uniqueId: 'cat-' + Date.now() + '-' + Math.floor(Math.random() * 1000)
             };
+        } else if (!appearance.irisColor) {
+            // Ensure iris color exists even if appearance is provided
+            appearance.irisColor = this.getRandomColor();
         }
 
         // Generate base stats based on rarity
@@ -588,6 +593,14 @@ class CatManager {
                             </div>
 
                             <div class="custom-cat-form-group">
+                                <label for="custom-cat-iris-color">Iris Color:</label>
+                                <div class="color-picker-container">
+                                    <input type="color" id="custom-cat-iris-color" value="#000000">
+                                    <div class="color-picker-preview" id="iris-color-preview" style="background-color: #000000"></div>
+                                </div>
+                            </div>
+
+                            <div class="custom-cat-form-group">
                                 <label for="custom-cat-accessory">Accessory:</label>
                                 <select id="custom-cat-accessory">
                                     ${this.catFeatures.accessories.map(accessory => `<option value="${accessory}">${accessory.charAt(0).toUpperCase() + accessory.slice(1)}</option>`).join('')}
@@ -663,6 +676,11 @@ class CatManager {
             document.getElementById('eye-color-preview').style.backgroundColor = e.target.value;
             this.renderCustomCatPreview();
         });
+
+        document.getElementById('custom-cat-iris-color').addEventListener('input', (e) => {
+            document.getElementById('iris-color-preview').style.backgroundColor = e.target.value;
+            this.renderCustomCatPreview();
+        });
         document.getElementById('custom-cat-accessory').addEventListener('change', () => this.renderCustomCatPreview());
         document.getElementById('custom-cat-accessory-color').addEventListener('input', (e) => {
             document.getElementById('accessory-color-preview').style.backgroundColor = e.target.value;
@@ -692,6 +710,7 @@ class CatManager {
         const pattern = document.getElementById('custom-cat-pattern').value;
         const patternColor = document.getElementById('custom-cat-pattern-color').value;
         const eyeColor = document.getElementById('custom-cat-eye-color').value;
+        const irisColor = document.getElementById('custom-cat-iris-color').value;
         const accessory = document.getElementById('custom-cat-accessory').value;
         const accessoryColor = document.getElementById('custom-cat-accessory-color').value;
 
@@ -793,6 +812,7 @@ class CatManager {
         const randomBodyColor = this.getRandomColor();
         const randomPatternColor = this.getRandomColor();
         const randomEyeColor = this.getRandomColor();
+        const randomIrisColor = this.getRandomColor();
         const randomAccessoryColor = this.getRandomColor();
 
         // Get random pattern and accessory
@@ -815,6 +835,9 @@ class CatManager {
 
         document.getElementById('custom-cat-eye-color').value = randomEyeColor;
         document.getElementById('eye-color-preview').style.backgroundColor = randomEyeColor;
+
+        document.getElementById('custom-cat-iris-color').value = randomIrisColor;
+        document.getElementById('iris-color-preview').style.backgroundColor = randomIrisColor;
 
         document.getElementById('custom-cat-accessory-color').value = randomAccessoryColor;
         document.getElementById('accessory-color-preview').style.backgroundColor = randomAccessoryColor;
@@ -899,6 +922,7 @@ class CatManager {
         const pattern = document.getElementById('custom-cat-pattern').value;
         const patternColor = document.getElementById('custom-cat-pattern-color').value;
         const eyeColor = document.getElementById('custom-cat-eye-color').value;
+        const irisColor = document.getElementById('custom-cat-iris-color').value;
         const accessory = document.getElementById('custom-cat-accessory').value;
         const accessoryColor = document.getElementById('custom-cat-accessory-color').value;
 
@@ -908,6 +932,7 @@ class CatManager {
             patternColor: patternColor,
             pattern: pattern,
             eyeColor: eyeColor,
+            irisColor: irisColor,
             accessory: accessory,
             accessoryColor: accessoryColor,
             uniqueId: 'cat-' + Date.now() + '-' + Math.floor(Math.random() * 1000)

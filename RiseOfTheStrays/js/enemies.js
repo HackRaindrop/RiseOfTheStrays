@@ -727,6 +727,98 @@ class EnemyManager {
                 <div class="spider-leg right4" style="background-color: ${enemy.appearance.bodyColor};"></div>
             </div>
             `;
+        } else if (enemy.type === 'Toxic Toad') {
+            // Use the animated toad with random colors
+            enemyHTML += `
+            <div class="animated-enemy toad-container toxic-toad">
+                <div class="toad-body" style="background-color: ${enemy.appearance.bodyColor};"></div>
+                <div class="toad-head" style="background-color: ${enemy.appearance.bodyColor};"></div>
+                <div class="toad-eye left" style="background-color: ${enemy.appearance.eyeColor};">
+                    <div class="toad-pupil"></div>
+                </div>
+                <div class="toad-eye right" style="background-color: ${enemy.appearance.eyeColor};">
+                    <div class="toad-pupil"></div>
+                </div>
+                <div class="toad-mouth"></div>
+                <div class="toad-spot spot1"></div>
+                <div class="toad-spot spot2"></div>
+                <div class="toad-spot spot3"></div>
+                <div class="toad-spot spot4"></div>
+                <div class="toad-leg front-left" style="background-color: ${enemy.appearance.bodyColor};"></div>
+                <div class="toad-leg front-right" style="background-color: ${enemy.appearance.bodyColor};"></div>
+                <div class="toad-leg back-left" style="background-color: ${enemy.appearance.bodyColor};"></div>
+                <div class="toad-leg back-right" style="background-color: ${enemy.appearance.bodyColor};"></div>
+            </div>
+            `;
+        } else if (enemy.type === 'Wild Boar') {
+            // Use the animated boar with random colors
+            enemyHTML += `
+            <div class="animated-enemy boar-container wild-boar">
+                <div class="boar-body" style="background-color: ${enemy.appearance.bodyColor};"></div>
+                <div class="boar-head" style="background-color: ${enemy.appearance.bodyColor};"></div>
+                <div class="boar-snout"></div>
+                <div class="boar-nostril left"></div>
+                <div class="boar-nostril right"></div>
+                <div class="boar-eye left" style="background-color: ${enemy.appearance.eyeColor};"></div>
+                <div class="boar-eye right" style="background-color: ${enemy.appearance.eyeColor};"></div>
+                <div class="boar-ear left" style="background-color: ${enemy.appearance.bodyColor};"></div>
+                <div class="boar-ear right" style="background-color: ${enemy.appearance.bodyColor};"></div>
+                <div class="boar-tusk left"></div>
+                <div class="boar-tusk right"></div>
+                <div class="boar-leg front-left" style="background-color: ${enemy.appearance.bodyColor};"></div>
+                <div class="boar-leg front-right" style="background-color: ${enemy.appearance.bodyColor};"></div>
+                <div class="boar-leg back-left" style="background-color: ${enemy.appearance.bodyColor};"></div>
+                <div class="boar-leg back-right" style="background-color: ${enemy.appearance.bodyColor};"></div>
+                <div class="boar-tail" style="background-color: ${enemy.appearance.tailColor};"></div>
+            </div>
+            `;
+        } else if (enemy.type === 'Rogue Cat') {
+            // Use the animated rogue cat with random colors
+            enemyHTML += `
+            <div class="animated-enemy rogue-cat-container rogue-cat">
+                <div class="rogue-cat-body" style="background-color: ${enemy.appearance.bodyColor};"></div>
+                <div class="rogue-cat-head" style="background-color: ${enemy.appearance.bodyColor};"></div>
+                <div class="rogue-cat-ear left" style="background-color: ${enemy.appearance.bodyColor};"></div>
+                <div class="rogue-cat-ear right" style="background-color: ${enemy.appearance.bodyColor};"></div>
+                <!-- Inner ears removed -->
+                <div class="rogue-cat-eye left" style="background-color: ${enemy.appearance.eyeColor};">
+                    <div class="rogue-cat-pupil"></div>
+                </div>
+                <div class="rogue-cat-eye right" style="background-color: ${enemy.appearance.eyeColor};">
+                    <div class="rogue-cat-pupil"></div>
+                </div>
+                <div class="rogue-cat-nose" style="background-color: ${enemy.appearance.noseColor};"></div>
+                <div class="rogue-cat-mouth"></div>
+                <div class="rogue-cat-whisker top-left"></div>
+                <div class="rogue-cat-whisker middle-left"></div>
+                <div class="rogue-cat-whisker bottom-left"></div>
+                <div class="rogue-cat-whisker top-right"></div>
+                <div class="rogue-cat-whisker middle-right"></div>
+                <div class="rogue-cat-whisker bottom-right"></div>
+                <div class="rogue-cat-tail" style="background-color: ${enemy.appearance.tailColor};"></div>
+                <div class="rogue-cat-leg front-left" style="background-color: ${enemy.appearance.bodyColor};"></div>
+                <div class="rogue-cat-leg front-right" style="background-color: ${enemy.appearance.bodyColor};"></div>
+                <div class="rogue-cat-leg back-left" style="background-color: ${enemy.appearance.bodyColor};"></div>
+                <div class="rogue-cat-leg back-right" style="background-color: ${enemy.appearance.bodyColor};"></div>
+            </div>
+            `;
+        } else if (enemy.type === 'Scavenger Bird') {
+            // Use the animated bird with random colors
+            enemyHTML += `
+            <div class="animated-enemy bird-container scavenger-bird">
+                <div class="bird-body" style="background-color: ${enemy.appearance.bodyColor};"></div>
+                <div class="bird-head" style="background-color: ${enemy.appearance.bodyColor};"></div>
+                <div class="bird-beak"></div>
+                <div class="bird-eye" style="background-color: ${enemy.appearance.eyeColor};"></div>
+                <div class="bird-wing left" style="background-color: ${enemy.appearance.bodyColor};"></div>
+                <div class="bird-wing right" style="background-color: ${enemy.appearance.bodyColor};"></div>
+                <div class="bird-tail" style="background-color: ${enemy.appearance.tailColor};"></div>
+                <div class="bird-leg left"></div>
+                <div class="bird-leg right"></div>
+                <div class="bird-foot left"></div>
+                <div class="bird-foot right"></div>
+            </div>
+            `;
         } else {
             // Use the default appearance for other enemy types
             enemyHTML += `
