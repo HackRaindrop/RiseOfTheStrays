@@ -2,14 +2,12 @@
 class GameManager {
     constructor() {
         this.day = 1;
-        this.messageLog = [];
-        this.maxMessages = 10;
 
         // Initialize event listeners
         this.initEventListeners();
 
         // Add welcome message
-        this.addMessage("Welcome to Rise of the Strays! Build your cat colony and survive the apocalypse.");
+        this.addMessage("Welcome to Rise of the Strays! Build your cat colony and survive the apocalypse.", true);
     }
 
     // Set up all event listeners
@@ -42,7 +40,7 @@ class GameManager {
             // Check if we have room for more cats - for now, assume a fixed max of 10 cats
             const maxCats = 10;
             if (catManager.getCatCount() >= maxCats) {
-                this.addMessage(`Your base is at maximum capacity (${maxCats} cats). Upgrade your base to make room for more cats.`);
+                this.addMessage(`Your base is at maximum capacity (${maxCats} cats). Upgrade your base to make room for more cats.`, true);
                 return;
             }
 
@@ -72,30 +70,14 @@ class GameManager {
         });
     }
 
-    // Add a message to the log
-    addMessage = (message) => {
-        const timestamp = new Date().toLocaleTimeString();
-        this.messageLog.unshift(`[${timestamp}] ${message}`);
-
-        // Keep log at max length
-        if (this.messageLog.length > this.maxMessages) {
-            this.messageLog.pop();
+    // Add a message using the toast system
+    addMessage = (message, isImportant = false) => {
+        // The toast-messages.js handles the display logic
+        if (typeof window.addMessage === 'function' && window.addMessage !== this.addMessage) {
+            window.addMessage(message, isImportant);
+        } else {
+            console.log(`[${isImportant ? 'IMPORTANT' : 'INFO'}] ${message}`);
         }
-
-        this.updateMessageDisplay();
-    }
-
-    // Update the message display
-    updateMessageDisplay = () => {
-        const messagesContainer = document.getElementById('messages');
-        messagesContainer.innerHTML = '';
-
-        this.messageLog.forEach(message => {
-            const messageElement = document.createElement('div');
-            messageElement.className = 'message';
-            messageElement.textContent = message;
-            messagesContainer.appendChild(messageElement);
-        });
     }
 
     // Advance to the next day
@@ -185,7 +167,7 @@ class GameManager {
     increaseMaxCats = (amount) => {
         // For now, just log the increase
         console.log(`Max cat capacity would increase by ${amount}`);
-        this.addMessage(`Max cat capacity increased by ${amount}!`);
+        this.addMessage(`Max cat capacity increased by ${amount}!`, true);
 
         // In the future, this would be handled by the base manager
         // if (typeof baseManager !== 'undefined' && baseManager.increaseMaxCats) {
@@ -250,7 +232,7 @@ document.addEventListener('DOMContentLoaded', () => {
             resourceManager.addResource('food', 100);
             resourceManager.addResource('materials', 100);
             resourceManager.addResource('medicine', 100);
-            gameManager.addMessage('Added 100 of each resource for testing!');
+            gameManager.addMessage('Added 100 of each resource for testing!', true);
 
             // Update bunker display if it exists
             if (typeof bunkerManager !== 'undefined') {

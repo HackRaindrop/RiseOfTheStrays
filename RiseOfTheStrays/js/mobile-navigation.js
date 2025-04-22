@@ -104,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Update bunker layout if it exists
         if (typeof bunkerManager !== 'undefined') {
-            bunkerManager.renderBunkerGrid();
+            bunkerManager.initializeUI();
         }
     };
 
