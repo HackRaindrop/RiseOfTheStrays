@@ -111,6 +111,7 @@ class GameManager {
             combinedProduction[resource] += bunkerProduction[resource];
         }
 
+
         let productionMessage = '';
         let resourcesProduced = false;
 

@@ -1,14 +1,14 @@
 // Bunker management system - Fallout Shelter style
 class BunkerManager {
     constructor() {
-        this.gridWidth = 10; // Fixed width of the bunker grid (10x10)
-        this.gridHeight = 10; // Fixed height of the bunker grid (10x10)
+        this.gridWidth = 5; // Initial width of the bunker grid
+        this.gridHeight = 5; // Initial height of the bunker grid
         this.grid = []; // 2D array representing the bunker grid
         this.rooms = []; // Array of placed rooms
         this.selectedRoomType = null; // Currently selected room type for placement
-        this.previewElement = null; // Element for room placement preview
-        this.highlightedCells = []; // Cells currently highlighted during preview
-        this.unlockedLayers = 1; // Number of layers unlocked (start with 1)
+        this.cellSize = 60; // Size of each cell in pixels
+        this.ghostElement = null; // Ghost element for room placement preview
+        this.currentDropTarget = { x: -1, y: -1 }; // Current drop target coordinates
 
         // Room types with their properties
         this.roomTypes = {
@@ -99,9 +99,6 @@ class BunkerManager {
         bunkerContainer.innerHTML = '';
         roomSelectionContainer.innerHTML = '';
 
-        // Add layer controls
-        this.renderLayerControls(bunkerContainer);
-
         // Create the bunker grid
         this.renderBunkerGrid();
 
@@ -114,167 +111,138 @@ class BunkerManager {
             cancelButton.addEventListener('click', () => {
                 this.selectedRoomType = null;
                 this.updateRoomSelectionUI();
-                this.clearPreview();
+                this.removeGhostElement();
             });
+        }
+
+        // Create ghost element for room placement preview
+        this.createGhostElement();
+
+        // Initialize interact.js for the room selection items
+        this.initializeInteract();
+    }
+
+    // Initialize interact.js for drag and drop
+    initializeInteract() {
+        // Make room selection items draggable
+        interact('.room-selection-item:not(.disabled)').draggable({
+            inertia: false,
+            modifiers: [
+                interact.modifiers.restrictRect({
+                    restriction: 'parent',
+                    endOnly: true
+                })
+            ],
+            autoScroll: true,
+            listeners: {
+                start: event => this.onDragStart(event),
+                move: event => this.onDragMove(event),
+                end: event => this.onDragEnd(event)
+            }
+        });
+
+        // Make the bunker grid a dropzone
+        interact('.bunker-grid').dropzone({
+            accept: '.room-selection-item',
+            overlap: 0.5,
+            ondropactivate: event => this.onDropActivate(event),
+            ondragenter: event => this.onDragEnter(event),
+            ondragleave: event => this.onDragLeave(event),
+            ondrop: event => this.onDrop(event),
+            ondropdeactivate: event => this.onDropDeactivate(event)
+        });
+    }
+
+    // Create a ghost element for room placement preview
+    createGhostElement() {
+        // Remove any existing ghost element
+        this.removeGhostElement();
+
+        // Create new ghost element
+        const ghost = document.createElement('div');
+        ghost.id = 'room-ghost';
+        ghost.className = 'room-ghost';
+        ghost.style.display = 'none';
+        ghost.style.position = 'absolute';
+        ghost.style.pointerEvents = 'none';
+        ghost.style.zIndex = '1000';
+        ghost.style.opacity = '0.7';
+        ghost.style.borderRadius = '5px';
+        ghost.style.boxShadow = '0 0 10px rgba(255, 255, 255, 0.5)';
+        ghost.style.transition = 'transform 0.05s ease-out';
+
+        // Add the ghost element to the document body
+        document.body.appendChild(ghost);
+        this.ghostElement = ghost;
+    }
+
+    // Remove the ghost element
+    removeGhostElement() {
+        if (this.ghostElement) {
+            this.ghostElement.remove();
+            this.ghostElement = null;
         }
     }
 
-    // Render layer controls for unlocking new layers
-    renderLayerControls(container) {
-        const layerControlsDiv = document.createElement('div');
-        layerControlsDiv.className = 'layer-controls';
-        layerControlsDiv.innerHTML = `
-            <div class="layer-info">
-                <span>Unlocked Layers: <span class="layer-count">${this.unlockedLayers}</span>/3</span>
-            </div>
+    // Update the ghost element to match the selected room type
+    updateGhostElement() {
+        if (!this.ghostElement || !this.selectedRoomType) return;
+
+        const roomType = this.roomTypes[this.selectedRoomType];
+        if (!roomType) return;
+
+        // Update ghost element appearance
+        this.ghostElement.style.width = `${roomType.width * this.cellSize}px`;
+        this.ghostElement.style.height = `${roomType.height * this.cellSize}px`;
+        this.ghostElement.style.backgroundColor = roomType.color;
+
+        // Add room content
+        this.ghostElement.innerHTML = `
+            <div class="room-icon" style="font-size: 24px; margin-bottom: 5px;">${roomType.icon}</div>
+            <div class="room-name" style="font-size: 14px; font-weight: bold; color: white;">${this.selectedRoomType}</div>
         `;
 
-        // Only show unlock button if not all layers are unlocked
-        if (this.unlockedLayers < 3) {
-            const unlockButton = document.createElement('button');
-            unlockButton.className = 'unlock-layer-btn';
-            unlockButton.textContent = `Unlock Layer ${this.unlockedLayers + 1} (Cost: ${this.getLayerUnlockCost()} Materials)`;
-
-            // Check if player can afford to unlock
-            const canAfford = resourceManager.getResource('materials') >= this.getLayerUnlockCost();
-            if (!canAfford) {
-                unlockButton.disabled = true;
-                unlockButton.classList.add('disabled');
-            }
-
-            unlockButton.addEventListener('click', () => {
-                this.unlockNewLayer();
-            });
-
-            layerControlsDiv.appendChild(unlockButton);
-        }
-
-        container.appendChild(layerControlsDiv);
+        // Center content
+        this.ghostElement.style.display = 'flex';
+        this.ghostElement.style.flexDirection = 'column';
+        this.ghostElement.style.alignItems = 'center';
+        this.ghostElement.style.justifyContent = 'center';
     }
 
-    // Get the cost to unlock the next layer
-    getLayerUnlockCost() {
-        // Exponential cost increase
-        return this.unlockedLayers === 1 ? 50 : 150;
-    }
-
-    // Unlock a new layer
-    unlockNewLayer() {
-        const cost = this.getLayerUnlockCost();
-        if (resourceManager.getResource('materials') < cost) {
-            gameManager.addMessage(`Not enough materials to unlock Layer ${this.unlockedLayers + 1}. Need ${cost} materials.`);
-            return false;
-        }
-
-        // Use resources
-        resourceManager.useResource('materials', cost);
-
-        // Increment unlocked layers
-        this.unlockedLayers++;
-
-        // Update UI
-        gameManager.addMessage(`Unlocked Layer ${this.unlockedLayers}!`);
-        this.initializeUI();
-
-        return true;
-    }
-
-    // Render the bunker grid with layers
+    // Render the bunker grid
     renderBunkerGrid() {
         const bunkerContainer = document.getElementById('bunker-container');
         if (!bunkerContainer) return;
 
         bunkerContainer.innerHTML = '';
 
-        // Add layer controls
-        this.renderLayerControls(bunkerContainer);
-
-        // Add instructions for users
-        const instructionsElement = document.createElement('div');
-        instructionsElement.className = 'bunker-instructions';
-        instructionsElement.innerHTML = '<p>Select a room from the selection below and then click where you want to place it.</p>';
-        bunkerContainer.appendChild(instructionsElement);
-
         // Create the grid container
         const gridElement = document.createElement('div');
         gridElement.className = 'bunker-grid';
-        gridElement.id = 'bunker-grid';
 
-        // Create cells for the grid with layer visualization
+        // Set explicit dimensions for the grid
+        gridElement.style.width = `${this.gridWidth * this.cellSize}px`;
+        gridElement.style.height = `${this.gridHeight * this.cellSize}px`;
+        gridElement.style.display = 'grid';
+        gridElement.style.gridTemplateColumns = `repeat(${this.gridWidth}, ${this.cellSize}px)`;
+        gridElement.style.gridTemplateRows = `repeat(${this.gridHeight}, ${this.cellSize}px)`;
+
+        // Create cells for the grid
         for (let y = 0; y < this.gridHeight; y++) {
-            // Determine which layer this row belongs to (1-based)
-            const layerNumber = Math.floor(y / 3) + 1;
-            const isLayerLocked = layerNumber > this.unlockedLayers;
-
             for (let x = 0; x < this.gridWidth; x++) {
                 const cell = document.createElement('div');
                 cell.className = 'bunker-cell';
-                if (isLayerLocked) {
-                    cell.classList.add('locked-layer');
-                }
                 cell.dataset.x = x;
                 cell.dataset.y = y;
-                cell.dataset.layer = layerNumber;
-                cell.id = `cell-${x}-${y}`;
 
-                // Check if we're on a mobile device
-                const isMobile = window.innerWidth < 768;
-
-                if (!isMobile && !isLayerLocked) {
-                    // Desktop hover events (only for unlocked layers)
-                    cell.addEventListener('mouseover', () => {
-                        if (this.selectedRoomType) {
-                            this.showPlacementPreview(x, y);
-                        }
-                    });
-
-                    cell.addEventListener('mouseout', () => {
-                        if (this.selectedRoomType) {
-                            this.clearPreview();
-                        }
-                    });
-                }
-
-                // Click/tap event for both mobile and desktop
+                // Add click event for placing rooms
                 cell.addEventListener('click', () => {
-                    if (isLayerLocked) {
-                        gameManager.addMessage(`Layer ${layerNumber} is locked. Unlock it first.`);
-                        return;
-                    }
-
-                    if (this.selectedRoomType) {
-                        if (this.canPlaceRoomAt(this.selectedRoomType, x, y)) {
-                            this.placeRoom(this.selectedRoomType, x, y);
-                        } else {
-                            // Show a message when placement is invalid
-                            gameManager.addMessage(`Cannot place ${this.selectedRoomType} here. Try another location.`);
-                        }
+                    if (this.selectedRoomType && this.canPlaceRoomAt(this.selectedRoomType, x, y)) {
+                        this.placeRoom(this.selectedRoomType, x, y);
                     }
                 });
 
-                // For mobile, add a touch event to show preview (only for unlocked layers)
-                if (isMobile && !isLayerLocked) {
-                    cell.addEventListener('touchstart', (e) => {
-                        if (this.selectedRoomType) {
-                            // Prevent scrolling when touching cells
-                            e.preventDefault();
-                            this.showPlacementPreview(x, y);
-                        }
-                    }, { passive: false });
-                }
-
                 gridElement.appendChild(cell);
-            }
-
-            // Add a layer divider if this is the last row of a layer (except for the last layer)
-            if ((y + 1) % 3 === 0 && y < this.gridHeight - 1) {
-                const layerLabel = document.createElement('div');
-                layerLabel.className = 'layer-label';
-                layerLabel.textContent = `Layer ${layerNumber}`;
-                if (layerNumber >= this.unlockedLayers) {
-                    layerLabel.classList.add('locked-layer-label');
-                }
-                bunkerContainer.appendChild(layerLabel);
             }
         }
 
@@ -285,7 +253,189 @@ class BunkerManager {
         this.renderRooms();
     }
 
-    // Render the room selection UI with clickable room items
+    // Event handler for drag start
+    onDragStart(event) {
+        const target = event.target;
+        const roomName = target.querySelector('.room-name').textContent;
+
+        // Select the room type
+        this.selectRoomType(roomName);
+
+        // Update the ghost element
+        this.updateGhostElement();
+
+        // Position the ghost at the mouse cursor
+        const rect = target.getBoundingClientRect();
+        const offsetX = event.clientX - rect.left;
+        const offsetY = event.clientY - rect.top;
+
+        this.ghostElement.style.left = `${event.clientX - offsetX}px`;
+        this.ghostElement.style.top = `${event.clientY - offsetY}px`;
+        this.ghostElement.style.display = 'flex';
+
+        // Add a data attribute to track the drag offset
+        this.ghostElement.dataset.offsetX = offsetX;
+        this.ghostElement.dataset.offsetY = offsetY;
+
+        // Add a class to the body to indicate dragging
+        document.body.classList.add('room-dragging');
+    }
+
+    // Event handler for drag move
+    onDragMove(event) {
+        if (!this.ghostElement) return;
+
+        // Get the offset from the data attribute
+        const offsetX = parseFloat(this.ghostElement.dataset.offsetX || 0);
+        const offsetY = parseFloat(this.ghostElement.dataset.offsetY || 0);
+
+        // Move the ghost element with the cursor
+        this.ghostElement.style.left = `${event.clientX - offsetX}px`;
+        this.ghostElement.style.top = `${event.clientY - offsetY}px`;
+
+        // Update the ghost element's appearance based on whether it can be placed
+        this.updateGhostValidity();
+    }
+
+    // Event handler for drag end
+    onDragEnd(event) {
+        // Hide the ghost element
+        if (this.ghostElement) {
+            this.ghostElement.style.display = 'none';
+        }
+
+        // Remove the dragging class from the body
+        document.body.classList.remove('room-dragging');
+
+        // Clear any highlighted cells
+        this.clearHighlightedCells();
+
+        // Reset the current drop target
+        this.currentDropTarget = { x: -1, y: -1 };
+    }
+
+    // Event handler for dropzone activation
+    onDropActivate(event) {
+        // Add a class to the dropzone to indicate it's active
+        event.target.classList.add('drop-active');
+    }
+
+    // Event handler for drag enter dropzone
+    onDragEnter(event) {
+        const dropRect = event.target.getBoundingClientRect();
+        const ghostRect = this.ghostElement.getBoundingClientRect();
+
+        // Calculate the cell coordinates based on the ghost element's position
+        const x = Math.floor((ghostRect.left - dropRect.left) / this.cellSize);
+        const y = Math.floor((ghostRect.top - dropRect.top) / this.cellSize);
+
+        // Ensure coordinates are within grid bounds
+        const boundedX = Math.max(0, Math.min(x, this.gridWidth - 1));
+        const boundedY = Math.max(0, Math.min(y, this.gridHeight - 1));
+
+        // Update the current drop target
+        this.currentDropTarget = { x: boundedX, y: boundedY };
+
+        // Highlight the cells that would be occupied by the room
+        this.highlightCells(boundedX, boundedY);
+
+        // Update the ghost element's appearance
+        this.updateGhostValidity();
+    }
+
+    // Event handler for drag leave dropzone
+    onDragLeave(event) {
+        // Clear any highlighted cells
+        this.clearHighlightedCells();
+
+        // Reset the current drop target
+        this.currentDropTarget = { x: -1, y: -1 };
+
+        // Update the ghost element's appearance
+        this.updateGhostValidity();
+    }
+
+    // Event handler for drop
+    onDrop(event) {
+        const { x, y } = this.currentDropTarget;
+
+        // Place the room if possible
+        if (x >= 0 && y >= 0 && this.selectedRoomType && this.canPlaceRoomAt(this.selectedRoomType, x, y)) {
+            this.placeRoom(this.selectedRoomType, x, y);
+        }
+
+        // Hide the ghost element
+        if (this.ghostElement) {
+            this.ghostElement.style.display = 'none';
+        }
+
+        // Clear any highlighted cells
+        this.clearHighlightedCells();
+
+        // Reset the current drop target
+        this.currentDropTarget = { x: -1, y: -1 };
+    }
+
+    // Event handler for dropzone deactivation
+    onDropDeactivate(event) {
+        // Remove the active class from the dropzone
+        event.target.classList.remove('drop-active');
+    }
+
+    // Update the ghost element's appearance based on whether it can be placed
+    updateGhostValidity() {
+        if (!this.ghostElement || !this.selectedRoomType) return;
+
+        const { x, y } = this.currentDropTarget;
+        const canPlace = x >= 0 && y >= 0 && this.canPlaceRoomAt(this.selectedRoomType, x, y);
+
+        // Update the ghost element's appearance
+        if (canPlace) {
+            this.ghostElement.classList.remove('invalid');
+            this.ghostElement.classList.add('valid');
+        } else {
+            this.ghostElement.classList.remove('valid');
+            this.ghostElement.classList.add('invalid');
+        }
+    }
+
+    // Highlight cells that would be occupied by a room
+    highlightCells(x, y) {
+        if (!this.selectedRoomType) return;
+
+        // Clear any previously highlighted cells
+        this.clearHighlightedCells();
+
+        const roomType = this.roomTypes[this.selectedRoomType];
+        if (!roomType) return;
+
+        const canPlace = this.canPlaceRoomAt(this.selectedRoomType, x, y);
+        const highlightClass = canPlace ? 'valid-placement' : 'invalid-placement';
+
+        // Highlight all cells that would be occupied by the room
+        for (let dy = 0; dy < roomType.height; dy++) {
+            for (let dx = 0; dx < roomType.width; dx++) {
+                // Skip if out of bounds
+                if (x + dx >= this.gridWidth || y + dy >= this.gridHeight) continue;
+
+                const cell = document.querySelector(`.bunker-cell[data-x="${x + dx}"][data-y="${y + dy}"]`);
+                if (cell) {
+                    cell.classList.add(highlightClass);
+                }
+            }
+        }
+    }
+
+    // Clear all highlighted cells
+    clearHighlightedCells() {
+        // Remove highlight classes from all cells
+        const cells = document.querySelectorAll('.bunker-cell');
+        cells.forEach(cell => {
+            cell.classList.remove('valid-placement', 'invalid-placement');
+        });
+    }
+
+    // Render the room selection UI
     renderRoomSelection() {
         const roomSelectionContainer = document.getElementById('room-selection');
         if (!roomSelectionContainer) return;
@@ -297,15 +447,11 @@ class BunkerManager {
             const roomType = this.roomTypes[type];
             const roomButton = document.createElement('div');
             roomButton.className = 'room-selection-item';
-            roomButton.setAttribute('data-room-type', type);
 
             // Create cost text
             let costText = '';
             for (const resource in roomType.cost) {
-                const playerHas = resourceManager.getResource(resource);
-                const roomCost = roomType.cost[resource];
-                const hasEnough = playerHas >= roomCost;
-                costText += `<span class="${hasEnough ? 'cost-enough' : 'cost-not-enough'}">${resource}: ${roomCost}</span> `;
+                costText += `${resource}: ${roomType.cost[resource]} `;
             }
 
             // Create production/effect text
@@ -331,26 +477,16 @@ class BunkerManager {
                 </div>
             `;
 
-            // Add appropriate classes based on affordability
-            if (this.canAffordRoom(type)) {
-                roomButton.classList.add('clickable');
-            } else {
+            // Add event listener for selection
+            roomButton.addEventListener('click', () => {
+                this.selectRoomType(type);
+            });
+
+            // Disable the button if resources are insufficient
+            const canAfford = this.canAffordRoom(type);
+            if (!canAfford) {
                 roomButton.classList.add('disabled');
             }
-
-            // Add click event for room selection
-            roomButton.addEventListener('click', () => {
-                if (!roomButton.classList.contains('disabled')) {
-                    this.selectRoomType(type);
-                    // Update UI to show this room is selected
-                    document.querySelectorAll('.room-selection-item').forEach(item => {
-                        item.classList.remove('selected');
-                    });
-                    roomButton.classList.add('selected');
-                } else {
-                    gameManager.addMessage(`Not enough resources to build ${type}.`);
-                }
-            });
 
             roomSelectionContainer.appendChild(roomButton);
         }
@@ -360,11 +496,6 @@ class BunkerManager {
         cancelButton.id = 'cancel-room-placement';
         cancelButton.textContent = 'Cancel';
         cancelButton.style.display = this.selectedRoomType ? 'block' : 'none';
-        cancelButton.addEventListener('click', () => {
-            this.selectedRoomType = null;
-            this.updateRoomSelectionUI();
-            this.clearPreview();
-        });
         roomSelectionContainer.appendChild(cancelButton);
     }
 
@@ -395,7 +526,7 @@ class BunkerManager {
 
         this.selectedRoomType = type;
         this.updateRoomSelectionUI();
-        gameManager.addMessage(`Selected ${type} for placement. Hover over the grid to see a preview.`);
+        gameManager.addMessage(`Selected ${type} for placement. Click on the grid to place it.`);
     }
 
     // Check if player can afford to build a room
@@ -403,15 +534,8 @@ class BunkerManager {
         const roomType = this.roomTypes[type];
         if (!roomType) return false;
 
-        // Debug message to check costs
-        console.log(`Checking if can afford ${type}:`, roomType.cost);
-
         for (const resource in roomType.cost) {
-            const playerHas = resourceManager.getResource(resource);
-            const roomCost = roomType.cost[resource];
-            console.log(`Resource ${resource}: Player has ${playerHas}, need ${roomCost}`);
-
-            if (playerHas < roomCost) {
+            if (resourceManager.getResource(resource) < roomType.cost[resource]) {
                 return false;
             }
         }
@@ -431,20 +555,6 @@ class BunkerManager {
             return false;
         }
 
-        // Check if the placement is within unlocked layers
-        // Each layer is 3 rows (0-2 for layer 1, 3-5 for layer 2, 6-9 for layer 3)
-        const layerForPlacement = Math.floor(y / 3) + 1;
-        if (layerForPlacement > this.unlockedLayers) {
-            return false;
-        }
-
-        // Check if the room would extend into a locked layer
-        const endRow = y + roomType.height - 1;
-        const layerForEndRow = Math.floor(endRow / 3) + 1;
-        if (layerForEndRow > this.unlockedLayers) {
-            return false;
-        }
-
         // Check if all cells are empty
         for (let dy = 0; dy < roomType.height; dy++) {
             for (let dx = 0; dx < roomType.width; dx++) {
@@ -455,77 +565,6 @@ class BunkerManager {
         }
 
         return true;
-    }
-
-    // Show a preview of room placement
-    showPlacementPreview(x, y) {
-        // Clear any existing preview
-        this.clearPreview();
-
-        if (!this.selectedRoomType) return;
-
-        const roomType = this.roomTypes[this.selectedRoomType];
-        if (!roomType) return;
-
-        const canPlace = this.canPlaceRoomAt(this.selectedRoomType, x, y);
-        const highlightClass = canPlace ? 'valid-placement' : 'invalid-placement';
-
-        // Highlight all cells that would be occupied by the room
-        for (let dy = 0; dy < roomType.height; dy++) {
-            for (let dx = 0; dx < roomType.width; dx++) {
-                // Skip if out of bounds
-                if (x + dx >= this.gridWidth || y + dy >= this.gridHeight) continue;
-
-                const cell = document.querySelector(`.bunker-cell[data-x="${x + dx}"][data-y="${y + dy}"]`);
-                if (cell) {
-                    cell.classList.add(highlightClass);
-                    this.highlightedCells.push(cell);
-                }
-            }
-        }
-
-        // Create a preview element if placement is valid
-        if (canPlace) {
-            const bunkerGrid = document.querySelector('.bunker-grid');
-            if (!bunkerGrid) return;
-
-            const previewElement = document.createElement('div');
-            previewElement.className = 'bunker-room room-preview';
-
-            // Calculate position and size
-            const position = this.calculateRoomPosition(x, y, roomType.width, roomType.height);
-
-            // Set positioning
-            previewElement.style.left = position.left + 'px';
-            previewElement.style.top = position.top + 'px';
-            previewElement.style.width = position.width + 'px';
-            previewElement.style.height = position.height + 'px';
-            previewElement.style.backgroundColor = roomType.color;
-
-            // Add room content
-            previewElement.innerHTML = `
-                <div class="room-icon">${roomType.icon}</div>
-                <div class="room-name">${this.selectedRoomType}</div>
-            `;
-
-            bunkerGrid.appendChild(previewElement);
-            this.previewElement = previewElement;
-        }
-    }
-
-    // Clear the placement preview
-    clearPreview() {
-        // Remove highlight classes from cells
-        this.highlightedCells.forEach(cell => {
-            cell.classList.remove('valid-placement', 'invalid-placement');
-        });
-        this.highlightedCells = [];
-
-        // Remove the preview element
-        if (this.previewElement) {
-            this.previewElement.remove();
-            this.previewElement = null;
-        }
     }
 
     // Place a room at the given coordinates
@@ -568,9 +607,6 @@ class BunkerManager {
         // Reset selection
         this.selectedRoomType = null;
 
-        // Clear any preview
-        this.clearPreview();
-
         // Update the UI
         this.renderBunkerGrid();
         this.updateRoomSelectionUI();
@@ -585,228 +621,10 @@ class BunkerManager {
 
         // Apply max cats effect
         if (roomType.effect && roomType.effect.maxCats) {
-            gameManager.increaseMaxCats(roomType.effect.maxCats);
+            baseManager.increaseMaxCats(roomType.effect.maxCats);
         }
 
         // Other effects can be implemented as needed
-    }
-
-    // Helper method to get cell size based on screen width
-    getCellSize() {
-        return window.innerWidth <= 600 ? 50 : window.innerWidth <= 1024 ? 55 : 60;
-    }
-
-    // Helper method to get grid gap
-    getGridGap() {
-        return 2; // Gap between cells in pixels
-    }
-
-    // Helper method to calculate room position and size
-    calculateRoomPosition(x, y, width, height) {
-        // Fixed cell size for consistent positioning
-        const cellSize = 60;
-
-        // Calculate position based on exact grid cell positions
-        return {
-            left: x * cellSize,
-            top: y * cellSize,
-            width: width * cellSize,
-            height: height * cellSize
-        };
-    }
-
-    // Make a room selection item draggable using interact.js - Fallout Shelter style
-    makeDraggable(element, roomType) {
-        if (!window.interact) {
-            console.error('interact.js is not loaded');
-            return;
-        }
-
-        // Create a clone element for dragging
-        let clone = null;
-        let startPosition = { x: 0, y: 0 };
-
-        interact(element).draggable({
-            inertia: true,
-            modifiers: [
-                interact.modifiers.restrictRect({
-                    restriction: 'parent',
-                    endOnly: true
-                })
-            ],
-            autoScroll: true,
-            listeners: {
-                start: (event) => {
-                    // Select the room type when starting drag
-                    this.selectRoomType(roomType);
-
-                    // Create a clone of the element for dragging
-                    clone = element.cloneNode(true);
-                    clone.style.position = 'fixed';
-                    clone.style.zIndex = '1000';
-                    clone.style.width = element.offsetWidth + 'px';
-                    clone.style.height = element.offsetHeight + 'px';
-                    clone.style.opacity = '0.9';
-                    clone.style.pointerEvents = 'none';
-                    clone.classList.add('room-drag-clone');
-                    document.body.appendChild(clone);
-
-                    // Position the clone at the original element
-                    const rect = element.getBoundingClientRect();
-                    clone.style.left = rect.left + 'px';
-                    clone.style.top = rect.top + 'px';
-
-                    // Store the start position
-                    startPosition.x = rect.left;
-                    startPosition.y = rect.top;
-
-                    // Add a visual effect to show it's being dragged
-                    clone.style.transform = 'scale(0.95) rotate(2deg)';
-
-                    // Add a subtle animation
-                    clone.style.transition = 'transform 0.2s ease, box-shadow 0.2s ease';
-
-                    // Play a sound effect if available
-                    // const sound = new Audio('sounds/pickup.mp3');
-                    // sound.play();
-                },
-                move: (event) => {
-                    if (clone) {
-                        // Move the clone with the pointer
-                        const x = parseFloat(clone.style.left || '0') + event.dx;
-                        const y = parseFloat(clone.style.top || '0') + event.dy;
-                        clone.style.left = x + 'px';
-                        clone.style.top = y + 'px';
-
-                        // Add a subtle rotation based on movement direction
-                        const rotation = event.dx * 0.05;
-                        clone.style.transform = `scale(0.95) rotate(${rotation}deg)`;
-                    }
-                },
-                end: (event) => {
-                    // Add a drop animation
-                    if (clone) {
-                        clone.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
-                        clone.style.transform = 'scale(0.8) rotate(0deg)';
-                        clone.style.opacity = '0';
-
-                        // Play a sound effect if available
-                        // const sound = new Audio('sounds/drop.mp3');
-                        // sound.play();
-
-                        // Remove the clone after animation
-                        setTimeout(() => {
-                            if (clone) {
-                                clone.remove();
-                                clone = null;
-                            }
-                        }, 300);
-                    }
-                }
-            }
-        });
-    }
-
-    // Make the grid a dropzone for rooms - Fallout Shelter style
-    makeGridDropzone(gridElement) {
-        if (!window.interact) {
-            console.error('interact.js is not loaded');
-            return;
-        }
-
-        interact(gridElement).dropzone({
-            accept: '.room-drag-clone',
-            overlap: 0.3, // Reduced overlap requirement for easier placement
-            ondropactivate: () => {
-                // Add active class when a drag starts
-                gridElement.classList.add('drop-active');
-
-                // Add a subtle animation to the grid
-                gridElement.style.transition = 'background-color 0.3s ease';
-                gridElement.style.backgroundColor = 'rgba(26, 37, 48, 0.8)';
-            },
-            ondragenter: (event) => {
-                // Get the cell under the pointer
-                const gridRect = gridElement.getBoundingClientRect();
-
-                // Get cell size based on screen width
-                const cellSize = window.innerWidth <= 600 ? 50 : window.innerWidth <= 1024 ? 55 : 60;
-                const gridGap = 2; // Gap between cells in pixels
-
-                // Calculate the grid cell coordinates
-                const x = Math.floor((event.dragEvent.clientX - gridRect.left - 10) / (cellSize + gridGap));
-                const y = Math.floor((event.dragEvent.clientY - gridRect.top - 10) / (cellSize + gridGap));
-
-                // Show placement preview with a smooth transition
-                if (x >= 0 && x < this.gridWidth && y >= 0 && y < this.gridHeight) {
-                    this.showPlacementPreview(x, y);
-
-                    // Add a subtle pulse effect to the grid
-                    gridElement.style.boxShadow = 'inset 0 0 20px rgba(52, 152, 219, 0.3)';
-                }
-            },
-            ondragleave: () => {
-                // Clear preview when leaving the grid
-                this.clearPreview();
-
-                // Remove the pulse effect
-                gridElement.style.boxShadow = 'none';
-            },
-            ondrop: (event) => {
-                // Get the cell under the pointer
-                const gridRect = gridElement.getBoundingClientRect();
-
-                // Get cell size based on screen width
-                const cellSize = window.innerWidth <= 600 ? 50 : window.innerWidth <= 1024 ? 55 : 60;
-                const gridGap = 2; // Gap between cells in pixels
-
-                // Calculate the grid cell coordinates
-                const x = Math.floor((event.dragEvent.clientX - gridRect.left - 10) / (cellSize + gridGap));
-                const y = Math.floor((event.dragEvent.clientY - gridRect.top - 10) / (cellSize + gridGap));
-
-                // Attempt to place the room with visual feedback
-                if (x >= 0 && x < this.gridWidth && y >= 0 && y < this.gridHeight) {
-                    if (this.canPlaceRoomAt(this.selectedRoomType, x, y)) {
-                        // Add a flash effect before placing
-                        const flashElement = document.createElement('div');
-                        flashElement.className = 'placement-flash';
-                        const position = this.calculateRoomPosition(x, y, this.roomTypes[this.selectedRoomType].width, this.roomTypes[this.selectedRoomType].height);
-                        flashElement.style.left = `${position.left}px`;
-                        flashElement.style.top = `${position.top}px`;
-                        flashElement.style.width = `${position.width}px`;
-                        flashElement.style.height = `${position.height}px`;
-                        gridElement.appendChild(flashElement);
-
-                        // Remove the flash after animation
-                        setTimeout(() => {
-                            flashElement.remove();
-                            // Place the room after the flash effect
-                            this.placeRoom(this.selectedRoomType, x, y);
-                        }, 300);
-                    } else {
-                        // Show error message with shake animation on the preview
-                        const previewElement = document.querySelector('.room-preview');
-                        if (previewElement) {
-                            previewElement.style.animation = 'shake 0.5s';
-                            setTimeout(() => {
-                                previewElement.style.animation = 'pulse 1.5s infinite alternate';
-                            }, 500);
-                        }
-                        gameManager.addMessage(`Cannot place ${this.selectedRoomType} here. Try another location.`);
-                    }
-                }
-
-                // Clear preview
-                this.clearPreview();
-            },
-            ondropdeactivate: () => {
-                // Remove active class when drag ends
-                gridElement.classList.remove('drop-active');
-                gridElement.style.backgroundColor = '';
-                gridElement.style.boxShadow = 'none';
-                this.clearPreview();
-            }
-        });
     }
 
     // Render all placed rooms
@@ -823,17 +641,10 @@ class BunkerManager {
             const roomType = this.roomTypes[room.type];
             const roomElement = document.createElement('div');
             roomElement.className = 'bunker-room';
-            roomElement.dataset.roomId = room.id;
-            roomElement.dataset.roomType = room.type;
-
-            // Calculate position and size
-            const position = this.calculateRoomPosition(room.x, room.y, roomType.width, roomType.height);
-
-            // Set positioning
-            roomElement.style.left = position.left + 'px';
-            roomElement.style.top = position.top + 'px';
-            roomElement.style.width = position.width + 'px';
-            roomElement.style.height = position.height + 'px';
+            roomElement.style.gridColumnStart = room.x + 1;
+            roomElement.style.gridColumnEnd = room.x + roomType.width + 1;
+            roomElement.style.gridRowStart = room.y + 1;
+            roomElement.style.gridRowEnd = room.y + roomType.height + 1;
             roomElement.style.backgroundColor = roomType.color;
 
             // Add room content
@@ -949,7 +760,7 @@ class BunkerManager {
         // Base power consumption plus consumption from rooms
         let consumption = 0.1; // Base consumption
 
-        this.rooms.forEach(() => {
+        this.rooms.forEach(room => {
             // Each room consumes a small amount of power
             consumption += 0.05;
         });

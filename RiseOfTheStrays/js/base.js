@@ -19,6 +19,7 @@ class BaseManager {
         return this.maxCats;
     }
 
+    // Increase max cats (used by bunker rooms)
     increaseMaxCats = (amount) => {
         this.maxCats += amount;
         this.updateDisplay();
