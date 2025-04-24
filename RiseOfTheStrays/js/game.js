@@ -30,6 +30,11 @@ class GameManager {
             this.addMessage(`Gathered ${amount} medicine.`);
         });
 
+        // Loot box button
+        document.getElementById('open-lootbox').addEventListener('click', () => {
+            lootBoxManager.showLootBoxModal();
+        });
+
         // Base upgrade button
         document.getElementById('upgrade-base').addEventListener('click', () => {
             baseManager.upgradeBase();
