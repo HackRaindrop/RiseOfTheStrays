@@ -1,0 +1,446 @@
+{
+  "battlePassives": [
+    {
+      "name": "Nine Lives",
+      "description": "Revives the cat once per battle with 20% Max HP. +1% per VIT point.",
+      "trigger": "OnDeath",
+      "effect": { "revive": true, "hpRestore": 0.2 },
+      "scalesWith": "VIT",
+      "scaling": 0.01,
+      "type": "Battle"
+    },
+    {
+      "name": "Claw Mastery",
+      "description": "+5% Critical Hit Chance. Scales with PER (0.2% per point).",
+      "trigger": "OnAttack",
+      "effect": { "critChanceBonus": 0.05 },
+      "scalesWith": "PER",
+      "scaling": 0.002,
+      "type": "Battle"
+    },
+    {
+      "name": "Cat Reflexes",
+      "description": "+10% Dodge Chance. Scales with AGI (0.75% per point).",
+      "trigger": "AlwaysActive",
+      "effect": { "dodgeChanceBonus": 0.10 },
+      "scalesWith": "AGI",
+      "scaling": 0.0075,
+      "type": "Battle"
+    },
+    {
+      "name": "Ferocity Boost",
+      "description": "Gain +0.5% Attack Damage per 1% HP missing. Scales with STR.",
+      "trigger": "WhenHPBelow100%",
+      "effect": { "attackBoostPerMissingHP": 0.005 },
+      "scalesWith": "STR",
+      "scaling": 0.0001,
+      "type": "Battle"
+    },
+    {
+      "name": "Iron Paw",
+      "description": "Normal attacks reduce enemy DEF by 5% for 2 turns. +0.1% per STR point.",
+      "trigger": "OnPhysicalHit",
+      "effect": { "enemyDefDebuff": 0.05, "duration": 2 },
+      "scalesWith": "STR",
+      "scaling": 0.001,
+      "type": "Battle"
+    },
+    {
+      "name": "Arcane Whiskers",
+      "description": "Magic attacks have a 10% chance to apply a random debuff. +0.2% per INT point.",
+      "trigger": "OnMagicHit",
+      "effect": { "debuffChance": 0.1 },
+      "scalesWith": "INT",
+      "scaling": 0.002,
+      "type": "Battle"
+    },
+    {
+      "name": "Resilient Fur",
+      "description": "Reduces damage taken by 5%. +0.1% per VIT point.",
+      "trigger": "OnDamageTaken",
+      "effect": { "damageReduction": 0.05 },
+      "scalesWith": "VIT",
+      "scaling": 0.001,
+      "type": "Battle"
+    },
+    {
+      "name": "Willpower Shield",
+      "description": "15% chance to resist status effects. +0.5% per WIL point.",
+      "trigger": "OnStatusEffectReceived",
+      "effect": { "statusResistChance": 0.15 },
+      "scalesWith": "WIL",
+      "scaling": 0.005,
+      "type": "Battle"
+    },
+    {
+      "name": "Karma Paw",
+      "description": "10% chance to counterattack when an ally is hit. +0.15% per LCK point.",
+      "trigger": "AllyHit",
+      "effect": { "counterChance": 0.1 },
+      "scalesWith": "LCK",
+      "scaling": 0.0015,
+      "type": "Battle"
+    },
+    {
+      "name": "Fortunate Fang",
+      "description": "+5% chance to apply status effects. +0.15% per LCK point.",
+      "trigger": "OnStatusAttempt",
+      "effect": { "statusSuccessBoost": 0.05 },
+      "scalesWith": "LCK",
+      "scaling": 0.0015,
+      "type": "Battle"
+    },
+    {
+      "name": "Precision Strike",
+      "description": "+8% accuracy for attacks. +0.1% per DEX point.",
+      "trigger": "OnAttack",
+      "effect": { "accuracyBonus": 0.08 },
+      "scalesWith": "DEX",
+      "scaling": 0.001,
+      "type": "Battle"
+    },
+    {
+      "name": "Quick Pounce",
+      "description": "First attack in battle deals 20% more damage. +0.5% per AGI point.",
+      "trigger": "FirstAttack",
+      "effect": { "damageBonus": 0.2 },
+      "scalesWith": "AGI",
+      "scaling": 0.005,
+      "type": "Battle"
+    }
+  ],
+  "explorationPassives": [
+    {
+      "name": "Treasure Nose",
+      "description": "+5% Rare Drop Chance. Scales with LCK (0.25% per point).",
+      "trigger": "PostBattle",
+      "effect": { "rareDropBonus": 0.05 },
+      "scalesWith": "LCK",
+      "scaling": 0.0025,
+      "type": "Exploration"
+    },
+    {
+      "name": "Trap Sniffer",
+      "description": "75% chance to detect traps before triggering them. +0.5% per PER point.",
+      "trigger": "OnTrapApproach",
+      "effect": { "trapDetectChance": 0.75 },
+      "scalesWith": "PER",
+      "scaling": 0.005,
+      "type": "Exploration"
+    },
+    {
+      "name": "Sharp Eyes",
+      "description": "+3 tile detection range for hidden objects. +0.1 per PER point.",
+      "trigger": "Exploration",
+      "effect": { "detectionRange": 3 },
+      "scalesWith": "PER",
+      "scaling": 0.1,
+      "type": "Exploration"
+    },
+    {
+      "name": "Terrain Trotter",
+      "description": "Negates movement penalties on rough terrain. +1% speed per AGI point.",
+      "trigger": "Movement",
+      "effect": { "terrainPenaltyReduction": 1.0 },
+      "scalesWith": "AGI",
+      "scaling": 0.01,
+      "type": "Exploration"
+    },
+    {
+      "name": "Resource Hunter",
+      "description": "+10% chance to find extra resources. +0.2% per LCK point.",
+      "trigger": "ResourceGathering",
+      "effect": { "extraResourceChance": 0.1 },
+      "scalesWith": "LCK",
+      "scaling": 0.002,
+      "type": "Exploration"
+    },
+    {
+      "name": "Endurance Padding",
+      "description": "Reduces stamina consumption by 15% during exploration. +0.3% per VIT point.",
+      "trigger": "StaminaUse",
+      "effect": { "staminaReduction": 0.15 },
+      "scalesWith": "VIT",
+      "scaling": 0.003,
+      "type": "Exploration"
+    },
+    {
+      "name": "Pathfinder",
+      "description": "Reveals 20% more of the map when exploring new areas. +0.5% per INT point.",
+      "trigger": "NewAreaDiscovery",
+      "effect": { "mapRevealBonus": 0.2 },
+      "scalesWith": "INT",
+      "scaling": 0.005,
+      "type": "Exploration"
+    },
+    {
+      "name": "Curious Paws",
+      "description": "+15% chance to find hidden passages. +0.3% per PER point.",
+      "trigger": "AreaExploration",
+      "effect": { "hiddenPassageChance": 0.15 },
+      "scalesWith": "PER",
+      "scaling": 0.003,
+      "type": "Exploration"
+    }
+  ],
+  "trainingPassives": [
+    {
+      "name": "Fast Learner",
+      "description": "+10% XP Gain. Scales with INT (2.5% per point).",
+      "trigger": "XPGain",
+      "effect": { "xpMultiplier": 1.10 },
+      "scalesWith": "INT",
+      "scaling": 0.025,
+      "type": "Training"
+    },
+    {
+      "name": "Meditative Meow",
+      "description": "Earns 2 XP per minute while idle. +0.1 XP per INT point.",
+      "trigger": "Idle",
+      "effect": { "passiveXP": 2 },
+      "scalesWith": "INT",
+      "scaling": 0.1,
+      "type": "Training"
+    },
+    {
+      "name": "Coach's Aura",
+      "description": "Allies in same group gain +5% XP. +0.2% per CHA point.",
+      "trigger": "GroupTraining",
+      "effect": { "allyXPMultiplier": 1.05 },
+      "scalesWith": "CHA",
+      "scaling": 0.002,
+      "type": "Training"
+    },
+    {
+      "name": "Focused Mind",
+      "description": "Training time reduced by 10%. +0.2% per WIL point.",
+      "trigger": "TrainingStart",
+      "effect": { "trainingTimeReduction": 0.1 },
+      "scalesWith": "WIL",
+      "scaling": 0.002,
+      "type": "Training"
+    },
+    {
+      "name": "Efficient Practice",
+      "description": "10% chance to gain double stat points when leveling up. +0.1% per INT point.",
+      "trigger": "LevelUp",
+      "effect": { "doubleStatPointChance": 0.1 },
+      "scalesWith": "INT",
+      "scaling": 0.001,
+      "type": "Training"
+    },
+    {
+      "name": "Muscle Memory",
+      "description": "Physical training effectiveness increased by 15%. +0.3% per STR point.",
+      "trigger": "PhysicalTraining",
+      "effect": { "physicalTrainingBoost": 0.15 },
+      "scalesWith": "STR",
+      "scaling": 0.003,
+      "type": "Training"
+    },
+    {
+      "name": "Mental Agility",
+      "description": "Magic training effectiveness increased by 15%. +0.3% per INT point.",
+      "trigger": "MagicTraining",
+      "effect": { "magicTrainingBoost": 0.15 },
+      "scalesWith": "INT",
+      "scaling": 0.003,
+      "type": "Training"
+    }
+  ],
+  "synergyPassives": [
+    {
+      "name": "Bonded Spirit",
+      "description": "+10% to all stats when bonded cat is nearby. +0.2% per CHA point.",
+      "trigger": "WithBondedAlly",
+      "effect": { "statBoostAll": 0.1 },
+      "scalesWith": "CHA",
+      "scaling": 0.002,
+      "type": "Synergy"
+    },
+    {
+      "name": "Snuggle Magnet",
+      "description": "Increases bonding speed by 25%. +0.5% per CHA point.",
+      "trigger": "SocialInteraction",
+      "effect": { "bondingSpeedBonus": 0.25 },
+      "scalesWith": "CHA",
+      "scaling": 0.005,
+      "type": "Synergy"
+    },
+    {
+      "name": "Opposites Attract",
+      "description": "+15% synergy bonus when paired with opposite-trait cat. +0.3% per CHA point.",
+      "trigger": "TraitMismatch",
+      "effect": { "synergyBoost": 0.15 },
+      "scalesWith": "CHA",
+      "scaling": 0.003,
+      "type": "Synergy"
+    },
+    {
+      "name": "Team Player",
+      "description": "Increases group synergy bonus by 5%. +0.2% per CHA point.",
+      "trigger": "GroupFormation",
+      "effect": { "groupSynergyBonus": 0.05 },
+      "scalesWith": "CHA",
+      "scaling": 0.002,
+      "type": "Synergy"
+    },
+    {
+      "name": "Morale Boost",
+      "description": "All cats in group gain +5 happiness. +0.2 per CHA point.",
+      "trigger": "GroupActivity",
+      "effect": { "groupHappinessBonus": 5 },
+      "scalesWith": "CHA",
+      "scaling": 0.2,
+      "type": "Synergy"
+    },
+    {
+      "name": "Protective Instinct",
+      "description": "When an ally falls below 30% HP, they gain +20% defense. +0.4% per VIT point.",
+      "trigger": "AllyLowHealth",
+      "effect": { "allyDefenseBoost": 0.2, "healthThreshold": 0.3 },
+      "scalesWith": "VIT",
+      "scaling": 0.004,
+      "type": "Synergy"
+    },
+    {
+      "name": "Shared Knowledge",
+      "description": "Group members gain +5% INT-based attributes. +0.1% per INT point.",
+      "trigger": "GroupFormation",
+      "effect": { "groupIntBonus": 0.05 },
+      "scalesWith": "INT",
+      "scaling": 0.001,
+      "type": "Synergy"
+    }
+  ],
+  "supportPassives": [
+    {
+      "name": "Healing Purr",
+      "description": "Restores 2% of max HP to nearby allies each turn. +0.05% per INT point.",
+      "trigger": "TurnStart",
+      "effect": { "allyHealPercent": 0.02, "range": 2 },
+      "scalesWith": "INT",
+      "scaling": 0.0005,
+      "type": "Support"
+    },
+    {
+      "name": "Encouraging Meow",
+      "description": "Allies gain +5% attack when below 50% HP. +0.1% per CHA point.",
+      "trigger": "AllyLowHealth",
+      "effect": { "allyAttackBoost": 0.05, "healthThreshold": 0.5 },
+      "scalesWith": "CHA",
+      "scaling": 0.001,
+      "type": "Support"
+    },
+    {
+      "name": "Calming Presence",
+      "description": "Reduces debuff duration on allies by 1 turn. +5% chance per WIL point to remove completely.",
+      "trigger": "AllyDebuffed",
+      "effect": { "debuffDurationReduction": 1, "debuffRemoveChance": 0 },
+      "scalesWith": "WIL",
+      "scaling": 0.05,
+      "type": "Support"
+    },
+    {
+      "name": "Shared Resilience",
+      "description": "When taking damage, 10% is shared with allies instead. +0.2% per VIT point.",
+      "trigger": "OnDamageTaken",
+      "effect": { "damageSharing": 0.1 },
+      "scalesWith": "VIT",
+      "scaling": 0.002,
+      "type": "Support"
+    },
+    {
+      "name": "Lucky Charm",
+      "description": "Allies within 2 tiles gain +5% critical hit chance. +0.1% per LCK point.",
+      "trigger": "AlwaysActive",
+      "effect": { "allyCritBonus": 0.05, "range": 2 },
+      "scalesWith": "LCK",
+      "scaling": 0.001,
+      "type": "Support"
+    }
+  ],
+  "utilityPassives": [
+    {
+      "name": "Resource Efficiency",
+      "description": "15% chance to not consume materials when crafting. +0.2% per INT point.",
+      "trigger": "OnCrafting",
+      "effect": { "materialSaveChance": 0.15 },
+      "scalesWith": "INT",
+      "scaling": 0.002,
+      "type": "Utility"
+    },
+    {
+      "name": "Bargain Hunter",
+      "description": "Reduces shop prices by 5%. +0.1% per CHA point.",
+      "trigger": "Shopping",
+      "effect": { "shopDiscountPercent": 0.05 },
+      "scalesWith": "CHA",
+      "scaling": 0.001,
+      "type": "Utility"
+    },
+    {
+      "name": "Night Vision",
+      "description": "Reduces darkness penalties by 50%. +1% per PER point.",
+      "trigger": "InDarkness",
+      "effect": { "darknessPenaltyReduction": 0.5 },
+      "scalesWith": "PER",
+      "scaling": 0.01,
+      "type": "Utility"
+    },
+    {
+      "name": "Scavenger's Instinct",
+      "description": "10% chance to find extra loot after battles. +0.2% per LCK point.",
+      "trigger": "PostBattle",
+      "effect": { "extraLootChance": 0.1 },
+      "scalesWith": "LCK",
+      "scaling": 0.002,
+      "type": "Utility"
+    },
+    {
+      "name": "Nimble Paws",
+      "description": "Reduces lockpicking time by 20%. +0.5% per DEX point.",
+      "trigger": "Lockpicking",
+      "effect": { "lockpickSpeedBonus": 0.2 },
+      "scalesWith": "DEX",
+      "scaling": 0.005,
+      "type": "Utility"
+    }
+  ],
+  "specialPassives": [
+    {
+      "name": "Nine Lives Master",
+      "description": "When revived by Nine Lives, gain +30% attack for 3 turns. Requires Nine Lives passive.",
+      "trigger": "OnRevive",
+      "effect": { "attackBoost": 0.3, "duration": 3 },
+      "requires": "Nine Lives",
+      "type": "Special"
+    },
+    {
+      "name": "Elemental Affinity",
+      "description": "Gain resistance to one random element based on highest stat.",
+      "trigger": "AlwaysActive",
+      "effect": { "elementalResistance": 0.2 },
+      "dynamicScaling": true,
+      "type": "Special"
+    },
+    {
+      "name": "Adaptability",
+      "description": "After 5 turns in battle, gain +10% to all stats. +0.1% per total stat points.",
+      "trigger": "BattleDuration",
+      "effect": { "allStatBoost": 0.1, "turnsRequired": 5 },
+      "scalesWith": "AllStats",
+      "scaling": 0.001,
+      "type": "Special"
+    },
+    {
+      "name": "Feline Intuition",
+      "description": "10% chance to dodge fatal damage. +0.2% per (LCK + AGI) points.",
+      "trigger": "FatalDamage",
+      "effect": { "fatalDodgeChance": 0.1 },
+      "scalesWith": ["LCK", "AGI"],
+      "scaling": 0.001,
+      "type": "Special"
+    }
+  ]
+}

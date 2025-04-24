@@ -1102,9 +1102,19 @@ window.upgradeTrainingArena = function () {
 };
 
 // Temporary function to add materials for testing
-window.addTestMaterials = function () {
-    resourceManager.addResource('materials', 50);
-    console.log('Added 50 materials for testing');
+
+window.addTestMaterials = function() {
+    resourceManager.addResource('materials', 3000);
+    console.log('Added 3000 materials for testing');
     console.log('Current materials:', resourceManager.getResource('materials'));
     trainingManager.updateArenaDisplay();
+    gameManager.addMessage('Added 3000 materials for testing!');
+};
+
+// Temporary function to add food for testing
+window.addTestFood = function() {
+    resourceManager.addResource('food', 7000);
+    console.log('Added 7000 food for testing');
+    console.log('Current food:', resourceManager.getResource('food'));
+    gameManager.addMessage('Added 7000 food for testing!');
 };

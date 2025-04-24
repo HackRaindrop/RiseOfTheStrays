@@ -28,6 +28,11 @@ class GameManager {
             this.addMessage(`Gathered ${amount} medicine.`);
         });
 
+        // Loot box button
+        document.getElementById('open-lootbox').addEventListener('click', () => {
+            lootBoxManager.showLootBoxModal();
+        });
+
         // Base upgrade button
         document.getElementById('upgrade-base').addEventListener('click', () => {
             baseManager.upgradeBase();
@@ -67,6 +72,11 @@ class GameManager {
         // Premium search
         document.getElementById('find-cat-premium').addEventListener('click', () => {
             checkCapacityAndFindCat('premium');
+        });
+
+        // Create custom cat
+        document.getElementById('create-custom-cat').addEventListener('click', () => {
+            catManager.showCustomCatModal();
         });
     }
 
@@ -109,7 +119,28 @@ class GameManager {
                 combinedProduction[resource] = 0;
             }
             combinedProduction[resource] += bunkerProduction[resource];
-        }
+
+
+    // Attach listeners initially
+    attachUpgradeButtonListener();
+
+    // Set up a mutation observer to watch for changes to the DOM
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                // Check if any of the added nodes contain our button
+                for (let i = 0; i < mutation.addedNodes.length; i++) {
+                    const node = mutation.addedNodes[i];
+                    if (node.nodeType === 1) { // Element node
+                        if (node.id === 'upgrade-arena' || node.querySelector('#upgrade-arena')) {
+                            console.log('Upgrade arena button added to DOM, attaching listener');
+                            attachUpgradeButtonListener();
+                        }
+                    }
+                }
+            }
+        });
+    });
 
 
         let productionMessage = '';
@@ -120,6 +151,50 @@ class GameManager {
                 const roundedAmount = Math.round(combinedProduction[resource] * 10) / 10; // Round to 1 decimal place
                 productionMessage += `${roundedAmount} ${resource}, `;
                 resourcesProduced = true;
+    // Attach test food button event listener
+    const addTestFoodButton = document.getElementById('add-test-food');
+    if (addTestFoodButton) {
+        addTestFoodButton.addEventListener('click', () => {
+            window.addTestFood();
+        });
+    }
+
+    // Attach generate test enemies button event listener
+    const generateTestEnemiesButton = document.getElementById('generate-test-enemies');
+    if (generateTestEnemiesButton) {
+        generateTestEnemiesButton.addEventListener('click', () => {
+            window.generateTestEnemyGroup(1, 'normal');
+        });
+    }
+
+    // Attach fox test button event listener
+    const generateFoxTestButton = document.getElementById('generate-fox-test');
+    if (generateFoxTestButton) {
+        generateFoxTestButton.addEventListener('click', () => {
+            // Cycle through different enemy types on each click
+            const enemyTypes = ['Shadow Fox', 'Feral Dog', 'Rabid Wolf', 'Sewer Rat', 'Plague Rat', 'Giant Spider', 'Venomous Spider'];
+            const currentType = generateFoxTestButton.getAttribute('data-current-type') || 0;
+            const nextType = (parseInt(currentType) + 1) % enemyTypes.length;
+
+            // Generate the enemy
+            window.generateEnemyTest(enemyTypes[nextType], 1);
+
+            // Update the button text and data attribute
+            generateFoxTestButton.textContent = `Test ${enemyTypes[nextType]} Animation`;
+            generateFoxTestButton.setAttribute('data-current-type', nextType);
+        });
+    }
+
+    // Attach create group button event listener
+    const createGroupBtn = document.getElementById('create-group-btn');
+    console.log('Create group button in game.js:', createGroupBtn);
+    if (createGroupBtn) {
+        createGroupBtn.addEventListener('click', () => {
+            console.log('Create group button clicked in game.js');
+            if (typeof groupManager !== 'undefined' && groupManager.showCreateGroupModal) {
+                groupManager.showCreateGroupModal();
+            } else {
+                console.error('groupManager is not defined or showCreateGroupModal method is missing');
             }
         }
 
@@ -288,6 +363,23 @@ document.addEventListener('DOMContentLoaded', () => {
             const result = catManager.addXP(catId, xpAmount);
             if (result) {
                 gameManager.addMessage(`${result.xpGained} XP added to cat!`);
+            }
+        } else if (event.target.classList.contains('pet-cat-btn')) {
+            const catId = parseInt(event.target.getAttribute('data-cat-id'));
+            const cat = catManager.cats.find(c => c.id === catId);
+            if (cat) {
+                // Update cat happiness
+                catManager.updateCatStatus(catId, 0, 5);
+                gameManager.addMessage(`You pet ${cat.name}! Happiness increased.`);
+
+                // Add a visual effect to show the cat is happy
+                const catCard = event.target.closest('.cat-card');
+                if (catCard) {
+                    catCard.classList.add('happy-animation');
+                    setTimeout(() => {
+                        catCard.classList.remove('happy-animation');
+                    }, 1000);
+                }
             }
             // Prevent the click from toggling the card
             event.stopPropagation();

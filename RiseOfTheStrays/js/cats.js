@@ -170,6 +170,7 @@ class CatManager {
             patternColor: this.getRandomItem(this.catFeatures.patternColors),
             pattern: this.getRandomItem(this.catFeatures.patterns),
             eyeColor: this.getRandomItem(this.catFeatures.eyeColors),
+            irisColor: this.getRandomColor(), // Random iris color
             accessory: this.getRandomItem(this.catFeatures.accessories),
             accessoryColor: this.getRandomItem(this.catFeatures.accessoryColors),
             // Add unique ID for animation tracking
@@ -257,10 +258,14 @@ class CatManager {
                 patternColor: this.getRandomItem(this.catFeatures.patternColors),
                 pattern: this.getRandomItem(this.catFeatures.patterns),
                 eyeColor: this.getRandomItem(this.catFeatures.eyeColors),
+                irisColor: this.getRandomColor(), // Random iris color
                 accessory: this.getRandomItem(this.catFeatures.accessories),
                 accessoryColor: this.getRandomItem(this.catFeatures.accessoryColors),
                 uniqueId: 'cat-' + Date.now() + '-' + Math.floor(Math.random() * 1000)
             };
+        } else if (!appearance.irisColor) {
+            // Ensure iris color exists even if appearance is provided
+            appearance.irisColor = this.getRandomColor();
         }
 
         // Generate base stats based on rarity
@@ -293,8 +298,9 @@ class CatManager {
             },
             // Derived attributes (calculated from stats)
             attributes: {
+                // Basic attributes
                 maxHealth: 100,
-                healthRegenRate: 0.1,
+                healthRegenRate: 0,
                 attackDamage: 10,
                 jumpHeight: 2,
                 accuracy: 75,
@@ -309,9 +315,19 @@ class CatManager {
                 statusAvoidChance: 0,
                 debuffResistance: 0,
                 castingTimeReduction: 0,
-                pushForce: 1.0
+                pushForce: 1.0,
 
-                // Create a synergy bonus using the cat's charima.
+                // New combat attributes
+                physicalAttack: 0,
+                physicalDefense: 0,
+                magicAttack: 0,
+                magicResistance: 0,
+                speed: 0,
+                synergyBonus: 0,
+
+                // Happiness attributes
+                happinessBonus: 0,
+                happinessLuckBonus: 0
             },
             statPoints: 3, // Available points to distribute
             totalStatPoints: 3 // Total points earned (for tracking)
@@ -461,6 +477,480 @@ class CatManager {
         document.getElementById('find-cat-normal').disabled = !enabled;
         document.getElementById('find-cat-thorough').disabled = !enabled;
         document.getElementById('find-cat-premium').disabled = !enabled;
+        document.getElementById('create-custom-cat').disabled = !enabled;
+    }
+
+    // Calculate custom cat costs based on rarity
+    calculateCustomCatCosts(rarityName) {
+        // Get the rarity index (0 for Common, 4 for Legendary)
+        const rarityIndex = this.rarities.findIndex(r => r.name === rarityName);
+
+        // Base costs for Common rarity
+        const baseFoodCost = 25;
+        const baseMaterialCost = 10;
+
+        // Calculate exponential cost increase based on rarity
+        // Common: 1x, Uncommon: 4x, Rare: 16x, Epic: 64x, Legendary: 256x
+        const multiplier = Math.pow(4, rarityIndex);
+
+        return {
+            food: Math.round(baseFoodCost * multiplier),
+            materials: Math.round(baseMaterialCost * multiplier)
+        };
+    }
+
+    // Show custom cat creation modal
+    showCustomCatModal() {
+        // Check if we have room for more cats
+        if (this.getCatCount() >= baseManager.getMaxCats()) {
+            gameManager.addMessage(`Your base is at maximum capacity (${baseManager.getMaxCats()} cats). Upgrade your base to make room for more cats.`);
+            return;
+        }
+
+        // Initial costs for Common rarity
+        const initialCosts = this.calculateCustomCatCosts('Common');
+
+        // Check if we have enough resources for at least a Common cat
+        if (resourceManager.getResource('food') < initialCosts.food || resourceManager.getResource('materials') < initialCosts.materials) {
+            gameManager.addMessage(`Not enough resources to create a custom cat! Need at least ${initialCosts.food} food and ${initialCosts.materials} materials for a Common cat.`);
+            return;
+        }
+
+        // Create modal container
+        const modalContainer = document.createElement('div');
+        modalContainer.id = 'custom-cat-modal';
+        modalContainer.className = 'modal';
+
+        // Create the modal content
+        modalContainer.innerHTML = `
+            <div class="modal-content custom-cat-modal-content">
+                <span class="close-modal">&times;</span>
+                <h3>Create Your Custom Cat</h3>
+
+                <div class="custom-cat-form">
+                    <div class="custom-cat-form-row">
+                        <div class="custom-cat-form-column">
+                            <div class="custom-cat-form-group">
+                                <label for="custom-cat-name">Name:</label>
+                                <input type="text" id="custom-cat-name" placeholder="Enter cat name" maxlength="20">
+                            </div>
+
+                            <div class="custom-cat-form-group">
+                                <label for="custom-cat-type">Type:</label>
+                                <select id="custom-cat-type">
+                                    ${this.catTypes.map(type => `<option value="${type}">${type}</option>`).join('')}
+                                </select>
+                            </div>
+
+                            <div class="custom-cat-form-group">
+                                <label for="custom-cat-rarity">Rarity:</label>
+                                <select id="custom-cat-rarity">
+                                    ${this.rarities.map(rarity => `<option value="${rarity.name}">${rarity.name} ${rarity.icon}</option>`).join('')}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="custom-cat-form-column">
+                            <div class="custom-cat-preview" id="custom-cat-preview">
+                                <!-- Cat preview will be rendered here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="custom-cat-form-row">
+                        <div class="custom-cat-form-column">
+                            <div class="custom-cat-form-group">
+                                <label for="custom-cat-body-color">Body Color:</label>
+                                <div class="color-picker-container">
+                                    <input type="color" id="custom-cat-body-color" value="${this.catFeatures.bodyColors[0]}">
+                                    <div class="color-picker-preview" id="body-color-preview" style="background-color: ${this.catFeatures.bodyColors[0]}"></div>
+                                </div>
+                            </div>
+
+                            <div class="custom-cat-form-group">
+                                <label for="custom-cat-pattern">Pattern:</label>
+                                <select id="custom-cat-pattern">
+                                    ${this.catFeatures.patterns.map(pattern => `<option value="${pattern}">${pattern.charAt(0).toUpperCase() + pattern.slice(1)}</option>`).join('')}
+                                </select>
+                            </div>
+
+                            <div class="custom-cat-form-group">
+                                <label for="custom-cat-pattern-color">Pattern Color:</label>
+                                <div class="color-picker-container">
+                                    <input type="color" id="custom-cat-pattern-color" value="${this.catFeatures.patternColors[0]}">
+                                    <div class="color-picker-preview" id="pattern-color-preview" style="background-color: ${this.catFeatures.patternColors[0]}"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="custom-cat-form-column">
+                            <div class="custom-cat-form-group">
+                                <label for="custom-cat-eye-color">Eye Color:</label>
+                                <div class="color-picker-container">
+                                    <input type="color" id="custom-cat-eye-color" value="${this.catFeatures.eyeColors[0]}">
+                                    <div class="color-picker-preview" id="eye-color-preview" style="background-color: ${this.catFeatures.eyeColors[0]}"></div>
+                                </div>
+                            </div>
+
+                            <div class="custom-cat-form-group">
+                                <label for="custom-cat-iris-color">Iris Color:</label>
+                                <div class="color-picker-container">
+                                    <input type="color" id="custom-cat-iris-color" value="#000000">
+                                    <div class="color-picker-preview" id="iris-color-preview" style="background-color: #000000"></div>
+                                </div>
+                            </div>
+
+                            <div class="custom-cat-form-group">
+                                <label for="custom-cat-accessory">Accessory:</label>
+                                <select id="custom-cat-accessory">
+                                    ${this.catFeatures.accessories.map(accessory => `<option value="${accessory}">${accessory.charAt(0).toUpperCase() + accessory.slice(1)}</option>`).join('')}
+                                </select>
+                            </div>
+
+                            <div class="custom-cat-form-group">
+                                <label for="custom-cat-accessory-color">Accessory Color:</label>
+                                <div class="color-picker-container">
+                                    <input type="color" id="custom-cat-accessory-color" value="${this.catFeatures.accessoryColors[0]}">
+                                    <div class="color-picker-preview" id="accessory-color-preview" style="background-color: ${this.catFeatures.accessoryColors[0]}"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="randomize-container">
+                        <button type="button" id="randomize-appearance-btn">Randomize Appearance</button>
+                    </div>
+
+                    <div class="cost-info" id="custom-cat-cost-info">
+                        Creating a Common cat costs <span>25 Food</span> and <span>10 Materials</span>
+                    </div>
+
+                    <div class="custom-cat-actions">
+                        <button type="button" id="create-custom-cat-btn">Create Cat</button>
+                        <button type="button" id="cancel-custom-cat-btn">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Add the modal to the page
+        document.body.appendChild(modalContainer);
+
+        // Render initial cat preview
+        this.renderCustomCatPreview();
+
+        // Initialize cost display
+        this.updateCustomCatCosts();
+
+        // Add event listeners
+        modalContainer.querySelector('.close-modal').addEventListener('click', () => {
+            this.closeModal(modalContainer);
+        });
+
+        document.getElementById('cancel-custom-cat-btn').addEventListener('click', () => {
+            this.closeModal(modalContainer);
+        });
+
+        document.getElementById('create-custom-cat-btn').addEventListener('click', () => {
+            this.createCustomCat();
+            this.closeModal(modalContainer);
+        });
+
+        // Add event listeners for preview updates
+        document.getElementById('custom-cat-name').addEventListener('input', () => this.renderCustomCatPreview());
+        document.getElementById('custom-cat-type').addEventListener('change', () => this.renderCustomCatPreview());
+        document.getElementById('custom-cat-rarity').addEventListener('change', () => {
+            this.renderCustomCatPreview();
+            this.updateCustomCatCosts();
+        });
+        document.getElementById('custom-cat-body-color').addEventListener('input', (e) => {
+            document.getElementById('body-color-preview').style.backgroundColor = e.target.value;
+            this.renderCustomCatPreview();
+        });
+        document.getElementById('custom-cat-pattern').addEventListener('change', () => this.renderCustomCatPreview());
+        document.getElementById('custom-cat-pattern-color').addEventListener('input', (e) => {
+            document.getElementById('pattern-color-preview').style.backgroundColor = e.target.value;
+            this.renderCustomCatPreview();
+        });
+        document.getElementById('custom-cat-eye-color').addEventListener('input', (e) => {
+            document.getElementById('eye-color-preview').style.backgroundColor = e.target.value;
+            this.renderCustomCatPreview();
+        });
+
+        document.getElementById('custom-cat-iris-color').addEventListener('input', (e) => {
+            document.getElementById('iris-color-preview').style.backgroundColor = e.target.value;
+            this.renderCustomCatPreview();
+        });
+        document.getElementById('custom-cat-accessory').addEventListener('change', () => this.renderCustomCatPreview());
+        document.getElementById('custom-cat-accessory-color').addEventListener('input', (e) => {
+            document.getElementById('accessory-color-preview').style.backgroundColor = e.target.value;
+            this.renderCustomCatPreview();
+        });
+
+        // Add event listener for randomize button
+        document.getElementById('randomize-appearance-btn').addEventListener('click', () => {
+            this.randomizeCustomCatAppearance();
+        });
+
+        // Add animation class after a small delay to trigger the animation
+        setTimeout(() => {
+            modalContainer.querySelector('.modal-content').classList.add('show');
+        }, 10);
+    }
+
+    // Render custom cat preview
+    renderCustomCatPreview() {
+        const previewContainer = document.getElementById('custom-cat-preview');
+        if (!previewContainer) return;
+
+        const name = document.getElementById('custom-cat-name').value || 'Your Cat';
+        const type = document.getElementById('custom-cat-type').value;
+        const rarity = document.getElementById('custom-cat-rarity').value;
+        const bodyColor = document.getElementById('custom-cat-body-color').value;
+        const pattern = document.getElementById('custom-cat-pattern').value;
+        const patternColor = document.getElementById('custom-cat-pattern-color').value;
+        const eyeColor = document.getElementById('custom-cat-eye-color').value;
+        const irisColor = document.getElementById('custom-cat-iris-color').value;
+        const accessory = document.getElementById('custom-cat-accessory').value;
+        const accessoryColor = document.getElementById('custom-cat-accessory-color').value;
+
+        const rarityInfo = this.rarities.find(r => r.name === rarity) || this.rarities[0];
+        const rarityColor = rarityInfo.color;
+        const rarityIcon = rarityInfo.icon;
+
+        const uniqueId = 'preview-cat';
+
+        previewContainer.innerHTML = `
+            <div class="cat-avatar-container">
+                <div class="cat-avatar" data-type="${type}">
+                    <!-- Cat body container -->
+                    <div class="cat-body-container">
+                        <!-- Cat body -->
+                        <div class="cat-body" style="background-color: ${bodyColor}; border-radius: 50%;">
+                            <!-- Cat pattern -->
+                            ${this.getCatPatternHTML(pattern, patternColor)}
+
+                            <!-- Cat ears -->
+                            <div class="cat-ear left" style="background-color: ${bodyColor}">
+                                <div class="cat-inner-ear" style="background-color: #FF9999"></div>
+                            </div>
+                            <div class="cat-ear right" style="background-color: ${bodyColor}">
+                                <div class="cat-inner-ear" style="background-color: #FF9999"></div>
+                            </div>
+
+                            <!-- Cat face -->
+                            <div class="cat-face">
+                                <div class="cat-eyes left" style="background-color: ${eyeColor}"></div>
+                                <div class="cat-eyes right" style="background-color: ${eyeColor}"></div>
+                                <div class="cat-nose"></div>
+                                <div class="cat-mouth"></div>
+                            </div>
+
+                            <!-- Cat whiskers -->
+                            <div class="cat-whiskers left">
+                                <div class="whisker top"></div>
+                                <div class="whisker middle"></div>
+                                <div class="whisker bottom"></div>
+                            </div>
+                            <div class="cat-whiskers right">
+                                <div class="whisker top"></div>
+                                <div class="whisker middle"></div>
+                                <div class="whisker bottom"></div>
+                            </div>
+
+                            <!-- Cat accessory -->
+                            ${this.getCatAccessoryHTML(accessory, accessoryColor)}
+                        </div>
+
+                        <!-- Cat tail -->
+                        <div class="cat-tail" data-cat-id="${uniqueId}" style="background-color: ${bodyColor}"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="preview-cat-info">
+                <div class="preview-cat-name">${name}</div>
+                <div class="preview-cat-type">${type}</div>
+                <div class="preview-cat-rarity" style="color: ${rarityColor}">${rarity} ${rarityIcon}</div>
+            </div>
+        `;
+    }
+
+    // Update the cost display based on selected rarity
+    updateCustomCatCosts() {
+        const raritySelect = document.getElementById('custom-cat-rarity');
+        const costInfoElement = document.getElementById('custom-cat-cost-info');
+
+        if (!raritySelect || !costInfoElement) return;
+
+        const selectedRarity = raritySelect.value;
+        const costs = this.calculateCustomCatCosts(selectedRarity);
+
+        costInfoElement.innerHTML = `
+            Creating a ${selectedRarity} cat costs <span>${costs.food} Food</span> and <span>${costs.materials} Materials</span>
+        `;
+
+        // Update the create button state based on whether the player has enough resources
+        const createButton = document.getElementById('create-custom-cat-btn');
+        if (createButton) {
+            const hasEnoughResources =
+                resourceManager.getResource('food') >= costs.food &&
+                resourceManager.getResource('materials') >= costs.materials;
+
+            createButton.disabled = !hasEnoughResources;
+
+            if (!hasEnoughResources) {
+                createButton.title = `Not enough resources! Need ${costs.food} Food and ${costs.materials} Materials.`;
+            } else {
+                createButton.title = '';
+            }
+        }
+    }
+
+    // Randomize custom cat appearance
+    randomizeCustomCatAppearance() {
+        // Generate random colors
+        const randomBodyColor = this.getRandomColor();
+        const randomPatternColor = this.getRandomColor();
+        const randomEyeColor = this.getRandomColor();
+        const randomIrisColor = this.getRandomColor();
+        const randomAccessoryColor = this.getRandomColor();
+
+        // Get random pattern and accessory
+        const randomPattern = this.getRandomArrayElement(this.catFeatures.patterns);
+        const randomAccessory = this.getRandomArrayElement(this.catFeatures.accessories);
+
+        // Optionally randomize rarity (with weighted probability)
+        if (Math.random() < 0.3) { // 30% chance to randomize rarity
+            const rarityWeights = [0.5, 0.25, 0.15, 0.07, 0.03]; // Same as the rarity chances
+            const randomRarity = this.getWeightedRandomElement(this.rarities.map(r => r.name), rarityWeights);
+            this.setSelectOption('custom-cat-rarity', randomRarity);
+        }
+
+        // Set the values in the form
+        document.getElementById('custom-cat-body-color').value = randomBodyColor;
+        document.getElementById('body-color-preview').style.backgroundColor = randomBodyColor;
+
+        document.getElementById('custom-cat-pattern-color').value = randomPatternColor;
+        document.getElementById('pattern-color-preview').style.backgroundColor = randomPatternColor;
+
+        document.getElementById('custom-cat-eye-color').value = randomEyeColor;
+        document.getElementById('eye-color-preview').style.backgroundColor = randomEyeColor;
+
+        document.getElementById('custom-cat-iris-color').value = randomIrisColor;
+        document.getElementById('iris-color-preview').style.backgroundColor = randomIrisColor;
+
+        document.getElementById('custom-cat-accessory-color').value = randomAccessoryColor;
+        document.getElementById('accessory-color-preview').style.backgroundColor = randomAccessoryColor;
+
+        // Set the selected options in the dropdowns
+        this.setSelectOption('custom-cat-pattern', randomPattern);
+        this.setSelectOption('custom-cat-accessory', randomAccessory);
+
+        // Update the preview
+        this.renderCustomCatPreview();
+
+        // Update the costs based on the selected rarity
+        this.updateCustomCatCosts();
+
+        // Add a little animation effect to show the randomization
+        const previewContainer = document.getElementById('custom-cat-preview');
+        previewContainer.style.animation = 'none';
+        setTimeout(() => {
+            previewContainer.style.animation = 'pulse 0.5s';
+        }, 10);
+    }
+
+    // Helper method to get a random color
+    getRandomColor() {
+        const letters = '0123456789ABCDEF';
+        let color = '#';
+        for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+
+    // Helper method to get a random element from an array
+    getRandomArrayElement(array) {
+        return array[Math.floor(Math.random() * array.length)];
+    }
+
+    // Helper method to get a weighted random element from an array
+    getWeightedRandomElement(array, weights) {
+        // Make sure arrays are the same length
+        if (array.length !== weights.length) {
+            console.error('Array and weights must be the same length');
+            return array[0];
+        }
+
+        // Calculate the sum of all weights
+        const totalWeight = weights.reduce((sum, weight) => sum + weight, 0);
+
+        // Get a random value between 0 and the total weight
+        const randomValue = Math.random() * totalWeight;
+
+        // Find the item that corresponds to the random value
+        let weightSum = 0;
+        for (let i = 0; i < array.length; i++) {
+            weightSum += weights[i];
+            if (randomValue <= weightSum) {
+                return array[i];
+            }
+        }
+
+        // Fallback to the last item
+        return array[array.length - 1];
+    }
+
+    // Helper method to set a select option by value
+    setSelectOption(selectId, value) {
+        const select = document.getElementById(selectId);
+        for (let i = 0; i < select.options.length; i++) {
+            if (select.options[i].value === value) {
+                select.selectedIndex = i;
+                break;
+            }
+        }
+    }
+
+    // Create a custom cat based on form inputs
+    createCustomCat() {
+        const name = document.getElementById('custom-cat-name').value || 'Custom Cat';
+        const type = document.getElementById('custom-cat-type').value;
+        const rarity = document.getElementById('custom-cat-rarity').value;
+        const bodyColor = document.getElementById('custom-cat-body-color').value;
+        const pattern = document.getElementById('custom-cat-pattern').value;
+        const patternColor = document.getElementById('custom-cat-pattern-color').value;
+        const eyeColor = document.getElementById('custom-cat-eye-color').value;
+        const irisColor = document.getElementById('custom-cat-iris-color').value;
+        const accessory = document.getElementById('custom-cat-accessory').value;
+        const accessoryColor = document.getElementById('custom-cat-accessory-color').value;
+
+        // Create appearance object
+        const appearance = {
+            bodyColor: bodyColor,
+            patternColor: patternColor,
+            pattern: pattern,
+            eyeColor: eyeColor,
+            irisColor: irisColor,
+            accessory: accessory,
+            accessoryColor: accessoryColor,
+            uniqueId: 'cat-' + Date.now() + '-' + Math.floor(Math.random() * 1000)
+        };
+
+        // Calculate costs based on rarity
+        const costs = this.calculateCustomCatCosts(rarity);
+
+        // Consume resources
+        if (resourceManager.useResource('food', costs.food) && resourceManager.useResource('materials', costs.materials)) {
+            // Add the custom cat
+            const newCat = this.addCat(name, type, 1, rarity, appearance);
+            gameManager.addMessage(`You created a custom cat named ${newCat.name}!`);
+            return newCat;
+        } else {
+            gameManager.addMessage(`Not enough resources to create a ${rarity} cat! Need ${costs.food} food and ${costs.materials} materials.`);
+            return null;
+        }
     }
 
     // Show search progress indicator
@@ -1143,21 +1633,34 @@ class CatManager {
                     <div class="cat-stats">
                         <div class="stat-header">
                             <h3>Status</h3>
-                            <button class="gain-xp-btn" data-cat-id="${cat.id}">Gain XP</button>
+                            <div class="cat-action-buttons">
+                                <button class="pet-cat-btn" data-cat-id="${cat.id}" title="Pet your cat to increase happiness">Pet Cat</button>
+                                <button class="gain-xp-btn" data-cat-id="${cat.id}" title="Give your cat some XP">Gain XP</button>
+                            </div>
                         </div>
                         <div class="stat-item">
                             <span class="stat-label">Health:</span>
-                            <div class="stat-bar-container">
-                                <div class="stat-bar health-bar" style="width: ${(cat.health / cat.attributes.maxHealth) * 100}%"></div>
+                            <div class="cat-health-container">
+                                <div class="cat-health-label">
+                                    <span>HP</span>
+                                    <span>${cat.health}/${cat.attributes.maxHealth}</span>
+                                </div>
+                                <div class="cat-health-bar-container">
+                                    <div class="cat-health-bar" style="width: ${(cat.health / cat.attributes.maxHealth) * 100}%"></div>
+                                </div>
                             </div>
-                            <span class="stat-value">${cat.health}/${cat.attributes.maxHealth}</span>
                         </div>
                         <div class="stat-item">
                             <span class="stat-label">Happiness:</span>
-                            <div class="stat-bar-container">
-                                <div class="stat-bar happiness-bar" style="width: ${cat.happiness}%"></div>
+                            <div class="cat-health-container">
+                                <div class="cat-health-label">
+                                    <span>Mood</span>
+                                    <span>${cat.happiness}/100</span>
+                                </div>
+                                <div class="cat-health-bar-container">
+                                    <div class="cat-health-bar happiness-bar" style="width: ${cat.happiness}%"></div>
+                                </div>
                             </div>
-                            <span class="stat-value">${cat.happiness}</span>
                         </div>
                     </div>
 
@@ -1176,7 +1679,7 @@ class CatManager {
                                         ${this.tempStatChanges[cat.id]?.stats?.STR ? `<span class="stat-change">(+${this.tempStatChanges[cat.id].stats.STR})</span>` : ''}
                                     </span>
                                 </div>
-                                <div class="stat-impact">+${Math.floor(10 + this.getEffectiveStat(cat, 'STR') * 1)} Attack Damage</div>
+                                <div class="stat-impact">+${Math.floor(this.getEffectiveStat(cat, 'STR') * 1.5)} Physical Attack, +${Math.floor(this.getEffectiveStat(cat, 'STR') * 0.5)}% Physical Defense</div>
                                 <div class="stat-buttons">
                                     ${this.tempStatChanges[cat.id]?.stats?.STR > 0 ? `<button class="remove-stat-btn" data-cat-id="${cat.id}" data-stat="STR">-</button>` : ''}
                                     ${this.getRemainingStatPoints(cat) > 0 ? `<button class="add-stat-btn" data-cat-id="${cat.id}" data-stat="STR">+</button>` : ''}
@@ -1221,7 +1724,8 @@ class CatManager {
                                         ${this.tempStatChanges[cat.id]?.stats?.VIT ? `<span class="stat-change">(+${this.tempStatChanges[cat.id].stats.VIT})</span>` : ''}
                                     </span>
                                 </div>
-                                <div class="stat-impact">+${100 + this.getEffectiveStat(cat, 'VIT') * 3} Max Health</div>
+
+                                <div class="stat-impact">+${100 + this.getEffectiveStat(cat, 'VIT')*5} Max Health, +${Math.floor(this.getEffectiveStat(cat, 'VIT')*0.2)} HP Regen/min</div>
                                 <div class="stat-buttons">
                                     ${this.tempStatChanges[cat.id]?.stats?.VIT > 0 ? `<button class="remove-stat-btn" data-cat-id="${cat.id}" data-stat="VIT">-</button>` : ''}
                                     ${this.getRemainingStatPoints(cat) > 0 ? `<button class="add-stat-btn" data-cat-id="${cat.id}" data-stat="VIT">+</button>` : ''}
@@ -1236,7 +1740,8 @@ class CatManager {
                                         ${this.tempStatChanges[cat.id]?.stats?.WIL ? `<span class="stat-change">(+${this.tempStatChanges[cat.id].stats.WIL})</span>` : ''}
                                     </span>
                                 </div>
-                                <div class="stat-impact">+${this.getEffectiveStat(cat, 'WIL') * 1}% Debuff Resistance</div>
+
+                                <div class="stat-impact">+${Math.floor(this.getEffectiveStat(cat, 'WIL')*0.75)}% Magic Resistance, +${Math.floor(this.getEffectiveStat(cat, 'WIL')*0.5)}% Debuff Resistance</div>
                                 <div class="stat-buttons">
                                     ${this.tempStatChanges[cat.id]?.stats?.WIL > 0 ? `<button class="remove-stat-btn" data-cat-id="${cat.id}" data-stat="WIL">-</button>` : ''}
                                     ${this.getRemainingStatPoints(cat) > 0 ? `<button class="add-stat-btn" data-cat-id="${cat.id}" data-stat="WIL">+</button>` : ''}
@@ -1251,7 +1756,8 @@ class CatManager {
                                         ${this.tempStatChanges[cat.id]?.stats?.INT ? `<span class="stat-change">(+${this.tempStatChanges[cat.id].stats.INT})</span>` : ''}
                                     </span>
                                 </div>
-                                <div class="stat-impact">+${(1.0 + this.getEffectiveStat(cat, 'INT') * 0.025).toFixed(3)}x XP Gain</div>
+
+                                <div class="stat-impact">+${Math.floor(this.getEffectiveStat(cat, 'INT') * 1.5)} Magic Attack, +${(1.0 + this.getEffectiveStat(cat, 'INT')*0.025).toFixed(2)}x XP Gain</div>
                                 <div class="stat-buttons">
                                     ${this.tempStatChanges[cat.id]?.stats?.INT > 0 ? `<button class="remove-stat-btn" data-cat-id="${cat.id}" data-stat="INT">-</button>` : ''}
                                     ${this.getRemainingStatPoints(cat) > 0 ? `<button class="add-stat-btn" data-cat-id="${cat.id}" data-stat="INT">+</button>` : ''}
@@ -1266,7 +1772,8 @@ class CatManager {
                                         ${this.tempStatChanges[cat.id]?.stats?.CHA ? `<span class="stat-change">(+${this.tempStatChanges[cat.id].stats.CHA})</span>` : ''}
                                     </span>
                                 </div>
-                                <div class="stat-impact">+${this.getEffectiveStat(cat, 'CHA') * 0.75}% Cat Recruitment Chance</div>
+
+                                <div class="stat-impact">+${Math.min(15, this.getEffectiveStat(cat, 'CHA')*0.5).toFixed(1)}% Synergy Bonus, +${(this.getEffectiveStat(cat, 'CHA')*0.75).toFixed(1)}% Recruitment</div>
                                 <div class="stat-buttons">
                                     ${this.tempStatChanges[cat.id]?.stats?.CHA > 0 ? `<button class="remove-stat-btn" data-cat-id="${cat.id}" data-stat="CHA">-</button>` : ''}
                                     ${this.getRemainingStatPoints(cat) > 0 ? `<button class="add-stat-btn" data-cat-id="${cat.id}" data-stat="CHA">+</button>` : ''}
@@ -1510,6 +2017,19 @@ class CatManager {
         }
     }
 
+    // Get bonus stat points based on rarity
+    getRarityStatPointBonus(rarityName) {
+        switch(rarityName) {
+            case 'Common': return 0; // No bonus
+            case 'Uncommon': return 1; // +1 bonus stat point
+            case 'Rare': return 2; // +2 bonus stat points
+            case 'Epic': return 3; // +3 bonus stat points
+            case 'Legendary': return 5; // +5 bonus stat points
+            case 'Mythic': return 7; // +7 bonus stat points
+            default: return 0;
+        }
+    }
+
     // Calculate XP required for a level
     getXPToLevel(level, rarityMultiplier = 1) {
         return Math.floor(50 * level * rarityMultiplier + Math.pow(level, 1.5) * 10);
@@ -1536,9 +2056,15 @@ class CatManager {
             cat.level += 1;
             levelsGained += 1;
 
-            // Add stat points (3 per level)
-            cat.statPoints += 3;
-            cat.totalStatPoints += 3;
+            // Base stat points (3 per level)
+            const baseStatPoints = 3;
+
+            // Get bonus stat points based on rarity
+            const bonusStatPoints = this.getRarityStatPointBonus(cat.rarity);
+
+            // Add stat points (base + bonus)
+            cat.statPoints += baseStatPoints + bonusStatPoints;
+            cat.totalStatPoints += baseStatPoints + bonusStatPoints;
 
             // Calculate XP for next level
             cat.xpToNext = this.getXPToLevel(cat.level, this.getRarityXPMultiplier(cat.rarity));
@@ -1550,8 +2076,10 @@ class CatManager {
         if (leveledUp) {
             this.updateCatAttributes(cat);
 
-            // Show level up message
-            gameManager.addMessage(`${cat.name} leveled up to level ${cat.level}! +3 stat points awarded.`);
+            // Show level up message with total stat points awarded
+            const totalStatPoints = baseStatPoints + bonusStatPoints;
+            const bonusMessage = bonusStatPoints > 0 ? ` (includes +${bonusStatPoints} ${cat.rarity} rarity bonus)` : '';
+            gameManager.addMessage(`${cat.name} leveled up to level ${cat.level}! +${totalStatPoints} stat points awarded${bonusMessage}.`);
 
             // Add level up visual effect
             this.showLevelUpEffect(cat.id);
@@ -1598,6 +2126,9 @@ class CatManager {
             secondary: []
         };
 
+        // Get synergy percentage for display
+        const synergyPercentage = Math.round(cat.attributes.synergyBonus);
+
         // Create modal content
         modalContainer.innerHTML = `
             <div class="modal-content cat-details-modal-content">
@@ -1605,6 +2136,8 @@ class CatManager {
                 <div class="cat-details-header">
                     <h3>${cat.name}</h3>
                     <div class="cat-details-level">Level ${cat.level} ${cat.type}</div>
+                    <div class="cat-details-rarity">${cat.rarity} ${this.rarities.find(r => r.name === cat.rarity)?.icon || ''}</div>
+                    ${this.getRarityStatPointBonus(cat.rarity) > 0 ? `<div class="cat-details-rarity-bonus">+${this.getRarityStatPointBonus(cat.rarity)} stat points per level</div>` : ''}
                 </div>
 
                 <div class="cat-details-stats">
@@ -1650,6 +2183,50 @@ class CatManager {
                     <div class="cat-details-xp-label">XP: ${cat.xp} / ${cat.xpToNext}</div>
                     <div class="cat-details-xp-bar-container">
                         <div class="cat-details-xp-bar" style="width: ${Math.min(100, (cat.xp / cat.xpToNext) * 100)}%"></div>
+                    </div>
+                </div>
+
+                <div class="cat-details-combat-stats">
+                    <h4>Combat Stats</h4>
+                    <div class="cat-details-combat-grid">
+                        <div class="cat-details-combat-stat">
+                            <div class="cat-details-combat-label">Physical Attack</div>
+                            <div class="cat-details-combat-value">${cat.attributes.physicalAttack}</div>
+                            <div class="cat-details-combat-desc">Based on STR</div>
+                        </div>
+                        <div class="cat-details-combat-stat">
+                            <div class="cat-details-combat-label">Physical Defense</div>
+                            <div class="cat-details-combat-value">${cat.attributes.physicalDefense}%</div>
+                            <div class="cat-details-combat-desc">Based on STR</div>
+                        </div>
+                        <div class="cat-details-combat-stat">
+                            <div class="cat-details-combat-label">Magic Attack</div>
+                            <div class="cat-details-combat-value">${cat.attributes.magicAttack}</div>
+                            <div class="cat-details-combat-desc">Based on INT</div>
+                        </div>
+                        <div class="cat-details-combat-stat">
+                            <div class="cat-details-combat-label">Magic Resist</div>
+                            <div class="cat-details-combat-value">${cat.attributes.magicResistance}%</div>
+                            <div class="cat-details-combat-desc">Based on WIS</div>
+                        </div>
+                        <div class="cat-details-combat-stat">
+                            <div class="cat-details-combat-label">HP Regen</div>
+                            <div class="cat-details-combat-value">${cat.attributes.healthRegenRate}</div>
+                            <div class="cat-details-combat-desc">Per Minute</div>
+                        </div>
+                        <div class="cat-details-combat-stat">
+                            <div class="cat-details-combat-label">Max Health</div>
+                            <div class="cat-details-combat-value">${cat.attributes.maxHealth}</div>
+                            <div class="cat-details-combat-desc">Based on VIT</div>
+                        </div>
+                        <div class="cat-details-combat-stat">
+                            <div class="cat-details-combat-label">Synergy Bonus</div>
+                            <div class="cat-details-combat-value">${synergyPercentage}%</div>
+                            <div class="cat-details-combat-desc">Based on CHA (2+ cats needed)</div>
+                        </div>
+                    </div>
+                    <div class="cat-details-combat-info">
+                        <p>In groups with 2+ cats, this cat's CHA provides a ${synergyPercentage}% bonus to all stats.</p>
                     </div>
                 </div>
 
@@ -1714,9 +2291,12 @@ class CatManager {
         // STR - Paw Power
         cat.attributes.attackDamage = 10 + cat.stats.STR * 1;        // Reduced from 2 to 1 per point
         cat.attributes.pushForce = 1.0 + cat.stats.STR * 0.05;      // Reduced from 0.1 to 0.05 per point
+        cat.attributes.physicalAttack = Math.floor(cat.stats.STR * 1.5); // Physical attack damage
+        cat.attributes.physicalDefense = Math.floor(cat.stats.STR * 0.5); // Physical defense percentage
 
         // DEX - Whisker Dexterity
         cat.attributes.accuracy = 75 + cat.stats.DEX * 1;           // Reduced from 2% to 1% per point
+        cat.attributes.speed = Math.floor(cat.stats.DEX * 0.5);     // Speed bonus
 
         // AGI - Tail Balance
         cat.attributes.dodgeChance = cat.stats.AGI * 0.75;          // Reduced from 1.5% to 0.75% per point
@@ -1724,22 +2304,26 @@ class CatManager {
         cat.attributes.jumpHeight = 2 + cat.stats.AGI * 0.05;       // Reduced from 0.1 to 0.05 per point
 
         // VIT - Clawstitution
-        cat.attributes.maxHealth = 100 + cat.stats.VIT * 3;         // Reduced from 5 to 3 per point
-        cat.attributes.healthRegenRate = 0.1 + cat.stats.VIT * 0.025; // Reduced from 0.05 to 0.025 per point
+        cat.attributes.maxHealth = 100 + cat.stats.VIT * 5;         // Increased from 3 to 5 per point for better balance
+        cat.attributes.healthRegenRate = Math.floor(cat.stats.VIT * 0.2); // HP regeneration per minute
         cat.health = Math.min(cat.health, cat.attributes.maxHealth); // Cap health at max
 
         // WIL - Fur-titude
-        cat.attributes.debuffResistance = cat.stats.WIL * 1;        // Reduced from 2% to 1% per point
+        cat.attributes.debuffResistance = Math.floor(cat.stats.WIL * 0.5); // Reduced and rebalanced
         cat.attributes.castingTimeReduction = cat.stats.WIL * 0.25; // Reduced from 0.5% to 0.25% per point
+        cat.attributes.magicResistance = Math.floor(cat.stats.WIL * 0.75); // Magic resistance percentage
 
         // INT - Meowmental
         cat.attributes.xpGainMultiplier = 1.0 + cat.stats.INT * 0.025; // Reduced from 0.05 to 0.025 per point
+        cat.attributes.magicAttack = Math.floor(cat.stats.INT * 1.5); // Magic attack damage
 
         // CHA - Charm
         // This affects the chance to successfully recruit new cats when finding them
         // Will be used when the cat finding/recruiting feature is implemented
         cat.attributes.recruitChanceBonus = cat.stats.CHA * 0.75;   // Reduced from 1.5% to 0.75% per point
         cat.attributes.bondingSpeed = 1 + cat.stats.CHA * 0.05;     // Reduced from 0.1 to 0.05 per point
+        cat.attributes.synergyBonus = Math.min(15, cat.stats.CHA * 0.5); // Synergy bonus capped at 15%
+        cat.attributes.happinessBonus = Math.floor(cat.stats.CHA * 0.3); // Happiness bonus from CHA
 
         // PER - Purrception
         cat.attributes.critChance = cat.stats.PER / 5;              // Reduced from 1% per 3 points to 1% per 5 points
@@ -1748,6 +2332,42 @@ class CatManager {
         // LCK - Luck
         cat.attributes.rareDropChance = 5 + cat.stats.LCK * 0.25;   // Reduced from 0.5% to 0.25% per point
         cat.attributes.statusAvoidChance = cat.stats.LCK * 0.15;    // Reduced from 0.25% to 0.15% per point
+        cat.attributes.happinessLuckBonus = Math.floor(cat.stats.LCK * 0.2); // Happiness bonus from LCK
+
+        return cat;
+    }
+
+    // Update a cat's health and happiness
+    updateCatStatus(catId, healthChange = 0, happinessChange = 0) {
+        const cat = this.cats.find(c => c.id === catId);
+        if (!cat) return null;
+
+        // Apply health change
+        if (healthChange !== 0) {
+            cat.health = Math.max(0, Math.min(cat.attributes.maxHealth, cat.health + healthChange));
+        }
+
+        // Apply happiness change with bonuses from CHA and LCK
+        if (happinessChange !== 0) {
+            // Apply charisma and luck bonuses to positive happiness changes
+            if (happinessChange > 0) {
+                const chaBonus = cat.attributes.happinessBonus || 0;
+                const luckBonus = cat.attributes.happinessLuckBonus || 0;
+                happinessChange = Math.floor(happinessChange * (1 + (chaBonus + luckBonus) / 100));
+            }
+
+            cat.happiness = Math.max(0, Math.min(100, cat.happiness + happinessChange));
+        }
+
+        // Apply natural regeneration based on VIT
+        if (cat.health < cat.attributes.maxHealth && cat.attributes.healthRegenRate > 0) {
+            // This would be called periodically in a real game loop
+            // For now, we'll just simulate a small amount of healing when checking status
+            cat.health = Math.min(cat.attributes.maxHealth, cat.health + 1);
+        }
+
+        // Update display
+        this.updateDisplay();
 
         return cat;
     }

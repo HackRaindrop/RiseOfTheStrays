@@ -171,10 +171,17 @@ class GroupManager {
             int: 0,
             wis: 0,
             cha: 0,
+            physAttack: 0,    // Physical attack damage (based on STR)
+            physDefense: 0,   // Physical defense percentage (based on STR)
+            magicAttack: 0,   // Magic attack damage (based on INT)
+            magicResist: 0,   // Magic resistance percentage (based on WIS)
+            healthRegen: 0,   // Health regeneration per minute (based on VIT)
+            synergy: 0,       // Charisma synergy bonus
             totalLevel: 0,
             averageLevel: 0
         };
 
+        // First pass: collect base stats
         cats.forEach(cat => {
             // Make sure cat.stats exists and has valid values
             if (cat && cat.stats) {
@@ -185,11 +192,48 @@ class GroupManager {
                 stats.int += cat.stats.INT || 0;
                 stats.wis += cat.stats.WIL || 0; // WIL is Wisdom
                 stats.cha += cat.stats.CHA || 0;
+
+                // Add derived attributes
+                stats.physAttack += cat.attributes.physicalAttack || 0;
+                stats.physDefense += cat.attributes.physicalDefense || 0;
+                stats.magicAttack += cat.attributes.magicAttack || 0;
+                stats.magicResist += cat.attributes.magicResistance || 0;
+                stats.healthRegen += cat.attributes.healthRegenRate || 0;
             }
             stats.totalLevel += cat.level || 0;
         });
 
+        // Calculate average level
         stats.averageLevel = cats.length > 0 ? Math.round(stats.totalLevel / cats.length * 10) / 10 : 0;
+
+        // Calculate synergy bonus based on total charisma, but only if there are 2+ cats
+        let synergyMultiplier = 1;
+        if (cats.length >= 2) {
+            // Higher charisma provides better synergy bonuses, but at a very reduced rate
+            const charismaBonus = stats.cha * 0.005; // 0.5% bonus per charisma point (reduced from 1%)
+            stats.synergy = Math.min(0.15, charismaBonus); // Cap at 15% bonus (reduced from 30%)
+
+            // Apply synergy bonus to all stats
+            synergyMultiplier = 1 + stats.synergy;
+            stats.str = Math.round(stats.str * synergyMultiplier);
+            stats.dex = Math.round(stats.dex * synergyMultiplier);
+            stats.con = Math.round(stats.con * synergyMultiplier);
+            stats.int = Math.round(stats.int * synergyMultiplier);
+            stats.wis = Math.round(stats.wis * synergyMultiplier);
+
+            // Apply synergy to derived attributes
+            stats.physAttack = Math.round(stats.physAttack * synergyMultiplier);
+            stats.physDefense = Math.round(stats.physDefense * synergyMultiplier);
+            stats.magicAttack = Math.round(stats.magicAttack * synergyMultiplier);
+            stats.magicResist = Math.round(stats.magicResist * synergyMultiplier);
+            stats.healthRegen = Math.round(stats.healthRegen * synergyMultiplier);
+        } else {
+            // No synergy bonus for single cats
+            stats.synergy = 0;
+        }
+
+        // Format synergy as percentage
+        stats.synergy = Math.round(stats.synergy * 100);
 
         return stats;
     }
@@ -261,6 +305,15 @@ class GroupManager {
                                         <div class="group-cat-info">
                                             <div class="group-cat-name">${cat.name}</div>
                                             <div class="group-cat-level">Level ${cat.level} ${cat.type}</div>
+                                            <div class="group-cat-health-container">
+                                                <div class="group-cat-health-label">
+                                                    <span>HP</span>
+                                                    <span>${cat.health}/${cat.attributes.maxHealth}</span>
+                                                </div>
+                                                <div class="group-cat-health-bar-container">
+                                                    <div class="group-cat-health-bar" style="width: ${(cat.health / cat.attributes.maxHealth) * 100}%"></div>
+                                                </div>
+                                            </div>
                                         </div>
                                         <button class="remove-cat-btn" data-group-id="${group.id}" data-cat-id="${cat.id}">Remove</button>
                                     </div>
@@ -283,28 +336,69 @@ class GroupManager {
                                 <div class="group-stat">
                                     <span class="stat-label">STR</span>
                                     <span class="stat-value">${groupStats ? groupStats.str : 0}</span>
+                                    <div class="stat-bonus">+${groupStats ? groupStats.physAttack : 0} Physical Damage, +${groupStats ? groupStats.physDefense : 0}% Defense</div>
                                 </div>
                                 <div class="group-stat">
                                     <span class="stat-label">DEX</span>
                                     <span class="stat-value">${groupStats ? groupStats.dex : 0}</span>
+                                    <div class="stat-bonus descriptive">Speed & Accuracy</div>
                                 </div>
                                 <div class="group-stat">
                                     <span class="stat-label">CON</span>
                                     <span class="stat-value">${groupStats ? groupStats.con : 0}</span>
+                                    <div class="stat-bonus descriptive">Health, Defense & HP Regen</div>
                                 </div>
                                 <div class="group-stat">
                                     <span class="stat-label">INT</span>
                                     <span class="stat-value">${groupStats ? groupStats.int : 0}</span>
+                                    <div class="stat-bonus">+${groupStats ? groupStats.magicAttack : 0} Magic Damage</div>
                                 </div>
                                 <div class="group-stat">
                                     <span class="stat-label">WIS</span>
                                     <span class="stat-value">${groupStats ? groupStats.wis : 0}</span>
+                                    <div class="stat-bonus descriptive">Magic Resistance & Debuff Defense</div>
                                 </div>
                                 <div class="group-stat">
                                     <span class="stat-label">CHA</span>
                                     <span class="stat-value">${groupStats ? groupStats.cha : 0}</span>
+                                    ${groupCats.length >= 2 ?
+                                        `<div class="stat-bonus">+${groupStats ? groupStats.synergy : 0}% to ALL Stats</div>` :
+                                        `<div class="stat-bonus inactive">Need 2+ cats for synergy</div>`
+                                    }
                                 </div>
                             </div>
+
+                            <div class="group-combat-stats">
+                                <div class="combat-stat">
+                                    <span class="combat-stat-label">Physical Attack</span>
+                                    <span class="combat-stat-value">${groupStats ? groupStats.physAttack : 0}</span>
+                                </div>
+                                <div class="combat-stat">
+                                    <span class="combat-stat-label">Physical Def</span>
+                                    <span class="combat-stat-value">${groupStats ? groupStats.physDefense : 0}%</span>
+                                    <span class="combat-stat-desc">Based on STR</span>
+                                </div>
+                                <div class="combat-stat">
+                                    <span class="combat-stat-label">Magic Attack</span>
+                                    <span class="combat-stat-value">${groupStats ? groupStats.magicAttack : 0}</span>
+                                </div>
+                                <div class="combat-stat">
+                                    <span class="combat-stat-label">Magic Resist</span>
+                                    <span class="combat-stat-value">${groupStats ? groupStats.magicResist : 0}%</span>
+                                    <span class="combat-stat-desc">Based on WIS</span>
+                                </div>
+                                <div class="combat-stat">
+                                    <span class="combat-stat-label">HP Regen</span>
+                                    <span class="combat-stat-value">${groupStats ? groupStats.healthRegen : 0}</span>
+                                    <span class="combat-stat-desc">Per Minute</span>
+                                </div>
+                                <div class="combat-stat">
+                                    <span class="combat-stat-label">Synergy Bonus</span>
+                                    <span class="combat-stat-value">${groupStats ? groupStats.synergy : 0}%</span>
+                                    <span class="combat-stat-desc">Boosts ALL Stats</span>
+                                </div>
+                            </div>
+
                             <div class="group-level">
                                 <span>Average Level: ${groupStats ? groupStats.averageLevel : 0}</span>
                             </div>
@@ -347,6 +441,15 @@ class GroupManager {
                         <div class="available-cat-info">
                             <div class="available-cat-name">${cat.name}</div>
                             <div class="available-cat-level">Level ${cat.level} ${cat.type}</div>
+                            <div class="group-cat-health-container">
+                                <div class="group-cat-health-label">
+                                    <span>HP</span>
+                                    <span>${cat.health}/${cat.attributes.maxHealth}</span>
+                                </div>
+                                <div class="group-cat-health-bar-container">
+                                    <div class="group-cat-health-bar" style="width: ${(cat.health / cat.attributes.maxHealth) * 100}%"></div>
+                                </div>
+                            </div>
                         </div>
                         <button class="add-cat-btn" data-group-id="${groupId}" data-cat-id="${cat.id}">Add</button>
                     </div>
