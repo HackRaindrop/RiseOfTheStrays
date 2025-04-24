@@ -292,11 +292,11 @@ class GroupManager {
 
                     <div class="group-cats">
                         ${groupCats.length === 0 ?
-                            `<div class="no-cats-message">
+                    `<div class="no-cats-message">
                                 <p>No cats in this group yet.</p>
                                 <p>Add cats to this group using the buttons below.</p>
                             </div>` :
-                            `<div class="group-cats-list">
+                    `<div class="group-cats-list">
                                 ${groupCats.map(cat => `
                                     <div class="group-cat-item" data-cat-id="${cat.id}">
                                         <div class="group-cat-avatar">
@@ -319,7 +319,7 @@ class GroupManager {
                                     </div>
                                 `).join('')}
                             </div>`
-                        }
+                }
                     </div>
 
                     <div class="group-add-cat">
@@ -512,7 +512,7 @@ class GroupManager {
 
         let patternHTML = '';
 
-        switch(pattern) {
+        switch (pattern) {
             case 'spots':
                 patternHTML = `
                     <div class="cat-mini-pattern cat-mini-spots" style="background-color: ${color}"></div>
@@ -539,7 +539,7 @@ class GroupManager {
 
         let accessoryHTML = '';
 
-        switch(accessory) {
+        switch (accessory) {
             case 'bow':
                 accessoryHTML = `
                     <div class="cat-mini-accessory cat-mini-bow" style="background-color: ${color}"></div>
@@ -671,8 +671,8 @@ class GroupManager {
                     <label for="edit-group-type">Group Type:</label>
                     <select id="edit-group-type">
                         ${this.groupTypes.map(type =>
-                            `<option value="${type}" ${type === group.type ? 'selected' : ''}>${type}</option>`
-                        ).join('')}
+            `<option value="${type}" ${type === group.type ? 'selected' : ''}>${type}</option>`
+        ).join('')}
                     </select>
                 </div>
 
@@ -824,8 +824,8 @@ class GroupManager {
                 <h3>Add Cat to Group: ${group.name}</h3>
 
                 ${availableCats.length === 0 ?
-                    '<p>No cats available to add to this group.</p>' :
-                    `<div class="cat-selection">
+                '<p>No cats available to add to this group.</p>' :
+                `<div class="cat-selection">
                         <p>Select a cat to add to this group:</p>
                         <div class="cat-options-container">
                             ${availableCats.map(cat => `
@@ -836,7 +836,7 @@ class GroupManager {
                             `).join('')}
                         </div>
                     </div>`
-                }
+            }
 
                 <div class="modal-actions">
                     <button id="add-cat-btn" data-group-id="${groupId}" ${availableCats.length === 0 ? 'disabled' : ''}>Add Selected Cat</button>

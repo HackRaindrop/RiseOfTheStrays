@@ -1,0 +1,1661 @@
+/*
+ * Combined Post-Apocalyptic Theme CSS for Rise of the Strays
+ * This file combines post-apocalyptic-theme.css, post-apocalyptic-ui.css, and post-apocalyptic-cats.css
+ */
+
+/* ==================== */
+/* BASE THEME STYLES    */
+/* ==================== */
+
+/* Subtle texture overlay for the body */
+body {
+    background-color: #1a1a1a;
+    background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23333333' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+    color: #d4d4d4;
+}
+
+/* Game container with worn edges */
+#game-container {
+    background-color: #252525;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
+    border: 1px solid #3a3a3a;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Add a subtle radiation effect to the game container */
+#game-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 50% 50%, rgba(76, 175, 80, 0.03), transparent 70%);
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Add a pulsing radiation effect to the game container */
+@keyframes radiation-pulse {
+    0% { opacity: 0.02; }
+    50% { opacity: 0.05; }
+    100% { opacity: 0.02; }
+}
+
+#game-container::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 50% 50%, rgba(76, 175, 80, 0.1), transparent 70%);
+    pointer-events: none;
+    z-index: 1;
+    animation: radiation-pulse 5s infinite;
+}
+
+/* Header styling */
+header {
+    background-color: #1e1e1e;
+    border-bottom: 2px solid #444;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+h1 {
+    color: #ff6b6b;
+    text-shadow: 0 0 5px rgba(255, 107, 107, 0.5);
+    font-family: 'Impact', sans-serif;
+    letter-spacing: 1px;
+}
+
+/* Section styling */
+section {
+    background-color: #1e1e1e;
+    border: 1px solid #3a3a3a;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
+}
+
+/* ==================== */
+/* UI ELEMENT STYLES    */
+/* ==================== */
+
+/* Button styling */
+button {
+    background-color: #3a3a3a;
+    border: 1px solid #555;
+    color: #ddd;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.2s ease;
+}
+
+button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23000000' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+button:hover {
+    background-color: #4a4a4a;
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+}
+
+/* Style section headers with a post-apocalyptic look */
+h2 {
+    color: #4CAF50;
+    text-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+    border-bottom: 1px solid #444;
+    padding-bottom: 8px;
+    position: relative;
+}
+
+h2::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, #4CAF50, transparent);
+}
+
+h3 {
+    color: #e9c46a;
+    text-shadow: 0 0 3px rgba(233, 196, 106, 0.3);
+}
+
+/* Style the resources display */
+#resources {
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.resource-name {
+    color: #4CAF50;
+    text-shadow: 0 0 3px rgba(76, 175, 80, 0.3);
+}
+
+/* Style the power indicator */
+.power-indicator {
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.power-icon {
+    color: #f1c40f;
+    text-shadow: 0 0 5px rgba(241, 196, 15, 0.5);
+}
+
+.power-bar {
+    background-color: #333;
+    border: 1px solid #444;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+.power-fill {
+    background: linear-gradient(to right, #f1c40f, #e67e22);
+    box-shadow: 0 0 5px rgba(241, 196, 15, 0.5);
+}
+
+/* Style the mobile navigation */
+#mobile-nav {
+    background-color: #1a1a1a;
+    border-top: 1px solid #333;
+    box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.5);
+}
+
+.nav-item {
+    color: #aaa;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+}
+
+.nav-item.active {
+    color: #4CAF50;
+    text-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+}
+
+.nav-item:hover {
+    color: #4CAF50;
+}
+
+/* Style the message log */
+#message-log {
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.message {
+    border-bottom: 1px solid #333;
+    padding: 5px 0;
+    color: #bbb;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+}
+
+/* Style the cat search buttons */
+.search-button {
+    background: linear-gradient(to bottom, #3a3a3a, #2a2a2a);
+    border: 1px solid #444;
+    color: #ddd;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 2px 4px rgba(0, 0, 0, 0.3);
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+    position: relative;
+    overflow: hidden;
+}
+
+.search-button:hover {
+    background: linear-gradient(to bottom, #444, #333);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 2px 6px rgba(76, 175, 80, 0.3);
+}
+
+/* Style the training stations */
+.training-station {
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.station-name {
+    color: #e9c46a;
+    text-shadow: 0 0 3px rgba(233, 196, 106, 0.3);
+}
+
+/* ==================== */
+/* CAT STYLING          */
+/* ==================== */
+
+/* Add a worn, distressed look to cat cards */
+.cat-card {
+    background-color: rgba(30, 30, 30, 0.8) !important;
+    border: 1px solid #444 !important;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4) !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+/* Add a subtle texture to cat cards */
+.cat-card::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm10 17a7 7 0 1 0 0-14 7 7 0 0 0 0 14zm20 0a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM10 37a7 7 0 1 0 0-14 7 7 0 0 0 0 14zm10-17h20v20H20V20zm10 17a7 7 0 1 0 0-14 7 7 0 0 0 0 14z' fill='%23000000' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E") !important;
+    pointer-events: none !important;
+    z-index: 0 !important;
+}
+
+/* Style cat names with a post-apocalyptic look */
+.cat-name {
+    color: #e9c46a !important;
+    text-shadow: 0 0 3px rgba(233, 196, 106, 0.3) !important;
+}
+
+/* Style cat type badges */
+.cat-type-badge {
+    background-color: #333 !important;
+    border: 1px solid #444 !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+/* Add different colors for different cat types */
+.cat-type-badge[data-type="Scavenger"] {
+    background-color: #2a623d !important;
+    border-color: #3a724d !important;
+}
+
+.cat-type-badge[data-type="Fighter"] {
+    background-color: #7d2a2a !important;
+    border-color: #8d3a3a !important;
+}
+
+.cat-type-badge[data-type="Scout"] {
+    background-color: #2a617d !important;
+    border-color: #3a718d !important;
+}
+
+.cat-type-badge[data-type="Medic"] {
+    background-color: #617d2a !important;
+    border-color: #718d3a !important;
+}
+
+.cat-type-badge[data-type="Engineer"] {
+    background-color: #7d612a !important;
+    border-color: #8d713a !important;
+}
+
+/* Style the cat stats with a post-apocalyptic look */
+.cat-stats {
+    background-color: rgba(30, 30, 30, 0.7) !important;
+    border: 1px solid #444 !important;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3) !important;
+    padding: 10px !important;
+    border-radius: 5px !important;
+    margin-top: 10px !important;
+}
+
+.stat-bar-container {
+    background-color: #333 !important;
+    border: 1px solid #444 !important;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5) !important;
+}
+
+.health-bar {
+    background-color: #e74c3c !important;
+    background-image: linear-gradient(to right, #e74c3c, #e67e22) !important;
+    box-shadow: 0 0 5px rgba(231, 76, 60, 0.3) !important;
+}
+
+.happiness-bar {
+    background-color: #f1c40f !important;
+    background-image: linear-gradient(to right, #f1c40f, #f39c12) !important;
+    box-shadow: 0 0 5px rgba(241, 196, 15, 0.3) !important;
+}
+
+/* Style the level progress bar */
+.level-bar {
+    background-color: #333 !important;
+    border: 1px solid #444 !important;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5) !important;
+}
+
+.level-progress {
+    background-color: #3498db !important;
+    background-image: linear-gradient(to right, #3498db, #2980b9) !important;
+    box-shadow: 0 0 5px rgba(52, 152, 219, 0.3) !important;
+}
+
+/* Add a subtle glow effect to cat avatars */
+.cat-avatar {
+    position: relative !important;
+}
+
+.cat-avatar::after {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    border-radius: 50% !important;
+    box-shadow: 0 0 10px rgba(76, 175, 80, 0.2) !important;
+    pointer-events: none !important;
+    z-index: 2 !important;
+}
+
+/* Add a subtle animation to cat cards on hover */
+.cat-card:hover {
+    transform: translateY(-3px) !important;
+    box-shadow: 0 5px 15px rgba(76, 175, 80, 0.2) !important;
+}
+
+/* Style cat appearance items */
+.cat-appearance-item {
+    background-color: #333 !important;
+    border: 1px solid #444 !important;
+    color: #ddd !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* ==================== */
+/* TRAINING SECTION     */
+/* ==================== */
+
+/* Training arena styling */
+.training-arena {
+    background-color: #1a1a1a !important;
+    border: 1px solid #333 !important;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5) !important;
+    padding: 15px !important;
+    border-radius: 5px !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+/* Add a subtle texture to training arena */
+.training-arena::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background-image: url("data:image/svg+xml,%3Csvg width='6' height='6' viewBox='0 0 6 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23000000' fill-opacity='0.1' fill-rule='evenodd'%3E%3Cpath d='M5 0h1L0 5v1H5z'/%3E%3Cpath d='M6 5v1H5z'/%3E%3C/g%3E%3C/svg%3E") !important;
+    pointer-events: none !important;
+    z-index: 0 !important;
+    opacity: 0.5 !important;
+}
+
+/* Training bases list */
+.training-bases-list {
+    background-color: #1e1e1e !important;
+    border: 1px solid #333 !important;
+    border-radius: 5px !important;
+    padding: 10px !important;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Training base details */
+.training-base-details {
+    background-color: #1e1e1e !important;
+    border: 1px solid #333 !important;
+    border-radius: 5px !important;
+    padding: 15px !important;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Training station styling */
+.training-station {
+    background-color: #252525 !important;
+    border: 1px solid #444 !important;
+    border-radius: 5px !important;
+    margin-bottom: 10px !important;
+    padding: 10px !important;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4) !important;
+    position: relative !important;
+    overflow: hidden !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+.training-station::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm10 17a7 7 0 1 0 0-14 7 7 0 0 0 0 14zm20 0a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM10 37a7 7 0 1 0 0-14 7 7 0 0 0 0 14zm10-17h20v20H20V20zm10 17a7 7 0 1 0 0-14 7 7 0 0 0 0 14z' fill='%23000000' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E") !important;
+    pointer-events: none !important;
+    z-index: 0 !important;
+    opacity: 0.3 !important;
+}
+
+.training-station:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5) !important;
+}
+
+.training-station.selected {
+    border: 1px solid #4CAF50 !important;
+    box-shadow: 0 0 10px rgba(76, 175, 80, 0.3) !important;
+}
+
+/* Training station status */
+.status-available {
+    background-color: #2a623d !important;
+    border: 1px solid #3a724d !important;
+    box-shadow: 0 0 5px rgba(46, 204, 113, 0.3) !important;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5) !important;
+}
+
+.status-in-use {
+    background-color: #7d612a !important;
+    border: 1px solid #8d713a !important;
+    box-shadow: 0 0 5px rgba(241, 196, 15, 0.3) !important;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5) !important;
+}
+
+.status-cooldown {
+    background-color: #7d2a2a !important;
+    border: 1px solid #8d3a3a !important;
+    box-shadow: 0 0 5px rgba(231, 76, 60, 0.3) !important;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Training station details */
+.station-details {
+    background-color: #1a1a1a !important;
+    border: 1px solid #333 !important;
+    border-radius: 5px !important;
+    padding: 10px !important;
+    margin-top: 10px !important;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3) !important;
+}
+
+.station-description {
+    color: #bbb !important;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5) !important;
+    font-style: italic !important;
+    margin-bottom: 10px !important;
+}
+
+/* Facility header */
+.facility-header {
+    background-color: #1a1a1a !important;
+    border: 1px solid #333 !important;
+    border-radius: 5px !important;
+    padding: 15px !important;
+    margin-bottom: 15px !important;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3) !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.facility-header::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background-image: url("data:image/svg+xml,%3Csvg width='6' height='6' viewBox='0 0 6 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23000000' fill-opacity='0.1' fill-rule='evenodd'%3E%3Cpath d='M5 0h1L0 5v1H5z'/%3E%3Cpath d='M6 5v1H5z'/%3E%3C/g%3E%3C/svg%3E") !important;
+    pointer-events: none !important;
+    z-index: 0 !important;
+    opacity: 0.3 !important;
+}
+
+.facility-level, .facility-bonus {
+    color: #e9c46a !important;
+    text-shadow: 0 0 3px rgba(233, 196, 106, 0.3) !important;
+    margin-bottom: 5px !important;
+}
+
+.facility-description {
+    color: #bbb !important;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5) !important;
+    font-style: italic !important;
+    margin-top: 10px !important;
+}
+
+/* ==================== */
+/* CAT GROUPS SECTION   */
+/* ==================== */
+
+/* Group card styling */
+.group-card {
+    background-color: #1a1a1a !important;
+    border: 1px solid #333 !important;
+    border-radius: 5px !important;
+    margin-bottom: 15px !important;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4) !important;
+    position: relative !important;
+    overflow: hidden !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+.group-card::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm10 17a7 7 0 1 0 0-14 7 7 0 0 0 0 14zm20 0a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM10 37a7 7 0 1 0 0-14 7 7 0 0 0 0 14zm10-17h20v20H20V20zm10 17a7 7 0 1 0 0-14 7 7 0 0 0 0 14z' fill='%23000000' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E") !important;
+    pointer-events: none !important;
+    z-index: 0 !important;
+    opacity: 0.3 !important;
+}
+
+.group-card:hover {
+    transform: translateY(-3px) !important;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Group header */
+.group-header {
+    background-color: #252525 !important;
+    border-bottom: 1px solid #333 !important;
+    padding: 15px !important;
+    position: relative !important;
+}
+
+.group-title h3 {
+    color: #e9c46a !important;
+    text-shadow: 0 0 3px rgba(233, 196, 106, 0.3) !important;
+}
+
+.group-type {
+    color: #4CAF50 !important;
+    text-shadow: 0 0 3px rgba(76, 175, 80, 0.3) !important;
+}
+
+/* Group content */
+.group-content {
+    padding: 15px !important;
+}
+
+/* Group members */
+.group-members {
+    background-color: #1e1e1e !important;
+    border: 1px solid #333 !important;
+    border-radius: 5px !important;
+    padding: 10px !important;
+    margin-bottom: 10px !important;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3) !important;
+}
+
+.group-member {
+    background-color: #252525 !important;
+    border: 1px solid #333 !important;
+    border-radius: 5px !important;
+    padding: 10px !important;
+    margin-bottom: 5px !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+    transition: transform 0.2s ease !important;
+}
+
+.group-member:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* ==================== */
+/* BUNKER SECTION       */
+/* ==================== */
+
+/* Bunker container */
+#bunker-container {
+    background-color: #1a1a1a !important;
+    border: 1px solid #333 !important;
+    border-radius: 5px !important;
+    padding: 15px !important;
+    margin-bottom: 15px !important;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3) !important;
+    position: relative !important;
+}
+
+#bunker-container::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background-image: url("data:image/svg+xml,%3Csvg width='6' height='6' viewBox='0 0 6 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23000000' fill-opacity='0.1' fill-rule='evenodd'%3E%3Cpath d='M5 0h1L0 5v1H5z'/%3E%3Cpath d='M6 5v1H5z'/%3E%3C/g%3E%3C/svg%3E") !important;
+    pointer-events: none !important;
+    z-index: 0 !important;
+    opacity: 0.3 !important;
+}
+
+/* Room selection */
+#room-selection {
+    background-color: #1e1e1e !important;
+    border: 1px solid #333 !important;
+    border-radius: 5px !important;
+    padding: 15px !important;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* ==================== */
+/* CAT SEARCH & LEVEL   */
+/* ==================== */
+
+/* Cat search options */
+#cat-search-options {
+    background-color: #1a1a1a !important;
+    border: 1px solid #333 !important;
+    border-radius: 5px !important;
+    padding: 15px !important;
+    margin-top: 15px !important;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3) !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+#cat-search-options::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm10 17a7 7 0 1 0 0-14 7 7 0 0 0 0 14zm20 0a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM10 37a7 7 0 1 0 0-14 7 7 0 0 0 0 14zm10-17h20v20H20V20zm10 17a7 7 0 1 0 0-14 7 7 0 0 0 0 14z' fill='%23000000' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E") !important;
+    pointer-events: none !important;
+    z-index: 0 !important;
+    opacity: 0.3 !important;
+}
+
+.search-options {
+    margin-top: 15px !important;
+}
+
+/* Cat level styling */
+#cats-count {
+    background-color: #1e1e1e !important;
+    border: 1px solid #333 !important;
+    border-radius: 5px !important;
+    padding: 10px !important;
+    margin-bottom: 15px !important;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3) !important;
+    color: #e9c46a !important;
+    text-shadow: 0 0 3px rgba(233, 196, 106, 0.3) !important;
+    font-weight: bold !important;
+    text-align: center !important;
+}
+
+#cats-value {
+    color: #4CAF50 !important;
+    text-shadow: 0 0 3px rgba(76, 175, 80, 0.3) !important;
+}
+
+/* Level bar and progress */
+.level-xp {
+    color: #bbb !important;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Cat modal */
+.modal-content {
+    background-color: #1a1a1a !important;
+    border: 1px solid #333 !important;
+    border-radius: 5px !important;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5) !important;
+}
+
+.found-cat-card {
+    background-color: #252525 !important;
+    border: 1px solid #444 !important;
+    border-radius: 5px !important;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3) !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.found-cat-card::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm10 17a7 7 0 1 0 0-14 7 7 0 0 0 0 14zm20 0a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM10 37a7 7 0 1 0 0-14 7 7 0 0 0 0 14zm10-17h20v20H20V20zm10 17a7 7 0 1 0 0-14 7 7 0 0 0 0 14z' fill='%23000000' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E") !important;
+    pointer-events: none !important;
+    z-index: 0 !important;
+    opacity: 0.3 !important;
+}
+
+/* ==================== */
+/* BASE FACILITIES      */
+/* ==================== */
+
+/* Base facilities container */
+#base-facilities-container {
+    background-color: #1a1a1a !important;
+    border: 1px solid #333 !important;
+    border-radius: 5px !important;
+    padding: 15px !important;
+    margin-bottom: 15px !important;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3) !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+#base-facilities-container::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background-image: url("data:image/svg+xml,%3Csvg width='6' height='6' viewBox='0 0 6 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23000000' fill-opacity='0.1' fill-rule='evenodd'%3E%3Cpath d='M5 0h1L0 5v1H5z'/%3E%3Cpath d='M6 5v1H5z'/%3E%3C/g%3E%3C/svg%3E") !important;
+    pointer-events: none !important;
+    z-index: 0 !important;
+    opacity: 0.3 !important;
+}
+
+/* Facility card */
+.facility-card {
+    background-color: #252525 !important;
+    border: 1px solid #444 !important;
+    border-radius: 5px !important;
+    margin-bottom: 15px !important;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4) !important;
+    position: relative !important;
+    overflow: hidden !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+.facility-card::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm10 17a7 7 0 1 0 0-14 7 7 0 0 0 0 14zm20 0a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM10 37a7 7 0 1 0 0-14 7 7 0 0 0 0 14zm10-17h20v20H20V20zm10 17a7 7 0 1 0 0-14 7 7 0 0 0 0 14z' fill='%23000000' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E") !important;
+    pointer-events: none !important;
+    z-index: 0 !important;
+    opacity: 0.3 !important;
+}
+
+.facility-card:hover {
+    transform: translateY(-3px) !important;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Facility header */
+.facility-card-header {
+    background-color: #1e1e1e !important;
+    border-bottom: 1px solid #333 !important;
+    padding: 15px !important;
+    position: relative !important;
+}
+
+.facility-name {
+    color: #e9c46a !important;
+    text-shadow: 0 0 3px rgba(233, 196, 106, 0.3) !important;
+    font-weight: bold !important;
+    margin-bottom: 5px !important;
+}
+
+.facility-type {
+    color: #4CAF50 !important;
+    text-shadow: 0 0 3px rgba(76, 175, 80, 0.3) !important;
+    font-style: italic !important;
+}
+
+/* Facility content */
+.facility-card-content {
+    padding: 15px !important;
+}
+
+.facility-description {
+    color: #bbb !important;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5) !important;
+    font-style: italic !important;
+    margin-bottom: 10px !important;
+}
+
+.facility-stats {
+    background-color: #1a1a1a !important;
+    border: 1px solid #333 !important;
+    border-radius: 5px !important;
+    padding: 10px !important;
+    margin-top: 10px !important;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3) !important;
+}
+
+.facility-stat {
+    margin-bottom: 5px !important;
+    color: #ddd !important;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5) !important;
+}
+
+.facility-stat-value {
+    color: #4CAF50 !important;
+    text-shadow: 0 0 3px rgba(76, 175, 80, 0.3) !important;
+    font-weight: bold !important;
+}
+
+/* Facility upgrade button */
+.upgrade-facility-btn {
+    background: linear-gradient(to bottom, #3a3a3a, #2a2a2a) !important;
+    border: 1px solid #444 !important;
+    color: #ddd !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5) !important;
+    position: relative !important;
+    overflow: hidden !important;
+    margin-top: 10px !important;
+    width: 100% !important;
+    padding: 10px !important;
+    font-weight: bold !important;
+    transition: all 0.2s ease !important;
+}
+
+.upgrade-facility-btn:hover {
+    background: linear-gradient(to bottom, #444, #333) !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 2px 6px rgba(76, 175, 80, 0.3) !important;
+    transform: translateY(-2px) !important;
+}
+
+.upgrade-facility-btn.disabled {
+    background: linear-gradient(to bottom, #2a2a2a, #1a1a1a) !important;
+    color: #666 !important;
+    cursor: not-allowed !important;
+    box-shadow: none !important;
+    transform: none !important;
+}
+
+/* ==================== */
+/* CAT SELECTION        */
+/* ==================== */
+
+/* Cat selection for training */
+#cat-selection-container {
+    background-color: #1a1a1a !important;
+    border: 1px solid #333 !important;
+    border-radius: 5px !important;
+    padding: 15px !important;
+    margin-bottom: 15px !important;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3) !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+#cat-selection-container::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm10 17a7 7 0 1 0 0-14 7 7 0 0 0 0 14zm20 0a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM10 37a7 7 0 1 0 0-14 7 7 0 0 0 0 14zm10-17h20v20H20V20zm10 17a7 7 0 1 0 0-14 7 7 0 0 0 0 14z' fill='%23000000' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E") !important;
+    pointer-events: none !important;
+    z-index: 0 !important;
+    opacity: 0.3 !important;
+}
+
+.cat-selection-header {
+    color: #e9c46a !important;
+    text-shadow: 0 0 3px rgba(233, 196, 106, 0.3) !important;
+    margin-bottom: 15px !important;
+    padding-bottom: 10px !important;
+    border-bottom: 1px solid #333 !important;
+}
+
+.selectable-cat {
+    background-color: #252525 !important;
+    border: 1px solid #444 !important;
+    border-radius: 5px !important;
+    padding: 10px !important;
+    margin-bottom: 10px !important;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4) !important;
+    position: relative !important;
+    overflow: hidden !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+    cursor: pointer !important;
+}
+
+.selectable-cat::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm10 17a7 7 0 1 0 0-14 7 7 0 0 0 0 14zm20 0a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM10 37a7 7 0 1 0 0-14 7 7 0 0 0 0 14zm10-17h20v20H20V20zm10 17a7 7 0 1 0 0-14 7 7 0 0 0 0 14z' fill='%23000000' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E") !important;
+    pointer-events: none !important;
+    z-index: 0 !important;
+    opacity: 0.3 !important;
+}
+
+.selectable-cat:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5) !important;
+}
+
+.selectable-cat.selected {
+    border: 1px solid #4CAF50 !important;
+    box-shadow: 0 0 10px rgba(76, 175, 80, 0.3) !important;
+}
+
+.selectable-cat.unavailable {
+    opacity: 0.5 !important;
+    cursor: not-allowed !important;
+}
+
+/* ==================== */
+/* CAT LEVEL DISPLAY    */
+/* ==================== */
+
+/* Cat level display within cat cards */
+.cat-level {
+    background-color: #1a1a1a !important;
+    border: 1px solid #333 !important;
+    border-radius: 5px !important;
+    padding: 5px 10px !important;
+    margin-top: 10px !important;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3) !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.cat-level::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background-image: url("data:image/svg+xml,%3Csvg width='6' height='6' viewBox='0 0 6 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23000000' fill-opacity='0.1' fill-rule='evenodd'%3E%3Cpath d='M5 0h1L0 5v1H5z'/%3E%3Cpath d='M6 5v1H5z'/%3E%3C/g%3E%3C/svg%3E") !important;
+    pointer-events: none !important;
+    z-index: 0 !important;
+    opacity: 0.3 !important;
+}
+
+.level-number {
+    color: #e9c46a !important;
+    text-shadow: 0 0 3px rgba(233, 196, 106, 0.3) !important;
+    font-weight: bold !important;
+    font-size: 1.2em !important;
+    position: relative !important;
+    z-index: 1 !important;
+}
+
+.level-label {
+    color: #bbb !important;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5) !important;
+    font-size: 0.8em !important;
+    position: relative !important;
+    z-index: 1 !important;
+}
+
+/* Level progress bar */
+.level-progress-container {
+    background-color: #252525 !important;
+    border: 1px solid #333 !important;
+    border-radius: 3px !important;
+    height: 8px !important;
+    margin-top: 5px !important;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3) !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.level-progress-bar {
+    background: linear-gradient(to right, #4CAF50, #81C784) !important;
+    height: 100% !important;
+    border-radius: 3px !important;
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.3) !important;
+    transition: width 0.3s ease !important;
+}
+
+/* ==================== */
+/* BUNKER UI ELEMENTS   */
+/* ==================== */
+
+/* Bunker controls */
+.bunker-controls {
+    background-color: #1a1a1a !important;
+    border: 1px solid #333 !important;
+    border-radius: 5px !important;
+    padding: 15px !important;
+    margin-bottom: 15px !important;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3) !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.bunker-controls::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background-image: url("data:image/svg+xml,%3Csvg width='6' height='6' viewBox='0 0 6 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23000000' fill-opacity='0.1' fill-rule='evenodd'%3E%3Cpath d='M5 0h1L0 5v1H5z'/%3E%3Cpath d='M6 5v1H5z'/%3E%3C/g%3E%3C/svg%3E") !important;
+    pointer-events: none !important;
+    z-index: 0 !important;
+    opacity: 0.3 !important;
+}
+
+/* Layer navigation */
+.layer-navigation {
+    background-color: #252525 !important;
+    border: 1px solid #444 !important;
+    border-radius: 5px !important;
+    padding: 10px !important;
+    margin-bottom: 15px !important;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4) !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+}
+
+.layer-button {
+    background: linear-gradient(to bottom, #3a3a3a, #2a2a2a) !important;
+    border: 1px solid #444 !important;
+    color: #ddd !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5) !important;
+    padding: 8px 15px !important;
+    border-radius: 3px !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+}
+
+.layer-button:hover {
+    background: linear-gradient(to bottom, #444, #333) !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 2px 6px rgba(76, 175, 80, 0.3) !important;
+    transform: translateY(-2px) !important;
+}
+
+.layer-button.disabled {
+    background: linear-gradient(to bottom, #2a2a2a, #1a1a1a) !important;
+    color: #666 !important;
+    cursor: not-allowed !important;
+    box-shadow: none !important;
+    transform: none !important;
+}
+
+.current-layer {
+    background-color: #1e1e1e !important;
+    border: 1px solid #333 !important;
+    border-radius: 5px !important;
+    padding: 8px 15px !important;
+    color: #e9c46a !important;
+    text-shadow: 0 0 3px rgba(233, 196, 106, 0.3) !important;
+    font-weight: bold !important;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Room info panel */
+.room-info-panel {
+    background-color: #1a1a1a !important;
+    border: 1px solid #333 !important;
+    border-radius: 5px !important;
+    padding: 15px !important;
+    margin-top: 15px !important;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3) !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.room-info-panel::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm10 17a7 7 0 1 0 0-14 7 7 0 0 0 0 14zm20 0a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM10 37a7 7 0 1 0 0-14 7 7 0 0 0 0 14zm10-17h20v20H20V20zm10 17a7 7 0 1 0 0-14 7 7 0 0 0 0 14z' fill='%23000000' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E") !important;
+    pointer-events: none !important;
+    z-index: 0 !important;
+    opacity: 0.3 !important;
+}
+
+.room-info-header {
+    color: #e9c46a !important;
+    text-shadow: 0 0 3px rgba(233, 196, 106, 0.3) !important;
+    margin-bottom: 10px !important;
+    padding-bottom: 5px !important;
+    border-bottom: 1px solid #333 !important;
+    font-weight: bold !important;
+}
+
+.room-info-content {
+    color: #bbb !important;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5) !important;
+}
+
+.room-stat {
+    margin-bottom: 5px !important;
+}
+
+.room-stat-label {
+    color: #ddd !important;
+    font-weight: bold !important;
+}
+
+.room-stat-value {
+    color: #4CAF50 !important;
+    text-shadow: 0 0 3px rgba(76, 175, 80, 0.3) !important;
+}
+
+/* Room action buttons */
+.room-action-button {
+    background: linear-gradient(to bottom, #3a3a3a, #2a2a2a) !important;
+    border: 1px solid #444 !important;
+    color: #ddd !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5) !important;
+    padding: 8px 15px !important;
+    margin-top: 10px !important;
+    width: 100% !important;
+    border-radius: 3px !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+}
+
+.room-action-button:hover {
+    background: linear-gradient(to bottom, #444, #333) !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 2px 6px rgba(76, 175, 80, 0.3) !important;
+    transform: translateY(-2px) !important;
+}
+
+.room-action-button.upgrade {
+    background: linear-gradient(to bottom, #2a623d, #1a522d) !important;
+    border: 1px solid #3a724d !important;
+}
+
+.room-action-button.upgrade:hover {
+    background: linear-gradient(to bottom, #3a724d, #2a623d) !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 2px 6px rgba(46, 204, 113, 0.3) !important;
+}
+
+.room-action-button.demolish {
+    background: linear-gradient(to bottom, #7d2a2a, #6d1a1a) !important;
+    border: 1px solid #8d3a3a !important;
+}
+
+.room-action-button.demolish:hover {
+    background: linear-gradient(to bottom, #8d3a3a, #7d2a2a) !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 2px 6px rgba(231, 76, 60, 0.3) !important;
+}
+
+/* ==================== */
+/* MESSAGE POPUP SYSTEM */
+/* ==================== */
+
+/* Toast message container */
+.toast-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+    max-width: 100%;
+    pointer-events: none;
+}
+
+/* Toast message */
+.toast {
+    background-color: #1a1a1a;
+    border: 2px solid #444;
+    border-radius: 5px;
+    width: 300px;
+    max-width: 90vw;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.7);
+    position: relative;
+    overflow: hidden;
+    transform: translateX(100%);
+    opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    pointer-events: auto;
+    margin-bottom: 10px;
+}
+
+.toast.active {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.toast.removing {
+    transform: translateX(100%);
+    opacity: 0;
+}
+
+/* Toast header */
+.toast-header {
+    background-color: #252525;
+    border-bottom: 2px solid #444;
+    padding: 10px 15px;
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.toast-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url("data:image/svg+xml,%3Csvg width='6' height='6' viewBox='0 0 6 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23000000' fill-opacity='0.1' fill-rule='evenodd'%3E%3Cpath d='M5 0h1L0 5v1H5z'/%3E%3Cpath d='M6 5v1H5z'/%3E%3C/g%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.3;
+}
+
+.toast-title {
+    color: #e9c46a;
+    text-shadow: 0 0 5px rgba(233, 196, 106, 0.3);
+    font-size: 1.1em;
+    font-weight: bold;
+    margin: 0;
+    position: relative;
+    z-index: 1;
+}
+
+.toast-close {
+    background: none;
+    border: none;
+    color: #aaa;
+    font-size: 1.2em;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+    line-height: 1;
+    position: relative;
+    z-index: 1;
+    transition: color 0.2s ease;
+}
+
+.toast-close:hover {
+    color: #e74c3c;
+    text-shadow: 0 0 5px rgba(231, 76, 60, 0.5);
+}
+
+/* Toast content */
+.toast-content {
+    padding: 10px 15px;
+    color: #ddd;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+    font-size: 0.95em;
+    line-height: 1.4;
+    position: relative;
+    overflow: hidden;
+}
+
+.toast-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm10 17a7 7 0 1 0 0-14 7 7 0 0 0 0 14zm20 0a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM10 37a7 7 0 1 0 0-14 7 7 0 0 0 0 14zm10-17h20v20H20V20zm10 17a7 7 0 1 0 0-14 7 7 0 0 0 0 14z' fill='%23000000' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.1;
+}
+
+/* Progress bar for auto-dismiss */
+.toast-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    background-color: #4CAF50;
+    width: 100%;
+    transform-origin: left;
+    transform: scaleX(0);
+    transition: transform linear;
+}
+
+/* Message types */
+.toast.info .toast-header {
+    border-bottom: 2px solid #3498db;
+}
+
+.toast.success .toast-header {
+    border-bottom: 2px solid #2ecc71;
+}
+
+.toast.warning .toast-header {
+    border-bottom: 2px solid #f39c12;
+}
+
+.toast.danger .toast-header {
+    border-bottom: 2px solid #e74c3c;
+}
+
+.toast.info .toast-progress {
+    background-color: #3498db;
+}
+
+.toast.success .toast-progress {
+    background-color: #2ecc71;
+}
+
+.toast.warning .toast-progress {
+    background-color: #f39c12;
+}
+
+.toast.danger .toast-progress {
+    background-color: #e74c3c;
+}
+
+/* Animation for toast glow */
+@keyframes toast-glow {
+    0% { box-shadow: 0 0 5px rgba(76, 175, 80, 0.3); }
+    50% { box-shadow: 0 0 10px rgba(76, 175, 80, 0.5); }
+    100% { box-shadow: 0 0 5px rgba(76, 175, 80, 0.3); }
+}
+
+.toast {
+    animation: toast-glow 3s infinite;
+}
+
+/* Radiation effect for important messages */
+.toast.danger::after,
+.toast.warning::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 50% 50%, rgba(231, 76, 60, 0.1), transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+    animation: radiation-pulse 2s infinite;
+}
+
+.toast.warning::after {
+    background: radial-gradient(circle at 50% 50%, rgba(241, 196, 15, 0.1), transparent 70%);
+}
+
+/* Screen shake animation */
+@keyframes shake-soft {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    50% { transform: translateX(5px); }
+    75% { transform: translateX(-5px); }
+}
+
+@keyframes shake-hard {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+    20%, 40%, 60%, 80% { transform: translateX(10px); }
+}
+
+.shake-soft {
+    animation: shake-soft 0.5s ease;
+}
+
+.shake-hard {
+    animation: shake-hard 0.5s ease;
+}
+
+/* ==================== */
+/* MESSAGE POPUP SYSTEM */
+/* ==================== */
+
+/* Message popup container */
+.message-popup-container {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    z-index: 9999 !important;
+    background-color: rgba(0, 0, 0, 0.7) !important;
+    backdrop-filter: blur(3px) !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transition: opacity 0.3s ease, visibility 0.3s ease !important;
+}
+
+.message-popup-container.active {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Message popup */
+.message-popup {
+    background-color: #1a1a1a !important;
+    border: 2px solid #444 !important;
+    border-radius: 5px !important;
+    padding: 0 !important;
+    width: 90% !important;
+    max-width: 500px !important;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.7) !important;
+    position: relative !important;
+    overflow: hidden !important;
+    transform: translateY(20px) !important;
+    opacity: 0 !important;
+    transition: transform 0.4s ease, opacity 0.4s ease !important;
+}
+
+.message-popup-container.active .message-popup {
+    transform: translateY(0) !important;
+    opacity: 1 !important;
+}
+
+/* Message popup header */
+.message-popup-header {
+    background-color: #252525 !important;
+    border-bottom: 2px solid #444 !important;
+    padding: 15px !important;
+    position: relative !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+}
+
+.message-popup-header::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background-image: url("data:image/svg+xml,%3Csvg width='6' height='6' viewBox='0 0 6 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23000000' fill-opacity='0.1' fill-rule='evenodd'%3E%3Cpath d='M5 0h1L0 5v1H5z'/%3E%3Cpath d='M6 5v1H5z'/%3E%3C/g%3E%3C/svg%3E") !important;
+    pointer-events: none !important;
+    z-index: 0 !important;
+    opacity: 0.3 !important;
+}
+
+.message-popup-title {
+    color: #e9c46a !important;
+    text-shadow: 0 0 5px rgba(233, 196, 106, 0.3) !important;
+    font-size: 1.4em !important;
+    font-weight: bold !important;
+    margin: 0 !important;
+    position: relative !important;
+    z-index: 1 !important;
+}
+
+.message-popup-close {
+    background: none !important;
+    border: none !important;
+    color: #aaa !important;
+    font-size: 1.5em !important;
+    cursor: pointer !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    line-height: 1 !important;
+    position: relative !important;
+    z-index: 1 !important;
+    transition: color 0.2s ease !important;
+}
+
+.message-popup-close:hover {
+    color: #e74c3c !important;
+    text-shadow: 0 0 5px rgba(231, 76, 60, 0.5) !important;
+}
+
+/* Message popup content */
+.message-popup-content {
+    padding: 20px !important;
+    color: #ddd !important;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5) !important;
+    font-size: 1.1em !important;
+    line-height: 1.5 !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.message-popup-content::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm10 17a7 7 0 1 0 0-14 7 7 0 0 0 0 14zm20 0a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM10 37a7 7 0 1 0 0-14 7 7 0 0 0 0 14zm10-17h20v20H20V20zm10 17a7 7 0 1 0 0-14 7 7 0 0 0 0 14z' fill='%23000000' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E") !important;
+    pointer-events: none !important;
+    z-index: 0 !important;
+    opacity: 0.1 !important;
+}
+
+/* Message popup footer */
+.message-popup-footer {
+    background-color: #252525 !important;
+    border-top: 2px solid #444 !important;
+    padding: 15px !important;
+    text-align: right !important;
+    position: relative !important;
+}
+
+.message-popup-footer::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background-image: url("data:image/svg+xml,%3Csvg width='6' height='6' viewBox='0 0 6 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23000000' fill-opacity='0.1' fill-rule='evenodd'%3E%3Cpath d='M5 0h1L0 5v1H5z'/%3E%3Cpath d='M6 5v1H5z'/%3E%3C/g%3E%3C/svg%3E") !important;
+    pointer-events: none !important;
+    z-index: 0 !important;
+    opacity: 0.3 !important;
+}
+
+.message-popup-button {
+    background: linear-gradient(to bottom, #3a3a3a, #2a2a2a) !important;
+    border: 1px solid #444 !important;
+    color: #ddd !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5) !important;
+    padding: 8px 20px !important;
+    border-radius: 3px !important;
+    cursor: pointer !important;
+    font-weight: bold !important;
+    transition: all 0.2s ease !important;
+    position: relative !important;
+    z-index: 1 !important;
+}
+
+.message-popup-button:hover {
+    background: linear-gradient(to bottom, #444, #333) !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 2px 6px rgba(76, 175, 80, 0.3) !important;
+    transform: translateY(-2px) !important;
+}
+
+.message-popup-button.primary {
+    background: linear-gradient(to bottom, #2a623d, #1a522d) !important;
+    border: 1px solid #3a724d !important;
+}
+
+.message-popup-button.primary:hover {
+    background: linear-gradient(to bottom, #3a724d, #2a623d) !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 2px 6px rgba(46, 204, 113, 0.3) !important;
+}
+
+.message-popup-button.danger {
+    background: linear-gradient(to bottom, #7d2a2a, #6d1a1a) !important;
+    border: 1px solid #8d3a3a !important;
+}
+
+.message-popup-button.danger:hover {
+    background: linear-gradient(to bottom, #8d3a3a, #7d2a2a) !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 2px 6px rgba(231, 76, 60, 0.3) !important;
+}
+
+/* Message types */
+.message-popup.info .message-popup-header {
+    border-bottom: 2px solid #3498db !important;
+}
+
+.message-popup.success .message-popup-header {
+    border-bottom: 2px solid #2ecc71 !important;
+}
+
+.message-popup.warning .message-popup-header {
+    border-bottom: 2px solid #f39c12 !important;
+}
+
+.message-popup.danger .message-popup-header {
+    border-bottom: 2px solid #e74c3c !important;
+}
+
+/* Animation for popup appearance */
+@keyframes popup-glow {
+    0% { box-shadow: 0 0 10px rgba(76, 175, 80, 0.3); }
+    50% { box-shadow: 0 0 20px rgba(76, 175, 80, 0.5); }
+    100% { box-shadow: 0 0 10px rgba(76, 175, 80, 0.3); }
+}
+
+.message-popup {
+    animation: popup-glow 3s infinite !important;
+}
+
+/* Radiation effect for important messages */
+.message-popup.danger::after,
+.message-popup.warning::after {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background: radial-gradient(circle at 50% 50%, rgba(231, 76, 60, 0.1), transparent 70%) !important;
+    pointer-events: none !important;
+    z-index: 0 !important;
+    animation: radiation-pulse 2s infinite !important;
+}
+
+.message-popup.warning::after {
+    background: radial-gradient(circle at 50% 50%, rgba(241, 196, 15, 0.1), transparent 70%) !important;
+}

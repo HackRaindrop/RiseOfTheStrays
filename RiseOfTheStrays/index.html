@@ -2,9 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Rise of the Strays</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/mobile-combined.css">
+    <link rel="stylesheet" href="css/cat-cards.css">
+    <link rel="stylesheet" href="css/bunker-combined.css">
+    <link rel="stylesheet" href="css/post-apocalyptic-combined.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/bunker.css">
     <link rel="stylesheet" href="css/enemies.css">
     <link rel="stylesheet" href="css/animated-enemies.css">
     <link rel="stylesheet" href="css/new-enemies.css">
@@ -30,8 +36,8 @@
             </div>
         </header>
 
-        <main>
-            <section id="base-section">
+        <main id="main-content">
+            <section id="base-section" class="tab-content active">
                 <h2>Your Base</h2>
                 <div id="base-display">
                     <div id="base-level">Level: <span id="base-level-value">1</span></div>
@@ -64,12 +70,35 @@
                 </div>
             </section>
 
-            <section id="cats-section">
+            <section id="cats-section" class="tab-content">
                 <h2>Your Cats</h2>
                 <div id="cats-count">Cats: <span id="cats-value">1</span></div>
                 <div id="cats-container"></div>
                 <div id="cat-search-options">
                     <h3>Search Options</h3>
+            </section>
+            <section id="bunker-section" class="tab-content">
+                <h2>Bunker</h2>
+                <div class="power-indicator">
+                    <div class="power-icon">⚡</div>
+                    <div class="power-bar">
+                        <div class="power-fill" id="power-fill"></div>
+                    </div>
+                    <div class="power-text" id="power-text">0/0</div>
+                </div>
+                <div id="bunker-container"></div>
+                <h3>Available Rooms</h3>
+                <div id="room-selection"></div>
+            </section>
+
+            <section id="buildings-section" class="tab-content">
+
+                <h2>Outpost Buildings</h2>
+                <div id="buildings-container"></div>
+                <div id="building-buttons"></div>
+            </section>
+
+            <section id="groups-section" class="tab-content">
                     <button type="button" id="find-cat-normal">Normal Search (5 Food)</button>
                     <button type="button" id="find-cat-thorough">Thorough Search (10 Food)</button>
                     <button type="button" id="find-cat-premium">Premium Search (20 Food)</button>
@@ -89,7 +118,7 @@
                 </div>
             </section>
 
-            <section id="actions-section">
+            <section id="actions-section" class="tab-content">
                 <h2>Actions</h2>
                 <div id="actions-buttons">
                     <button type="button" id="gather-food">Gather Food</button>
@@ -104,24 +133,55 @@
             </section>
         </main>
 
-        <div id="message-log">
-            <h3>Messages</h3>
-            <div id="messages"></div>
-        </div>
+        <!-- Mobile Navigation Menu -->
+        <nav id="mobile-nav">
+            <div class="nav-item active" data-tab="base-section">
+                <i class="fas fa-home"></i>
+                <span>Base</span>
+            </div>
+            <div class="nav-item" data-tab="cats-section">
+                <i class="fas fa-paw"></i>
+                <span>Cats</span>
+            </div>
+            <div class="nav-item" data-tab="bunker-section">
+                <i class="fas fa-warehouse"></i>
+                <span>Bunker</span>
+            </div>
+            <div class="nav-item" data-tab="buildings-section">
+                <i class="fas fa-building"></i>
+                <span>Buildings</span>
+            </div>
+            <div class="nav-item" data-tab="groups-section">
+                <i class="fas fa-users"></i>
+                <span>Groups</span>
+            </div>
+            <div class="nav-item" data-tab="actions-section">
+                <i class="fas fa-bolt"></i>
+                <span>Actions</span>
+            </div>
+        </nav>
+
+        <!-- Toast messages will appear here dynamically -->
     </div>
 
     <script src="js/resources.js"></script>
+    <script src="images/cat-icons.js"></script>
     <script src="js/cats.js"></script>
     <script src="js/base.js"></script>
+    <script src="js/bunker-new.js"></script>
+    <script src="js/bunker.js"></script>
+    <script src="js/buildings.js"></script>
+    <script src="js/training.js"></script>
+    <script src="js/groups.js"></script>
+    <script src="js/mobile-navigation.js"></script>
+    <script src="js/post-apocalyptic-effects.js"></script>
+    <script src="js/toast-messages.js"></script>
     <script src="js/training.js"></script>
     <script src="js/groups.js"></script>
     <script src="js/enemies.js"></script>
     <script src="js/battle.js"></script>
-
     <script src="js/dungeon.js"></script>
-
     <script src="js/lootbox.js"></script>
-
     <script src="js/game.js"></script>
 </body>
 </html>

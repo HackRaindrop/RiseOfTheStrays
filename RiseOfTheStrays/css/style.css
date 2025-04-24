@@ -219,6 +219,7 @@ button:disabled::after {
     position: relative;
     overflow: visible;
     margin-bottom: 20px;
+    min-width: 0;
 }
 
 .cat-card:hover {
@@ -717,8 +718,10 @@ button:disabled::after {
 /* Cat header section */
 .cat-header {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     align-items: flex-start;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .cat-info-container {
@@ -756,6 +759,9 @@ button:disabled::after {
 .cat-name-container {
     display: flex;
     flex-direction: column;
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 5px;
 }
 
 .cat-name {
@@ -778,6 +784,22 @@ button:disabled::after {
     color: white;
     background-color: #3498db; /* Default color */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    width: auto;
+    min-width: 0;
+    box-sizing: border-box;
+    align-self: flex-start;
+}
+
+.cat-type-badge-container {
+    width: 100%;
+    box-sizing: border-box;
+    display: block;
+    margin-top: 5px;
 }
 
 .cat-type-badge.clickable {
@@ -922,6 +944,26 @@ button:disabled::after {
     border-radius: 2px 2px 0 0;
     height: 5px;
     margin-top: 2px;
+}
+
+/* Cat type badge */
+.cat-type-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    margin: 5px 0;
+    box-sizing: border-box;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-radius: 20px;
+    background-color: #4CAF50;
+    color: white;
+    font-weight: 500;
+    font-size: 0.9rem;
+    text-align: center;
+    max-width: 100%;
+    width: auto;
+    min-width: 0;
 }
 
 /* Cat stats section */

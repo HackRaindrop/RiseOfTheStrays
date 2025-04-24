@@ -1,0 +1,1045 @@
+/*
+ * Combined Mobile CSS for Rise of the Strays
+ * This file combines mobile.css and mobile-fixes.css
+ */
+
+/* ==================== */
+/* MOBILE BASE STYLES   */
+/* ==================== */
+
+/* Base mobile layout */
+body {
+    padding: 0;
+    margin: 0;
+    overflow-x: hidden;
+    touch-action: manipulation;
+}
+
+#game-container {
+    max-width: 100%;
+    margin: 0;
+    padding: 10px;
+    padding-bottom: 70px; /* Space for the navigation bar */
+    border-radius: 0;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: #34495e;
+    padding: 10px 0;
+    margin: -10px -10px 10px -10px;
+    border-radius: 0;
+}
+
+h1 {
+    font-size: 1.5rem;
+    margin: 0;
+}
+
+#resources {
+    display: flex;
+    justify-content: space-around;
+    padding: 8px 5px;
+    margin-top: 5px;
+    border-radius: 5px;
+}
+
+.resource {
+    font-size: 0.9rem;
+}
+
+/* Tab content */
+.tab-content {
+    display: none;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Mobile navigation */
+#mobile-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    background-color: #2c3e50;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
+    z-index: 100;
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px 0;
+    width: 16.66%;
+    color: #95a5a6;
+    font-size: 0.7rem;
+    transition: all 0.2s ease;
+}
+
+.nav-item i {
+    font-size: 1.2rem;
+    margin-bottom: 3px;
+}
+
+.nav-item.active {
+    color: #3498db;
+}
+
+.nav-item:active {
+    background-color: #34495e;
+}
+
+/* Message log */
+#message-log {
+    max-height: 150px;
+    overflow-y: auto;
+    margin-top: 15px;
+    padding: 10px;
+    background-color: #2c3e50;
+    border-radius: 5px;
+}
+
+/* Button styles for mobile */
+button {
+    padding: 12px 15px;
+    margin: 5px 0;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    width: 100%;
+    touch-action: manipulation;
+}
+
+/* ==================== */
+/* GLOBAL FIXES         */
+/* ==================== */
+
+/* Fix for cat header layout */
+.cat-header {
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.cat-name-container {
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 5px;
+}
+
+.cat-name {
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin-bottom: 3px;
+}
+
+.cat-rarity {
+    font-size: 0.8rem;
+    opacity: 0.9;
+}
+
+.cat-card {
+    box-sizing: border-box;
+    overflow: hidden;
+    position: relative;
+    background-color: rgba(30, 40, 50, 0.7);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    width: 100%;
+    margin: 10px 0;
+}
+
+.cat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.cat-info {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-width: 0; /* Ensures text truncation works properly */
+}
+
+.cat-details {
+    box-sizing: border-box;
+    width: 100%;
+    overflow: hidden;
+}
+
+/* Fix for cats container to clear floats in all views */
+#cats-container {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    gap: 15px;
+}
+
+/* Level bar fixes for all screen sizes */
+.level-bar {
+    box-sizing: border-box;
+    max-width: 100%;
+    margin: 5px 0;
+    height: 12px;
+    border-radius: 6px;
+    background-color: rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+}
+
+.level-progress {
+    max-width: 100%;
+    height: 100%;
+    border-radius: 6px;
+    background: linear-gradient(to right, #2196F3, #03A9F4);
+}
+
+.level-xp {
+    font-size: 0.8rem;
+    margin-top: 2px;
+    text-align: right;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* Class badge fixes for all screen sizes */
+.cat-class-badge, .cat-type-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    margin: 5px 0;
+    box-sizing: border-box;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-radius: 20px;
+    background-color: #4CAF50;
+    color: white;
+    font-weight: 500;
+    font-size: 0.9rem;
+    text-align: center;
+    max-width: 100%;
+    width: auto;
+    align-self: flex-start;
+    word-break: keep-all;
+    min-width: 0;
+}
+
+.cat-type-badge-container {
+    width: 100%;
+    box-sizing: border-box;
+    display: block;
+    margin-top: 5px;
+}
+
+/* Appearance items fixes for all screen sizes */
+.cat-appearance-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 5px;
+}
+
+.cat-appearance-item {
+    margin: 0;
+    padding: 5px 8px;
+    box-sizing: border-box;
+    border-radius: 4px;
+}
+
+/* Global search options styles */
+.search-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 15px 0;
+    justify-content: center;
+}
+
+.search-button {
+    padding: 8px 15px;
+    border-radius: 5px;
+    background: linear-gradient(to bottom, #3498db, #2980b9);
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* ==================== */
+/* MOBILE-SPECIFIC FIXES */
+/* ==================== */
+
+@media (max-width: 767px) {
+    /* Improve cat card layout */
+    .cat-card {
+        flex-direction: column;
+        padding: 15px;
+        overflow: hidden;
+        position: relative;
+        box-sizing: border-box;
+    }
+
+    .cat-avatar-container {
+        margin: 0 auto 15px auto;
+        width: 80px;
+        height: 100px;
+    }
+
+    .cat-info {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .cat-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    .cat-type-badge {
+        margin-top: 8px;
+        width: auto;
+        display: inline-block;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+    /* Fix for level bar */
+    .cat-details {
+        width: 100%;
+        overflow: hidden;
+        box-sizing: border-box;
+    }
+
+    /* Fix for level progress bar */
+    .level-bar {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        margin: 5px 0;
+    }
+
+    .level-progress {
+        max-width: 100%;
+    }
+
+    /* Fix for XP text */
+    .level-xp {
+        font-size: 0.8rem;
+        white-space: nowrap;
+        text-align: center;
+    }
+
+    /* Fix for appearance items */
+    .cat-appearance-details {
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 10px;
+    }
+
+    .cat-appearance-item {
+        margin: 3px;
+        padding: 5px 8px;
+        font-size: 0.8rem;
+    }
+
+    /* Mobile-specific cat header styles */
+    .cat-header {
+        align-items: center;
+    }
+
+    .cat-name-container {
+        text-align: center;
+    }
+
+    .cat-type-badge, .cat-class-badge {
+        align-self: center;
+    }
+
+    /* Fix for training section */
+    .training-arena {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .training-bases-list {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding-bottom: 10px;
+        margin-bottom: 15px;
+        -webkit-overflow-scrolling: touch;
+        width: 100%;
+    }
+
+    .training-base-item {
+        min-width: 150px;
+        flex: 0 0 auto;
+        margin-right: 10px;
+    }
+
+    .training-base-details {
+        width: 100%;
+        max-height: 400px;
+        overflow-y: auto;
+    }
+
+    /* Bunker tap-to-place functionality */
+    .bunker-cell {
+        min-width: 40px;
+        min-height: 40px;
+    }
+
+    .bunker-grid {
+        display: grid;
+        grid-gap: 2px;
+        margin: 0 auto;
+        max-width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Make room selection more touch-friendly */
+    .room-selection-item {
+        padding: 12px;
+        margin-bottom: 10px;
+        width: 100%;
+    }
+
+    /* Core stats grid for mobile */
+    .core-stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Fix for cat stats section */
+    .cat-card.expanded .cat-stats,
+    .cat-card.expanded .cat-core-stats {
+        max-height: 2000px;
+        padding: 10px;
+    }
+
+    /* Fix for stat bars */
+    .stat-bar-container {
+        max-width: 100%;
+    }
+
+    /* Mobile search options */
+    .search-options {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .search-button {
+        width: 100%;
+        padding: 12px 15px;
+        margin-bottom: 5px;
+        font-size: 1rem;
+    }
+}
+
+/* ==================== */
+/* TABLET STYLES        */
+/* ==================== */
+
+@media (min-width: 768px) and (max-width: 1023px) {
+    /* Base tablet layout */
+    #game-container {
+        max-width: 90%;
+        margin: 0 auto;
+        padding: 15px;
+        padding-bottom: 70px;
+    }
+
+    button {
+        width: auto;
+    }
+
+    /* Cat card layout for tablets */
+    .cat-card {
+        display: flex;
+        flex-direction: row;
+        padding: 15px;
+        width: calc(50% - 15px);
+        margin: 0;
+    }
+
+    .cat-avatar-container {
+        width: 80px;
+        height: 100px;
+        margin-right: 15px;
+        flex-shrink: 0;
+    }
+
+    .cat-info {
+        flex-grow: 1;
+        width: calc(100% - 95px);
+    }
+
+    .cat-header {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .cat-name {
+        font-size: 1.2rem;
+        margin-bottom: 5px;
+    }
+
+    .cat-type-badge {
+        font-size: 0.8rem;
+        max-width: 100%;
+    }
+
+    .cat-type-badge-container {
+        width: 100%;
+        display: block;
+        margin-top: 5px;
+    }
+
+    /* Training section layout for tablets */
+    .training-arena {
+        display: flex;
+        flex-direction: row;
+        gap: 20px;
+        margin-top: 15px;
+        background-color: rgba(30, 40, 50, 0.7);
+        border-radius: 8px;
+        padding: 15px;
+    }
+
+    .training-bases-list {
+        width: 30%;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        max-height: 500px;
+        overflow-y: auto;
+    }
+
+    .training-base-details {
+        width: 70%;
+        background-color: rgba(20, 30, 40, 0.5);
+        border-radius: 6px;
+        padding: 15px;
+    }
+
+    .training-base-item {
+        background-color: rgba(40, 50, 60, 0.7);
+        border-radius: 6px;
+        padding: 10px;
+        margin-bottom: 0;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+    }
+
+    .training-base-item:hover {
+        background-color: rgba(50, 60, 70, 0.8);
+    }
+
+    .training-base-item.active {
+        background-color: rgba(60, 100, 150, 0.7);
+    }
+
+    /* Stats grid for tablets */
+    .core-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* Bunker grid for tablets */
+    .bunker-grid {
+        grid-gap: 3px;
+    }
+
+    .bunker-cell {
+        min-width: 35px;
+        min-height: 35px;
+    }
+
+    /* Room selection for tablets */
+    #room-selection {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .room-selection-item {
+        width: calc(50% - 5px);
+        margin: 0;
+    }
+}
+
+/* ==================== */
+/* DESKTOP STYLES       */
+/* ==================== */
+
+@media (min-width: 1024px) {
+    /* Desktop styles - centered layout to mirror mobile format */
+    body {
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+    }
+
+    #game-container {
+        max-width: 800px;
+        width: 100%;
+        margin: 0 auto;
+        padding: 15px;
+        padding-bottom: 70px; /* Space for the navigation bar */
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Center the navigation bar and limit its width to match the game container */
+    #mobile-nav {
+        left: 50%;
+        transform: translateX(-50%);
+        width: 800px; /* Match the max-width of game container */
+        border-radius: 10px 10px 0 0;
+        box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.3);
+        padding: 5px 0;
+    }
+
+    /* Improve navigation item styling for desktop */
+    .nav-item {
+        font-size: 0.8rem;
+        padding: 10px 0;
+        transition: all 0.3s ease;
+    }
+
+    .nav-item i {
+        font-size: 1.4rem;
+        margin-bottom: 5px;
+    }
+
+    .nav-item:hover {
+        color: #3498db;
+        transform: translateY(-3px);
+    }
+
+    /* Style the header to match the centered layout */
+    header {
+        margin: -15px -15px 15px -15px;
+        padding: 15px 0;
+        border-radius: 10px 10px 0 0;
+        text-align: center;
+    }
+
+    /* Ensure the resources display is properly centered */
+    #resources {
+        width: 80%;
+        margin: 10px auto 0 auto;
+    }
+
+    /* Cat card layout for desktop */
+    .cat-card {
+        display: flex;
+        flex-direction: row;
+        padding: 15px;
+        width: calc(33.33% - 15px);
+        margin: 0;
+        min-width: 200px;
+    }
+
+    .cat-avatar-container {
+        width: 80px;
+        height: 100px;
+        margin-right: 15px;
+        flex-shrink: 0;
+    }
+
+    .cat-info {
+        flex-grow: 1;
+        width: calc(100% - 95px);
+        min-width: 0;
+        overflow: hidden;
+    }
+
+    .cat-header {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .cat-name {
+        font-size: 1.2rem;
+        margin-bottom: 5px;
+    }
+
+    .cat-type-badge {
+        font-size: 0.8rem;
+        max-width: 100%;
+        width: auto;
+        min-width: 0;
+        padding: 4px 8px;
+        margin-top: 5px;
+        display: inline-block;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .cat-type-badge-container {
+        width: 100%;
+        display: block;
+        margin-top: 5px;
+    }
+
+    /* Desktop-specific cat card styles */
+    #cats-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        justify-content: flex-start;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+    .cat-card {
+        background-color: rgba(30, 40, 50, 0.7);
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .cat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Training section layout for desktop */
+    .training-arena {
+        display: flex;
+        flex-direction: row;
+        gap: 25px;
+        margin-top: 20px;
+        background-color: rgba(30, 40, 50, 0.7);
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .training-bases-list {
+        width: 25%;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        max-height: 600px;
+        overflow-y: auto;
+    }
+
+    .training-base-details {
+        width: 75%;
+        background-color: rgba(20, 30, 40, 0.5);
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .training-base-item {
+        background-color: rgba(40, 50, 60, 0.7);
+        border-radius: 8px;
+        padding: 12px;
+        margin-bottom: 0;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .training-base-item:hover {
+        background-color: rgba(50, 60, 70, 0.8);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .training-base-item.active {
+        background-color: rgba(60, 100, 150, 0.7);
+        border-left: 3px solid #4CAF50;
+    }
+
+    /* Training station details styling */
+    .training-station-name {
+        font-size: 1.2rem;
+        font-weight: bold;
+        margin-bottom: 10px;
+        color: #4CAF50;
+    }
+
+    .training-station-description {
+        margin-bottom: 15px;
+        line-height: 1.5;
+    }
+
+    .training-station-stats {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        margin-top: 15px;
+    }
+
+    .training-stat {
+        background-color: rgba(30, 40, 50, 0.7);
+        padding: 10px;
+        border-radius: 6px;
+    }
+
+    /* Training base header styling */
+    .training-base-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .training-base-header-icon {
+        font-size: 2rem;
+        margin-right: 15px;
+        color: #4CAF50;
+    }
+
+    .training-base-header-name {
+        font-size: 1.4rem;
+        font-weight: bold;
+        margin-bottom: 5px;
+        color: #fff;
+    }
+
+    .training-base-header-description {
+        color: rgba(255, 255, 255, 0.8);
+        line-height: 1.4;
+    }
+
+    /* Training base stats styling */
+    .training-base-stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+
+    .training-base-stat {
+        background-color: rgba(40, 50, 60, 0.5);
+        padding: 10px;
+        border-radius: 6px;
+        text-align: center;
+    }
+
+    .training-base-stat-label {
+        font-size: 0.8rem;
+        color: rgba(255, 255, 255, 0.6);
+        margin-bottom: 5px;
+    }
+
+    .training-base-stat-value {
+        font-size: 1.1rem;
+        font-weight: bold;
+        color: #fff;
+    }
+
+    /* Training progress styling */
+    .training-base-progress {
+        margin: 15px 0;
+    }
+
+    .training-base-progress-bar-container {
+        height: 12px;
+        background-color: rgba(0, 0, 0, 0.3);
+        border-radius: 6px;
+        overflow: hidden;
+        margin-bottom: 5px;
+    }
+
+    .training-base-progress-bar {
+        height: 100%;
+        background: linear-gradient(to right, #4CAF50, #8BC34A);
+        border-radius: 6px;
+        transition: width 0.5s ease;
+    }
+
+    .training-base-progress-text {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.8);
+    }
+
+    /* Cat selection for training */
+    .training-base-cat-selection {
+        margin-top: 20px;
+    }
+
+    .training-base-cat-list {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-top: 10px;
+        max-height: 300px;
+        overflow-y: auto;
+    }
+
+    .training-base-cat-item {
+        background-color: rgba(40, 50, 60, 0.7);
+        border-radius: 6px;
+        padding: 10px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .training-base-cat-item:hover {
+        background-color: rgba(50, 60, 70, 0.8);
+        transform: translateY(-2px);
+    }
+
+    .training-base-cat-item.selected {
+        background-color: rgba(60, 100, 150, 0.7);
+        border: 1px solid #4CAF50;
+    }
+
+    .training-base-cat-name {
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    .training-base-cat-level {
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.8);
+    }
+
+    .training-base-cat-type {
+        font-size: 0.8rem;
+        color: rgba(255, 255, 255, 0.6);
+        margin-top: 5px;
+    }
+
+    /* Training duration slider */
+    .training-base-duration {
+        margin: 20px 0;
+    }
+
+    .training-base-duration-label {
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    .training-base-duration-slider {
+        width: 100%;
+        margin-bottom: 5px;
+    }
+
+    .training-base-duration-display {
+        display: inline-block;
+        margin-left: 10px;
+        font-weight: bold;
+    }
+
+    .training-base-xp-estimate {
+        margin-top: 10px;
+        color: #4CAF50;
+    }
+
+    /* Training action buttons */
+    .training-base-actions {
+        margin-top: 20px;
+    }
+
+    .training-base-action-btn {
+        padding: 10px 20px;
+        border-radius: 5px;
+        border: none;
+        cursor: pointer;
+        font-weight: bold;
+        transition: all 0.2s ease;
+    }
+
+    .training-base-start-btn {
+        background-color: #4CAF50;
+        color: white;
+    }
+
+    .training-base-start-btn:hover:not([disabled]) {
+        background-color: #45a049;
+        transform: translateY(-2px);
+    }
+
+    .training-base-start-btn[disabled] {
+        background-color: #cccccc;
+        color: #666666;
+        cursor: not-allowed;
+    }
+
+    .training-base-cancel-btn {
+        background-color: #f44336;
+        color: white;
+    }
+
+    .training-base-cancel-btn:hover {
+        background-color: #d32f2f;
+        transform: translateY(-2px);
+    }
+
+    /* Stats grid for desktop */
+    .core-stats-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    /* Bunker grid for desktop */
+    .bunker-grid {
+        grid-gap: 4px;
+    }
+
+    .bunker-cell {
+        min-width: 40px;
+        min-height: 40px;
+        transition: background-color 0.2s ease;
+    }
+
+    .bunker-cell:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Room selection for desktop */
+    #room-selection {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .room-selection-item {
+        width: calc(33.33% - 7px);
+        margin: 0;
+        transition: transform 0.2s ease;
+    }
+
+    .room-selection-item:hover {
+        transform: translateY(-2px);
+    }
+
+    /* Desktop-specific hover effects */
+    .search-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+}
