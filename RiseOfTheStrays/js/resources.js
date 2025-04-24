@@ -80,6 +80,11 @@ class ResourceManager {
         document.getElementById('food-count').textContent = this.resources.food;
         document.getElementById('materials-count').textContent = this.resources.materials;
         document.getElementById('medicine-count').textContent = this.resources.medicine;
+
+        // Update loot box button states if lootBoxManager exists
+        if (typeof lootBoxManager !== 'undefined' && lootBoxManager.updateLootBoxButtonStates) {
+            lootBoxManager.updateLootBoxButtonStates();
+        }
     }
 }
 

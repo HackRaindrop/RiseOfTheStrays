@@ -35,7 +35,137 @@ class LootBoxManager {
 
     // Initialize event listeners for loot box buttons
     initEventListeners() {
-        // We'll add these after the HTML elements are created
+        // Render loot boxes in the lootboxes section when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            this.renderLootBoxes();
+        });
+    }
+
+    // Render loot boxes in the lootboxes section
+    renderLootBoxes() {
+        const lootboxesOptions = document.getElementById('lootboxes-options');
+        if (!lootboxesOptions) return;
+
+        // Clear existing content
+        lootboxesOptions.innerHTML = '';
+
+        // Create loot box options container
+        const optionsContainer = document.createElement('div');
+        optionsContainer.className = 'lootbox-options';
+        optionsContainer.style.display = 'flex';
+        optionsContainer.style.flexWrap = 'wrap';
+        optionsContainer.style.gap = '15px';
+        optionsContainer.style.justifyContent = 'center';
+        optionsContainer.style.margin = '20px 0';
+
+        // Add loot box options
+        for (const type in this.lootBoxTypes) {
+            const lootBox = this.lootBoxTypes[type];
+
+            const lootBoxOption = document.createElement('div');
+            lootBoxOption.className = 'lootbox-option';
+            lootBoxOption.style.backgroundColor = '#2c3e50';
+            lootBoxOption.style.borderRadius = '8px';
+            lootBoxOption.style.padding = '15px';
+            lootBoxOption.style.width = 'calc(33.33% - 10px)';
+            lootBoxOption.style.minWidth = '180px';
+            lootBoxOption.style.boxShadow = '0 3px 6px rgba(0, 0, 0, 0.2)';
+            lootBoxOption.style.transition = 'transform 0.2s ease, box-shadow 0.2s ease';
+            lootBoxOption.style.display = 'flex';
+            lootBoxOption.style.flexDirection = 'column';
+            lootBoxOption.style.alignItems = 'center';
+            lootBoxOption.style.textAlign = 'center';
+
+            // Create cost text
+            let costText = '';
+            for (const resource in lootBox.cost) {
+                costText += `${lootBox.cost[resource]} ${resource}`;
+            }
+
+            // Create potential rewards text
+            let rewardsText = '';
+            for (const resourceType in lootBox.rewards) {
+                const rewardInfo = lootBox.rewards[resourceType];
+                rewardsText += `${resourceType}: ${rewardInfo.min}-${rewardInfo.max} (${Math.round(rewardInfo.chance * 100)}% chance)<br>`;
+            }
+
+            // Create loot box name
+            const lootBoxName = document.createElement('div');
+            lootBoxName.className = 'lootbox-name';
+            lootBoxName.textContent = `${type.charAt(0).toUpperCase() + type.slice(1)} Loot Box`;
+            lootBoxName.style.fontWeight = 'bold';
+            lootBoxName.style.fontSize = '1.2em';
+            lootBoxName.style.marginBottom = '10px';
+            lootBoxName.style.color = '#f39c12';
+            lootBoxOption.appendChild(lootBoxName);
+
+            // Create loot box cost
+            const lootBoxCost = document.createElement('div');
+            lootBoxCost.className = 'lootbox-cost';
+            lootBoxCost.textContent = `Cost: ${costText}`;
+            lootBoxCost.style.fontSize = '0.9em';
+            lootBoxCost.style.marginBottom = '10px';
+            lootBoxCost.style.color = '#e74c3c';
+            lootBoxCost.style.fontWeight = 'bold';
+            lootBoxOption.appendChild(lootBoxCost);
+
+            // Create loot box description
+            const lootBoxDesc = document.createElement('div');
+            lootBoxDesc.className = 'lootbox-description';
+            lootBoxDesc.textContent = lootBox.description;
+            lootBoxDesc.style.fontSize = '0.85em';
+            lootBoxDesc.style.marginBottom = '10px';
+            lootBoxDesc.style.color = '#bdc3c7';
+            lootBoxOption.appendChild(lootBoxDesc);
+
+            // Create loot box rewards
+            const lootBoxRewards = document.createElement('div');
+            lootBoxRewards.className = 'lootbox-rewards';
+            lootBoxRewards.innerHTML = `Potential Rewards:<br>${rewardsText}`;
+            lootBoxRewards.style.fontSize = '0.8em';
+            lootBoxRewards.style.marginBottom = '15px';
+            lootBoxRewards.style.color = '#3498db';
+            lootBoxRewards.style.backgroundColor = 'rgba(52, 152, 219, 0.1)';
+            lootBoxRewards.style.padding = '8px';
+            lootBoxRewards.style.borderRadius = '5px';
+            lootBoxRewards.style.width = '100%';
+            lootBoxOption.appendChild(lootBoxRewards);
+
+            // Create open button
+            const openButton = document.createElement('button');
+            openButton.className = 'open-lootbox-btn';
+            openButton.textContent = 'Open';
+            openButton.setAttribute('data-type', type);
+            openButton.style.backgroundColor = '#27ae60';
+            openButton.style.color = 'white';
+            openButton.style.border = 'none';
+            openButton.style.padding = '8px 15px';
+            openButton.style.borderRadius = '5px';
+            openButton.style.cursor = 'pointer';
+            openButton.style.transition = 'all 0.2s ease';
+            openButton.style.fontWeight = 'bold';
+
+            // Disable button if can't afford
+            if (!this.canAffordLootBox(type)) {
+                openButton.disabled = true;
+                openButton.style.backgroundColor = '#95a5a6';
+                openButton.style.cursor = 'not-allowed';
+            }
+
+            // Add event listener to open button
+            openButton.addEventListener('click', () => {
+                const boxType = openButton.getAttribute('data-type');
+                this.openLootBox(boxType);
+
+                // Update button states after opening
+                this.updateLootBoxButtonStates();
+            });
+
+            lootBoxOption.appendChild(openButton);
+            optionsContainer.appendChild(lootBoxOption);
+        }
+
+        lootboxesOptions.appendChild(optionsContainer);
     }
 
     // Check if player can afford a loot box
@@ -329,10 +459,11 @@ class LootBoxManager {
 
     // Update button states based on affordability
     updateLootBoxButtonStates() {
-        const modal = document.getElementById('lootbox-modal');
-        if (!modal) return;
+        // Get all loot box buttons in the lootboxes section
+        const lootboxButtons = document.querySelectorAll('.open-lootbox-btn');
+        if (lootboxButtons.length === 0) return;
 
-        modal.querySelectorAll('.open-lootbox-btn').forEach(button => {
+        lootboxButtons.forEach(button => {
             const type = button.getAttribute('data-type');
             const canAfford = this.canAffordLootBox(type);
             button.disabled = !canAfford;

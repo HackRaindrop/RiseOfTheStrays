@@ -626,29 +626,10 @@ const dungeonManager = new DungeonManager();
 
 // Initialize dungeon system when the page loads
 document.addEventListener('DOMContentLoaded', () => {
-    // Add dungeon section to the game
-    const mainElement = document.querySelector('main');
-    if (mainElement) {
-        const dungeonSection = document.createElement('section');
-        dungeonSection.id = 'dungeon-section';
-        dungeonSection.innerHTML = `
-            <h2>Dungeon Expeditions</h2>
-            <div id="dungeon-container"></div>
-        `;
-
-        // Insert after groups section
-        const groupsSection = document.getElementById('groups-section');
-        if (groupsSection) {
-            groupsSection.after(dungeonSection);
-        } else {
-            mainElement.appendChild(dungeonSection);
-        }
-
-        // Render initial dungeon UI
-        const dungeonContainer = document.getElementById('dungeon-container');
-        if (dungeonContainer) {
-            dungeonManager.renderDungeonUI(dungeonContainer);
-        }
+    // Use the existing dungeons section
+    const dungeonContainer = document.getElementById('dungeon-container');
+    if (dungeonContainer) {
+        dungeonManager.renderDungeonUI(dungeonContainer);
     }
 
     // Add event listeners for dungeon buttons

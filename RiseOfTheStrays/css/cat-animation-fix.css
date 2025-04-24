@@ -1,0 +1,116 @@
+/* Cat Animation Fix CSS */
+
+/* Override the floating animations for cat types */
+.cat-avatar[data-type="Scavenger"] .cat-body,
+.cat-avatar[data-type="Hunter"] .cat-body,
+.cat-avatar[data-type="Guardian"] .cat-body,
+.cat-avatar[data-type="Medic"] .cat-body,
+.cat-avatar[data-type="Mystic"] .cat-body,
+.cat-avatar[data-type="Trickster"] .cat-body,
+.cat-avatar[data-type="Beast"] .cat-body,
+.cat-avatar[data-type="Diplomat"] .cat-body,
+.cat-avatar[data-type="Shadowpaw"] .cat-body,
+.cat-avatar[data-type="Tinkerer"] .cat-body,
+.cat-avatar[data-type="Wanderer"] .cat-body {
+    /* Reset any animations that might be causing floating */
+    animation: none !important;
+}
+
+/* Define subtle animations for each cat type that don't cause floating */
+.cat-avatar[data-type="Scavenger"] .cat-body {
+    animation: subtle-pulse 3s ease-in-out infinite !important;
+}
+
+.cat-avatar[data-type="Hunter"] .cat-body {
+    animation: subtle-pulse 2.5s ease-in-out infinite !important;
+}
+
+.cat-avatar[data-type="Guardian"] .cat-body {
+    animation: subtle-pulse 4s ease-in-out infinite !important;
+}
+
+.cat-avatar[data-type="Medic"] .cat-body {
+    animation: subtle-pulse 3.5s ease-in-out infinite !important;
+}
+
+/* Define the subtle pulse animation */
+@keyframes subtle-pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.03);
+    }
+}
+
+/* Fix for cat body container to ensure proper positioning */
+.cat-body-container {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100% !important;
+    height: 100% !important;
+    position: relative !important;
+    /* Ensure the container doesn't move */
+    transform: none !important;
+}
+
+/* Fix for cat body to ensure proper positioning */
+.cat-body {
+    width: 80px !important;
+    height: 80px !important;
+    position: relative !important;
+    z-index: 1 !important;
+    /* Ensure the body stays centered */
+    margin: 0 auto !important;
+}
+
+/* Fix for cat avatar to ensure proper positioning */
+.cat-avatar {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100px !important;
+    height: 100px !important;
+    position: relative !important;
+    /* Ensure the avatar doesn't move */
+    transform: none !important;
+}
+
+/* Fix for cat tails to make them visible but behind the cat body */
+.cat-tail {
+    position: absolute !important;
+    width: 10px !important;
+    height: 40px !important;
+    bottom: -20px !important;
+    left: 50% !important;
+    transform-origin: top center !important;
+    border-radius: 5px !important;
+    /* Set z-index to be behind the cat body */
+    z-index: 0 !important;
+    /* Add outline instead of border to make tails more visible without changing dimensions */
+    outline: 1px solid rgba(0, 0, 0, 0.3) !important;
+    /* Ensure the tail is fully opaque */
+    opacity: 1 !important;
+}
+
+/* Make sure the cat body is above the tail */
+.cat-body {
+    z-index: 1 !important;
+    position: relative !important;
+}
+
+/* Fix the tail animation - don't override the animation directly */
+.cat-tail.tail-wag {
+    animation: fixedTailWag 2s ease-in-out infinite !important;
+}
+
+/* Define a new animation that works with our positioning */
+@keyframes fixedTailWag {
+    0%, 100% {
+        transform: translateX(-50%) rotate(-10deg);
+    }
+    50% {
+        transform: translateX(-50%) rotate(40deg);
+    }
+}

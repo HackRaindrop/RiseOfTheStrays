@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="css/animated-enemies.css">
     <link rel="stylesheet" href="css/new-enemies.css">
     <link rel="stylesheet" href="css/dungeon.css">
+    <link rel="stylesheet" href="css/cat-animation-fix.css">
 </head>
 <body>
     <div id="game-container">
@@ -76,6 +77,11 @@
                 <div id="cats-container"></div>
                 <div id="cat-search-options">
                     <h3>Search Options</h3>
+                    <button type="button" id="find-cat-normal">Normal Search (5 Food)</button>
+                    <button type="button" id="find-cat-thorough">Thorough Search (10 Food)</button>
+                    <button type="button" id="find-cat-premium">Premium Search (20 Food)</button>
+                    <button type="button" id="create-custom-cat">Create Custom Cat (25 Food, 10 Materials)</button>
+                </div>
             </section>
             <section id="bunker-section" class="tab-content">
                 <h2>Bunker</h2>
@@ -99,14 +105,6 @@
             </section>
 
             <section id="groups-section" class="tab-content">
-                    <button type="button" id="find-cat-normal">Normal Search (5 Food)</button>
-                    <button type="button" id="find-cat-thorough">Thorough Search (10 Food)</button>
-                    <button type="button" id="find-cat-premium">Premium Search (20 Food)</button>
-                    <button type="button" id="create-custom-cat">Create Custom Cat (25 Food, 10 Materials)</button>
-                </div>
-            </section>
-
-            <section id="groups-section">
                 <h2>Cat Groups</h2>
                 <!-- Groups content will be inserted here by JavaScript -->
             </section>
@@ -124,11 +122,27 @@
                     <button type="button" id="gather-food">Gather Food</button>
                     <button type="button" id="gather-materials">Gather Materials</button>
                     <button type="button" id="gather-medicine">Gather Medicine</button>
-                    <button type="button" id="open-lootbox">Open Loot Box</button>
                     <button type="button" id="add-test-food">Add Test Food</button>
                     <button type="button" id="add-test-materials">Add Test Materials</button>
                     <button type="button" id="generate-test-enemies">Generate Test Enemies</button>
                     <button type="button" id="generate-fox-test" data-current-type="-1">Test Animal Animations</button>
+                </div>
+            </section>
+
+            <section id="dungeons-section" class="tab-content">
+                <h2>Dungeons</h2>
+                <div id="dungeon-container">
+                    <!-- Dungeon content will be inserted here by JavaScript -->
+                </div>
+            </section>
+
+            <section id="lootboxes-section" class="tab-content">
+                <h2>Loot Boxes</h2>
+                <div id="lootboxes-container">
+                    <p>Spend materials for a chance at random food and medicine rewards.</p>
+                    <div id="lootboxes-options">
+                        <!-- Loot box options will be inserted here by JavaScript -->
+                    </div>
                 </div>
             </section>
         </main>
@@ -158,6 +172,14 @@
             <div class="nav-item" data-tab="actions-section">
                 <i class="fas fa-bolt"></i>
                 <span>Actions</span>
+            </div>
+            <div class="nav-item" data-tab="dungeons-section">
+                <i class="fas fa-dungeon"></i>
+                <span>Dungeons</span>
+            </div>
+            <div class="nav-item" data-tab="lootboxes-section">
+                <i class="fas fa-box-open"></i>
+                <span>Loot Boxes</span>
             </div>
         </nav>
 

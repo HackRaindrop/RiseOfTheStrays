@@ -28,10 +28,8 @@ class GameManager {
             this.addMessage(`Gathered ${amount} medicine.`);
         });
 
-        // Loot box button
-        document.getElementById('open-lootbox').addEventListener('click', () => {
-            lootBoxManager.showLootBoxModal();
-        });
+        // We no longer need the open-lootbox button event listener
+        // as loot boxes are now in their own tab
 
         // Base upgrade button
         document.getElementById('upgrade-base').addEventListener('click', () => {
@@ -119,29 +117,7 @@ class GameManager {
                 combinedProduction[resource] = 0;
             }
             combinedProduction[resource] += bunkerProduction[resource];
-
-
-    // Attach listeners initially
-    attachUpgradeButtonListener();
-
-    // Set up a mutation observer to watch for changes to the DOM
-    const observer = new MutationObserver(function(mutations) {
-        mutations.forEach(function(mutation) {
-            if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
-                // Check if any of the added nodes contain our button
-                for (let i = 0; i < mutation.addedNodes.length; i++) {
-                    const node = mutation.addedNodes[i];
-                    if (node.nodeType === 1) { // Element node
-                        if (node.id === 'upgrade-arena' || node.querySelector('#upgrade-arena')) {
-                            console.log('Upgrade arena button added to DOM, attaching listener');
-                            attachUpgradeButtonListener();
-                        }
-                    }
-                }
-            }
-        });
-    });
-
+        }
 
         let productionMessage = '';
         let resourcesProduced = false;
@@ -151,50 +127,6 @@ class GameManager {
                 const roundedAmount = Math.round(combinedProduction[resource] * 10) / 10; // Round to 1 decimal place
                 productionMessage += `${roundedAmount} ${resource}, `;
                 resourcesProduced = true;
-    // Attach test food button event listener
-    const addTestFoodButton = document.getElementById('add-test-food');
-    if (addTestFoodButton) {
-        addTestFoodButton.addEventListener('click', () => {
-            window.addTestFood();
-        });
-    }
-
-    // Attach generate test enemies button event listener
-    const generateTestEnemiesButton = document.getElementById('generate-test-enemies');
-    if (generateTestEnemiesButton) {
-        generateTestEnemiesButton.addEventListener('click', () => {
-            window.generateTestEnemyGroup(1, 'normal');
-        });
-    }
-
-    // Attach fox test button event listener
-    const generateFoxTestButton = document.getElementById('generate-fox-test');
-    if (generateFoxTestButton) {
-        generateFoxTestButton.addEventListener('click', () => {
-            // Cycle through different enemy types on each click
-            const enemyTypes = ['Shadow Fox', 'Feral Dog', 'Rabid Wolf', 'Sewer Rat', 'Plague Rat', 'Giant Spider', 'Venomous Spider'];
-            const currentType = generateFoxTestButton.getAttribute('data-current-type') || 0;
-            const nextType = (parseInt(currentType) + 1) % enemyTypes.length;
-
-            // Generate the enemy
-            window.generateEnemyTest(enemyTypes[nextType], 1);
-
-            // Update the button text and data attribute
-            generateFoxTestButton.textContent = `Test ${enemyTypes[nextType]} Animation`;
-            generateFoxTestButton.setAttribute('data-current-type', nextType);
-        });
-    }
-
-    // Attach create group button event listener
-    const createGroupBtn = document.getElementById('create-group-btn');
-    console.log('Create group button in game.js:', createGroupBtn);
-    if (createGroupBtn) {
-        createGroupBtn.addEventListener('click', () => {
-            console.log('Create group button clicked in game.js');
-            if (typeof groupManager !== 'undefined' && groupManager.showCreateGroupModal) {
-                groupManager.showCreateGroupModal();
-            } else {
-                console.error('groupManager is not defined or showCreateGroupModal method is missing');
             }
         }
 
@@ -300,6 +232,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // Start observing the document with the configured parameters
     observer.observe(document.body, { childList: true, subtree: true });
 
+    // Attach test food button event listener
+    const addTestFoodButton = document.getElementById('add-test-food');
+    if (addTestFoodButton) {
+        addTestFoodButton.addEventListener('click', () => {
+            if (typeof window.addTestFood === 'function') {
+                window.addTestFood();
+            } else {
+                // Fallback if the function doesn't exist
+                resourceManager.addResource('food', 7000);
+                gameManager.addMessage('Added 7000 food for testing!', true);
+            }
+        });
+    }
+
     // Attach test materials button event listener
     const addTestMaterialsButton = document.getElementById('add-test-materials');
     if (addTestMaterialsButton) {
@@ -314,6 +260,40 @@ document.addEventListener('DOMContentLoaded', () => {
             if (typeof bunkerManager !== 'undefined') {
                 bunkerManager.renderRoomSelection();
             }
+        });
+    }
+
+    // Attach generate test enemies button event listener
+    const generateTestEnemiesButton = document.getElementById('generate-test-enemies');
+    if (generateTestEnemiesButton) {
+        generateTestEnemiesButton.addEventListener('click', () => {
+            if (typeof window.generateTestEnemyGroup === 'function') {
+                window.generateTestEnemyGroup(1, 'normal');
+            } else {
+                gameManager.addMessage('Test enemy generation function not available', true);
+            }
+        });
+    }
+
+    // Attach fox test button event listener
+    const generateFoxTestButton = document.getElementById('generate-fox-test');
+    if (generateFoxTestButton) {
+        generateFoxTestButton.addEventListener('click', () => {
+            // Cycle through different enemy types on each click
+            const enemyTypes = ['Shadow Fox', 'Feral Dog', 'Rabid Wolf', 'Sewer Rat', 'Plague Rat', 'Giant Spider', 'Venomous Spider'];
+            const currentType = generateFoxTestButton.getAttribute('data-current-type') || 0;
+            const nextType = (parseInt(currentType) + 1) % enemyTypes.length;
+
+            if (typeof window.generateEnemyTest === 'function') {
+                // Generate the enemy
+                window.generateEnemyTest(enemyTypes[nextType], 1);
+            } else {
+                gameManager.addMessage(`Test ${enemyTypes[nextType]} animation function not available`, true);
+            }
+
+            // Update the button text and data attribute
+            generateFoxTestButton.textContent = `Test ${enemyTypes[nextType]} Animation`;
+            generateFoxTestButton.setAttribute('data-current-type', nextType);
         });
     }
 
