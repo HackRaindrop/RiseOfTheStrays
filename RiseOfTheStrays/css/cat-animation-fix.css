@@ -88,9 +88,8 @@
     border-radius: 5px !important;
     /* Set z-index to be behind the cat body */
     z-index: 0 !important;
-    /* Add outline instead of border to make tails more visible without changing dimensions */
-    outline: 1px solid rgba(0, 0, 0, 0.3) !important;
-    /* Ensure the tail is fully opaque */
+    /* Basic styling - detailed styling in cat-tail-fix.css */
+    border: 1px solid rgba(0, 0, 0, 0.3) !important;
     opacity: 1 !important;
 }
 

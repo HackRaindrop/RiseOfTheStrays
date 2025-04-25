@@ -96,35 +96,17 @@ class GameManager {
         // Daily events and resource consumption would go here
     }
 
-    // Produce resources from buildings and bunker rooms
+    // Produce resources from buildings
     produceResources = () => {
         // Get production from outpost buildings
         const buildingProduction = buildingManager.produceResources();
 
-        // Get production from bunker rooms if bunkerManager exists
-        let bunkerProduction = {};
-        if (typeof bunkerManager !== 'undefined') {
-            bunkerProduction = bunkerManager.produceResources();
-
-            // Update power indicator
-            this.updatePowerIndicator();
-        }
-
-        // Combine production from both sources
-        const combinedProduction = { ...buildingProduction };
-        for (const resource in bunkerProduction) {
-            if (!combinedProduction[resource]) {
-                combinedProduction[resource] = 0;
-            }
-            combinedProduction[resource] += bunkerProduction[resource];
-        }
-
         let productionMessage = '';
         let resourcesProduced = false;
 
-        for (const resource in combinedProduction) {
-            if (combinedProduction[resource] > 0) {
-                const roundedAmount = Math.round(combinedProduction[resource] * 10) / 10; // Round to 1 decimal place
+        for (const resource in buildingProduction) {
+            if (buildingProduction[resource] > 0) {
+                const roundedAmount = Math.round(buildingProduction[resource] * 10) / 10; // Round to 1 decimal place
                 productionMessage += `${roundedAmount} ${resource}, `;
                 resourcesProduced = true;
             }
@@ -138,38 +120,9 @@ class GameManager {
 
         // Update building buttons in case resource changes affect build availability
         buildingManager.updateBuildButtonStates();
-
-        // Update bunker room selection if bunkerManager exists
-        if (typeof bunkerManager !== 'undefined') {
-            bunkerManager.updateDisplay();
-        }
     }
 
-    // Update the power indicator in the bunker section
-    updatePowerIndicator = () => {
-        if (typeof bunkerManager === 'undefined') return;
 
-        const powerFill = document.getElementById('power-fill');
-        const powerText = document.getElementById('power-text');
-
-        if (!powerFill || !powerText) return;
-
-        const totalPower = bunkerManager.getTotalPower();
-        const consumption = bunkerManager.getPowerConsumption();
-        const percentage = Math.min(100, (totalPower / consumption) * 100);
-
-        powerFill.style.width = `${percentage}%`;
-        powerText.textContent = `${totalPower.toFixed(1)}/${consumption.toFixed(1)}`;
-
-        // Change color based on power status
-        if (percentage >= 100) {
-            powerFill.style.backgroundColor = '#2ecc71'; // Green
-        } else if (percentage >= 75) {
-            powerFill.style.backgroundColor = '#f1c40f'; // Yellow
-        } else {
-            powerFill.style.backgroundColor = '#e74c3c'; // Red
-        }
-    }
 
     // Increase the maximum number of cats the player can have
     increaseMaxCats = (amount) => {
@@ -190,6 +143,11 @@ const gameManager = new GameManager();
 // Initialize the game when the page loads
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Game initialized!');
+
+    // Initialize save system
+    if (typeof saveSystem !== 'undefined') {
+        saveSystem.initialize();
+    }
 
     // Function to attach event listener to upgrade button
     const attachUpgradeButtonListener = () => {
@@ -255,11 +213,6 @@ document.addEventListener('DOMContentLoaded', () => {
             resourceManager.addResource('materials', 100);
             resourceManager.addResource('medicine', 100);
             gameManager.addMessage('Added 100 of each resource for testing!', true);
-
-            // Update bunker display if it exists
-            if (typeof bunkerManager !== 'undefined') {
-                bunkerManager.renderRoomSelection();
-            }
         });
     }
 

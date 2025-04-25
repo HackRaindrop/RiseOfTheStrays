@@ -1,0 +1,48 @@
+/*
+ * Cat Tail Fix CSS
+ * This file fixes the issue with cat tails
+ */
+
+/*
+ * IMPORTANT: DO NOT override the background-color property!
+ * The cat tails get their color from inline styles in the HTML
+ * We only need to ensure they're visible and not transparent
+ */
+
+/* Basic fix for all cat tails */
+.cat-tail {
+    /* Ensure the tail is fully opaque */
+    opacity: 1 !important;
+    /* Add a subtle border for better visibility */
+    border: 1px solid rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Fix for cat tails in the main game */
+.cat-body-container .cat-tail {
+    /* Make sure it's not transparent */
+    opacity: 1 !important;
+    /* Ensure it's properly positioned */
+    position: absolute !important;
+    width: 10px !important;
+    height: 40px !important;
+    bottom: -20px !important;
+    left: 50% !important;
+    transform-origin: top center !important;
+    border-radius: 5px !important;
+    z-index: 0 !important;
+}
+
+/* Fix for found cat tails in modals */
+.found-cat-avatar .cat-tail {
+    opacity: 1 !important;
+}
+
+/* Fix for any cat tails in special containers */
+.cat-avatar-container .cat-tail {
+    opacity: 1 !important;
+}
+
+/* Default color fallback - only used if inline style fails */
+.cat-tail:not([style*="background-color"]) {
+    background-color: #F8D8B0 !important; /* Default cat color */
+}

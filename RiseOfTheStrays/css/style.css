@@ -340,7 +340,10 @@ button:disabled::after {
     position: absolute;
     top: 30%;
     background-color: #FFB900;
-    transition: height 0.1s ease;
+    transition: all 0.15s ease;
+    /* Set transform origin to center for middle compression */
+    transform-origin: center;
+    overflow: hidden;
 }
 
 .cat-eyes.left {
@@ -352,7 +355,12 @@ button:disabled::after {
 }
 
 .cat-eyes.cat-blink {
-    height: 1px;
+    /* Compress the eye horizontally towards the middle */
+    transform: scaleY(0.2);
+    /* Slightly move up to create a more natural eyelid effect */
+    margin-top: 5px;
+    /* Maintain the circular shape even when compressed */
+    border-radius: 50%;
 }
 
 .cat-nose {
@@ -448,7 +456,7 @@ button:disabled::after {
     }
 }
 
-/* Cat tail */
+/* Cat tail - basic styling, detailed styling in cat-animation-fix.css */
 .cat-tail {
     position: absolute;
     width: 10px;
@@ -458,6 +466,8 @@ button:disabled::after {
     transform-origin: top center;
     border-radius: 5px;
     z-index: 0;
+    /* Ensure the tail is fully opaque */
+    opacity: 1;
 }
 
 .cat-tail.tail-wag {

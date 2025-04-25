@@ -89,12 +89,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // Function to handle layout adjustments on resize
     const handleResize = () => {
         const isMobile = window.innerWidth < 768;
+        const isMobileSmall = window.innerWidth < 425;
 
         // Update body class
         if (isMobile) {
             document.body.classList.add('mobile-device');
         } else {
             document.body.classList.remove('mobile-device');
+        }
+
+        // Add small mobile class for hamburger menu
+        if (isMobileSmall) {
+            document.body.classList.add('mobile-small');
+        } else {
+            document.body.classList.remove('mobile-small');
         }
 
         // Update training section layout if it exists
@@ -105,6 +113,11 @@ document.addEventListener('DOMContentLoaded', () => {
         // Update bunker layout if it exists
         if (typeof bunkerManager !== 'undefined') {
             bunkerManager.initializeUI();
+        }
+
+        // Update hamburger menu if it exists
+        if (typeof window.hamburgerMenu !== 'undefined') {
+            window.hamburgerMenu.checkScreenSize();
         }
     };
 

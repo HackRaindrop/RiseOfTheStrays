@@ -1,0 +1,233 @@
+/*
+ * Hamburger Menu CSS for Rise of the Strays
+ * This file adds a hamburger menu for screens below 425px width
+ */
+
+/* Default state - hide hamburger elements on all screens by default */
+.hamburger-menu-toggle,
+.hamburger-menu {
+    display: none;
+    opacity: 0;
+    visibility: hidden;
+}
+
+/* Hamburger menu container */
+.hamburger-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 200;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.hamburger-menu.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Hamburger menu content */
+.hamburger-menu-content {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 80%;
+    max-width: 300px;
+    height: 100%;
+    background-color: #2c3e50;
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.3);
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    overflow-y: auto;
+    padding: 20px 0;
+}
+
+.hamburger-menu.active .hamburger-menu-content {
+    transform: translateX(0);
+}
+
+/* Hamburger menu items */
+.hamburger-menu-items {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.hamburger-menu-item {
+    padding: 15px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    color: #ecf0f1;
+    font-size: 1rem;
+    transition: background-color 0.2s ease;
+}
+
+.hamburger-menu-item:active,
+.hamburger-menu-item.active {
+    background-color: #34495e;
+    color: #3498db;
+}
+
+.hamburger-menu-item i {
+    margin-right: 15px;
+    font-size: 1.2rem;
+    width: 20px;
+    text-align: center;
+}
+
+/* Hamburger toggle button */
+.hamburger-toggle {
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    width: 40px;
+    height: 40px;
+    background-color: #2c3e50;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 201;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    /* Ensure the container is perfectly square */
+    box-sizing: border-box;
+    padding: 0;
+    /* Ensure perfect centering */
+    text-align: center;
+    line-height: 0;
+}
+
+.hamburger-toggle:active {
+    background-color: #34495e;
+}
+
+.hamburger-icon {
+    width: 18px; /* Slightly reduced width for better proportions */
+    height: 14px; /* Slightly reduced height for better proportions */
+    position: relative;
+    transform: rotate(0deg);
+    transition: 0.5s ease-in-out;
+    /* Center the icon perfectly */
+    margin: 0;
+    padding: 0;
+    display: block;
+}
+
+.hamburger-icon span {
+    display: block;
+    position: absolute;
+    height: 2px;
+    width: 100%;
+    background: #ecf0f1;
+    border-radius: 2px;
+    opacity: 1;
+    left: 0;
+    transform: rotate(0deg);
+    transition: 0.25s ease-in-out;
+}
+
+.hamburger-icon span:nth-child(1) {
+    top: 0;
+}
+
+.hamburger-icon span:nth-child(2),
+.hamburger-icon span:nth-child(3) {
+    top: 6px; /* Adjusted for better spacing */
+}
+
+.hamburger-icon span:nth-child(4) {
+    top: 12px; /* Adjusted for better spacing */
+}
+
+.hamburger-toggle.active .hamburger-icon span:nth-child(1) {
+    top: 6px; /* Match the middle line position */
+    width: 0%;
+    left: 50%;
+}
+
+.hamburger-toggle.active .hamburger-icon span:nth-child(2) {
+    transform: rotate(45deg);
+}
+
+.hamburger-toggle.active .hamburger-icon span:nth-child(3) {
+    transform: rotate(-45deg);
+}
+
+.hamburger-toggle.active .hamburger-icon span:nth-child(4) {
+    top: 6px; /* Match the middle line position */
+    width: 0%;
+    left: 50%;
+}
+
+/* Close button for the menu */
+.hamburger-menu-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #ecf0f1;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+/* Media query for screens less than or equal to 425px */
+@media (max-width: 425px) {
+    /* Show hamburger toggle button */
+    .hamburger-toggle {
+        display: flex !important; /* Force show with !important */
+    }
+
+    /* Show the hamburger menu container when active */
+    .hamburger-menu {
+        display: block !important; /* Force show with !important */
+    }
+
+    /* Hide the regular mobile navigation */
+    #mobile-nav {
+        display: none !important; /* Force hide with !important */
+    }
+
+    /* Adjust header for hamburger menu */
+    header {
+        padding-right: 50px; /* Make room for the hamburger button */
+    }
+
+    /* Adjust game container padding */
+    #game-container {
+        padding-bottom: 20px; /* Remove extra padding since we don't have the bottom nav */
+    }
+}
+
+/* Media query for screens greater than 425px */
+@media (min-width: 426px) {
+    /* Hide hamburger toggle button */
+    .hamburger-toggle {
+        display: none !important; /* Force hide with !important */
+    }
+
+    /* Hide the hamburger menu */
+    .hamburger-menu {
+        display: none !important; /* Force hide with !important */
+    }
+
+    /* Show the regular mobile navigation */
+    #mobile-nav {
+        display: flex !important; /* Force show with !important */
+    }
+
+    /* Ensure body scrolling is enabled */
+    body {
+        overflow: auto !important; /* Force enable scrolling with !important */
+    }
+}

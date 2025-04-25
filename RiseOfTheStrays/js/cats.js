@@ -170,7 +170,7 @@ class CatManager {
             patternColor: this.getRandomItem(this.catFeatures.patternColors),
             pattern: this.getRandomItem(this.catFeatures.patterns),
             eyeColor: this.getRandomItem(this.catFeatures.eyeColors),
-            irisColor: this.getRandomColor(), // Random iris color
+            irisColor: '#000000', // Default black iris
             accessory: this.getRandomItem(this.catFeatures.accessories),
             accessoryColor: this.getRandomItem(this.catFeatures.accessoryColors),
             // Add unique ID for animation tracking
@@ -258,7 +258,7 @@ class CatManager {
                 patternColor: this.getRandomItem(this.catFeatures.patternColors),
                 pattern: this.getRandomItem(this.catFeatures.patterns),
                 eyeColor: this.getRandomItem(this.catFeatures.eyeColors),
-                irisColor: this.getRandomColor(), // Random iris color
+                irisColor: '#000000', // Default black iris
                 accessory: this.getRandomItem(this.catFeatures.accessories),
                 accessoryColor: this.getRandomItem(this.catFeatures.accessoryColors),
                 uniqueId: 'cat-' + Date.now() + '-' + Math.floor(Math.random() * 1000)
@@ -740,8 +740,12 @@ class CatManager {
 
                             <!-- Cat face -->
                             <div class="cat-face">
-                                <div class="cat-eyes left" style="background-color: ${eyeColor}"></div>
-                                <div class="cat-eyes right" style="background-color: ${eyeColor}"></div>
+                                <div class="cat-eyes left" style="background-color: ${eyeColor}">
+                                    <div class="cat-pupil" style="background-color: ${irisColor || '#000000'}"></div>
+                                </div>
+                                <div class="cat-eyes right" style="background-color: ${eyeColor}">
+                                    <div class="cat-pupil" style="background-color: ${irisColor || '#000000'}"></div>
+                                </div>
                                 <div class="cat-nose"></div>
                                 <div class="cat-mouth"></div>
                             </div>
@@ -1244,8 +1248,12 @@ class CatManager {
                                     <!-- Cat face -->
                                     <div class="cat-face">
                                         <!-- Eyes -->
-                                        <div class="cat-eyes left" data-cat-id="${appearance.uniqueId}" style="background-color: ${appearance.eyeColor}"></div>
-                                        <div class="cat-eyes right" data-cat-id="${appearance.uniqueId}" style="background-color: ${appearance.eyeColor}"></div>
+                                        <div class="cat-eyes left" data-cat-id="${appearance.uniqueId}" style="background-color: ${appearance.eyeColor}">
+                                            <div class="cat-pupil" data-cat-id="${appearance.uniqueId}" style="background-color: ${appearance.irisColor || '#000000'}"></div>
+                                        </div>
+                                        <div class="cat-eyes right" data-cat-id="${appearance.uniqueId}" style="background-color: ${appearance.eyeColor}">
+                                            <div class="cat-pupil" data-cat-id="${appearance.uniqueId}" style="background-color: ${appearance.irisColor || '#000000'}"></div>
+                                        </div>
 
                                         <!-- Nose -->
                                         <div class="cat-nose"></div>
@@ -1560,8 +1568,12 @@ class CatManager {
                                 <!-- Cat face -->
                                 <div class="cat-face">
                                     <!-- Eyes -->
-                                    <div class="cat-eyes left" data-cat-id="${appearance.uniqueId}" style="background-color: ${appearance.eyeColor}"></div>
-                                    <div class="cat-eyes right" data-cat-id="${appearance.uniqueId}" style="background-color: ${appearance.eyeColor}"></div>
+                                    <div class="cat-eyes left" data-cat-id="${appearance.uniqueId}" style="background-color: ${appearance.eyeColor}">
+                                        <div class="cat-pupil" data-cat-id="${appearance.uniqueId}" style="background-color: ${appearance.irisColor || '#000000'}"></div>
+                                    </div>
+                                    <div class="cat-eyes right" data-cat-id="${appearance.uniqueId}" style="background-color: ${appearance.eyeColor}">
+                                        <div class="cat-pupil" data-cat-id="${appearance.uniqueId}" style="background-color: ${appearance.irisColor || '#000000'}"></div>
+                                    </div>
 
                                     <!-- Nose -->
                                     <div class="cat-nose"></div>
@@ -2379,16 +2391,24 @@ class CatManager {
 
         // Set up blinking animation
         this.blinkIntervals[catId] = setInterval(() => {
+            // Get all eyes for this cat
             const catEyes = document.querySelectorAll(`.cat-eyes[data-cat-id="${catId}"]`);
-            catEyes.forEach(eye => {
-                // Blink
-                eye.classList.add('cat-blink');
 
-                // Remove blink class after animation completes
-                setTimeout(() => {
-                    eye.classList.remove('cat-blink');
-                }, 200);
+            // Make sure we have eyes to animate
+            if (catEyes.length === 0) return;
+
+            // Add blink class to all eyes simultaneously
+            catEyes.forEach(eye => {
+                eye.classList.add('cat-blink');
             });
+
+            // Remove blink class after animation completes
+            // Use a slightly longer duration for a more natural blink
+            setTimeout(() => {
+                catEyes.forEach(eye => {
+                    eye.classList.remove('cat-blink');
+                });
+            }, 250);
         }, Math.random() * 3000 + 2000); // Random interval between 2-5 seconds
 
         // Set up mouth movement animation

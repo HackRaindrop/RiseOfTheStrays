@@ -1,0 +1,76 @@
+/*
+ * Cat Pupils CSS
+ * This file adds pupils to cat eyes to make them look less freaky
+ */
+
+/* Cat pupil styling */
+.cat-pupil {
+    position: absolute;
+    width: 6px;
+    height: 10px;
+    background-color: #000000; /* Default black */
+    border-radius: 50%;
+    /* Center the pupil in the eye */
+    top: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+    /* Add animation for pupil dilation */
+    animation: catPupilDilation 4s ease-in-out infinite;
+    /* Ensure transform origin is at the center */
+    transform-origin: center;
+}
+
+/* Animation for cat pupil dilation (separate from blinking) */
+@keyframes catPupilDilation {
+    0%, 100% {
+        transform: translateX(-50%) scale(1);
+    }
+    75% {
+        transform: translateX(-50%) scale(1.2);
+    }
+}
+
+/* Fix for cat blinking - make the pupil transform match the eye */
+.cat-eyes.cat-blink .cat-pupil {
+    /* Use scaleY with transform-origin at center to match the eye closing */
+    transform-origin: center;
+    /* Combine the horizontal centering with the vertical compression */
+    transform: translateX(-50%) scaleY(0.2);
+    /* Adjust position to stay centered in the compressed eye */
+    top: 3px;
+    /* Transition to match the eye animation */
+    transition: all 0.15s ease;
+}
+
+/* Adjust pupil position for different eye sizes */
+.found-cat-avatar .cat-pupil {
+    width: 5px;
+    height: 8px;
+    top: 3px;
+    /* Keep using the centered approach */
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* Make pupils react to light/dark mode */
+@media (prefers-color-scheme: dark) {
+    .cat-pupil {
+        height: 12px; /* Larger pupils in dark mode */
+    }
+
+    /* Update the dark mode pupil dilation animation */
+    @keyframes catPupilDilation {
+        0%, 100% {
+            transform: translateX(-50%) scale(1);
+        }
+        75% {
+            transform: translateX(-50%) scale(1.3);
+        }
+    }
+
+    /* Update the dark mode pupil blinking */
+    .cat-eyes.cat-blink .cat-pupil {
+        transform: translateX(-50%) scaleY(0.2);
+    }
+}

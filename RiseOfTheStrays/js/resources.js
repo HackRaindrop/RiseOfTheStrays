@@ -21,6 +21,15 @@ class ResourceManager {
         return this.resources[type];
     }
 
+    // Set resource to specific amount (for loading saved games)
+    setResource = (type, amount) => {
+        if (type in this.resources) {
+            this.resources[type] = amount;
+            return true;
+        }
+        return false;
+    }
+
     // Add resources
     addResource = (type, amount) => {
         this.resources[type] += amount;

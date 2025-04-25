@@ -1,0 +1,238 @@
+/* Save System Styles */
+
+/* Save/Load Modal */
+.save-load-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.save-load-modal-content {
+    background-color: #34495e;
+    border-radius: 10px;
+    padding: 20px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    border: 2px solid #3498db;
+}
+
+.save-load-modal h2 {
+    color: #3498db;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #3498db;
+    padding-bottom: 10px;
+}
+
+.save-load-modal p {
+    margin-bottom: 20px;
+    color: #ecf0f1;
+}
+
+.save-load-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.save-load-buttons button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s ease;
+}
+
+#load-game-btn {
+    background-color: #2ecc71;
+    color: white;
+}
+
+#load-game-btn:hover {
+    background-color: #27ae60;
+    transform: translateY(-2px);
+}
+
+#new-game-btn {
+    background-color: #e74c3c;
+    color: white;
+}
+
+#new-game-btn:hover {
+    background-color: #c0392b;
+    transform: translateY(-2px);
+}
+
+/* Save/Load UI */
+.save-load-ui {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 10px 0;
+    padding: 10px;
+    background-color: #2c3e50;
+    border-radius: 5px;
+}
+
+.save-load-ui button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.save-load-ui button:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+}
+
+.save-load-ui button i {
+    font-size: 14px;
+}
+
+.save-load-ui .save-btn {
+    background-color: #2ecc71;
+}
+
+.save-load-ui .save-btn:hover {
+    background-color: #27ae60;
+}
+
+.save-load-ui .load-btn {
+    background-color: #f39c12;
+}
+
+.save-load-ui .load-btn:hover {
+    background-color: #d35400;
+}
+
+.save-load-ui .delete-btn {
+    background-color: #e74c3c;
+}
+
+.save-load-ui .delete-btn:hover {
+    background-color: #c0392b;
+}
+
+/* Save notification */
+.save-notification {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #2ecc71;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.3s, transform 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.save-notification.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.save-notification i {
+    font-size: 18px;
+}
+
+/* Confirmation modal */
+.confirm-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1001;
+}
+
+.confirm-modal-content {
+    background-color: #34495e;
+    border-radius: 10px;
+    padding: 20px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    border: 2px solid #e74c3c;
+}
+
+.confirm-modal h2 {
+    color: #e74c3c;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #e74c3c;
+    padding-bottom: 10px;
+}
+
+.confirm-modal p {
+    margin-bottom: 20px;
+    color: #ecf0f1;
+}
+
+.confirm-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.confirm-buttons button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s ease;
+}
+
+.confirm-yes {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.confirm-yes:hover {
+    background-color: #c0392b;
+    transform: translateY(-2px);
+}
+
+.confirm-no {
+    background-color: #7f8c8d;
+    color: white;
+}
+
+.confirm-no:hover {
+    background-color: #95a5a6;
+    transform: translateY(-2px);
+}
+
+/* Last save info */
+.last-save-info {
+    font-size: 0.8em;
+    color: #bdc3c7;
+    text-align: center;
+    margin-top: 5px;
+}
